@@ -3,4 +3,7 @@ declare module '*.vue' {
   export default Vue
 }
 
-declare module 'plotly.js-dist'
+declare module 'plotly.js-dist' {
+  import Plotly from 'plotly.js'
+  export default Plotly
+}
