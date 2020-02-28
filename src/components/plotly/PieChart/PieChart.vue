@@ -5,11 +5,12 @@
 <script lang="ts">
 import { defineComponent, onMounted, onBeforeUnmount, ref } from '@vue/composition-api'
 import Plotly from 'plotly.js-dist'
+import { Root, PlotData } from 'plotly.js'
 
 export default defineComponent({
   setup() {
     const chartdiv = ref(null)
-    const data = [
+    const data: Partial<PlotData>[] = [
       {
         values: [19, 26, 55],
         labels: ['Residential', 'Non-Residential', 'Utility'],
@@ -22,11 +23,11 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      Plotly.newPlot(chartdiv.value, data, layout)
+      Plotly.newPlot((chartdiv.value as unknown) as Root, data, layout)
     })
 
     onBeforeUnmount(() => {
-      Plotly.purge(chartdiv.value)
+      Plotly.purge((chartdiv.value as unknown) as Root)
     })
 
     return { chartdiv }
