@@ -4,3 +4,7 @@ declare module '*.vue' {
 }
 
 declare module 'rough-viz'
+declare module 'plotly.js-dist' {
+  import Plotly from 'plotly.js'
+  export default Plotly
+}
