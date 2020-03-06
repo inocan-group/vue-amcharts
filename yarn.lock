@@ -1401,9 +1401,9 @@
     "@types/d3-selection" "*"
 
 "@types/d3-brush@*":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@types/d3-brush/-/d3-brush-1.1.0.tgz#3f1f01aa3d4d70aff2a358c49dd3295be10d774c"
-  integrity sha512-yz5Y94XpUARimOlLk+RWM1cZh1FrtmSGOyDQfCArsMa6kAnhjF3EserSTDnHAuVuNATMoTIOPHa7pjG2iTkPYA==
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@types/d3-brush/-/d3-brush-1.0.10.tgz#aa9b5545d816c29d19cff20118f236713af8e9fb"
+  integrity sha512-J8jREATIrfJaAfhJivqaEKPnJsRlwwrOPje+ABqZFgamADjll+q9zaDXnYyjiGPPsiJEU+Qq9jQi5rECxIOfhg==
   dependencies:
     "@types/d3-selection" "*"
 
@@ -1669,9 +1669,9 @@
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
 "@types/plotly.js@^1.44.29":
-  version "1.44.31"
-  resolved "https://registry.yarnpkg.com/@types/plotly.js/-/plotly.js-1.44.31.tgz#d5f259681d21cf61e1320ba4ee725bcb290f3d1c"
-  integrity sha512-8VbEOOPUTcgZdiEIm3+NklauAhtmrzWRA1wDst9q/U8p7F8LqOoUZa3n5s/q2xdPqPSS5na7E/WFfHx+ujHw0A==
+  version "1.44.29"
+  resolved "https://registry.yarnpkg.com/@types/plotly.js/-/plotly.js-1.44.29.tgz#43d4f8c528a604483548236770de9b147169fd18"
+  integrity sha512-lJvCCuiu6vtTpObUAsDWeUTBrRldN/BjXPioNgsblhT1vBAiZOrqrDFJ0FUOigfvE9o/JQ/wvCphr3GpXqsH1Q==
   dependencies:
     "@types/d3" "^[object Object]"
 
