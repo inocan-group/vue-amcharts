@@ -23,19 +23,18 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const { register, done } = useRegistry<DateAxis>(props, context)
+    const { register } = useRegistry<DateAxis>(props, context)
     const instance = new DateAxis()
 
-    const registration = (chart: IChart) => {
+    const configure = async (chart: IChart) => {
       const axis = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       console.log(`registering DateAxis on ${props.dimension}`, { chart, axis })
       axis.push(instance)
-      done()
     }
 
     props.dimension === 'x'
-      ? register(ChartType.xAxis, props.name, { constructor: DateAxis, instance, registration })
-      : register(ChartType.yAxis, props.name, { constructor: DateAxis, instance, registration })
+      ? register(ChartType.xAxis, props.name, configure)
+      : register(ChartType.yAxis, props.name, configure)
 
     return { DateAxis, axis: instance }
   },

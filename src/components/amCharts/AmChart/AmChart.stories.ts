@@ -10,8 +10,8 @@ export const xyChart = () => ({
     <value-axis name="primary" dimension="y" />
     <!-- <xy-scrollbar axis="x" series="dates" /> -->
 
-    <!-- <line-series name="cpi" yProp="Index" xProp="Date" /> -->
-    <!-- <line-series name="dates" yProp="Percent" xProp="Date"  /> -->
+    <line-series name="cpi" xProp="Index" yProp="Date"  />
+    <line-series xProp="Percent" yProp="Date"  />
   </xy-chart>
   `,
 })

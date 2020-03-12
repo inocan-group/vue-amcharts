@@ -5,7 +5,9 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from '@vue/composition-api'
 import { LineSeries } from '@amcharts/amcharts4/charts'
-import { useSeries } from '../composables'
+import { useSeries, useRegistry } from '../composables'
+import { IChart } from '..'
+import { ChartType } from '../types'
 
 export default defineComponent({
   name: 'LineSeries',
@@ -34,14 +36,19 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const { register } = useSeries(props, context)
-    const options = { xProp: props.xProp, yProp: props.yProp, xAxis: props.xAxis, yAxis: props.yAxis }
-    const series = register(LineSeries, options)
+    const { register } = useRegistry(props, context, LineSeries)
+    const instance = new LineSeries()
 
-    series.dataFields.dateX = props.xProp
-    series.dataFields.valueY = props.yProp
+    const configure = async (chart: IChart) => {
+      console.log('series', chart.series.dataFields, props.xProp, props.yProp)
+      chart.series.push(new LineSeries())
+      chart.series.dataFields.dateX = props.xProp
+      chart.series.dataFields.valueY = props.yProp
+    }
 
-    return { LineSeries, series }
+    register(ChartType.series, props.name, configure)
+
+    return { LineSeries, series: instance }
   },
 })
 </script>

@@ -1557,7 +1557,12 @@
     "@types/d3-interpolate" "*"
     "@types/d3-selection" "*"
 
-"@types/d3@^5.7.2", "@types/d3@^[object Object]":
+"@types/d3@^3":
+  version "3.5.43"
+  resolved "https://registry.yarnpkg.com/@types/d3/-/d3-3.5.43.tgz#e9b4992817e0b6c5efaa7d6e5bb2cee4d73eab58"
+  integrity sha512-t9ZmXOcpVxywRw86YtIC54g7M9puRh8hFedRvVfHKf5YyOP6pSxA0TvpXpfseXSCInoW4P7bggTrSDiUOs4g5w==
+
+"@types/d3@^5.7.2":
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/@types/d3/-/d3-5.7.2.tgz#52235eb71a1d3ca171d6dca52a58f5ccbe0254cc"
   integrity sha512-7/wClB8ycneWGy3jdvLfXKTd5SoTg9hji7IdJ0RuO9xTY54YpJ8zlcFADcXhY1J3kCBwxp+/1jeN6a5OMwgYOw==
@@ -1659,11 +1664,11 @@
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
 "@types/plotly.js@^1.44.29":
-  version "1.44.31"
-  resolved "https://registry.yarnpkg.com/@types/plotly.js/-/plotly.js-1.44.31.tgz#d5f259681d21cf61e1320ba4ee725bcb290f3d1c"
-  integrity sha512-8VbEOOPUTcgZdiEIm3+NklauAhtmrzWRA1wDst9q/U8p7F8LqOoUZa3n5s/q2xdPqPSS5na7E/WFfHx+ujHw0A==
+  version "1.44.32"
+  resolved "https://registry.yarnpkg.com/@types/plotly.js/-/plotly.js-1.44.32.tgz#0b69ffce2c052216adbc595942dfb93f2c14fcae"
+  integrity sha512-KBzU0EOsRroRQbuduH2a8QMgisu/tqaIW3dFG2NrVAWfBymP7ofmmi3OuC2ZTRlUKdbBXHf/4on1iQPjfqbtsg==
   dependencies:
-    "@types/d3" "^[object Object]"
+    "@types/d3" "^3"
 
 "@types/prop-types@*":
   version "15.7.3"
@@ -11510,10 +11515,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@~3.7.5:
-  version "3.7.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
-  integrity sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
+typescript@~3.8.3:
+  version "3.8.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.8.3.tgz#409eb8544ea0335711205869ec458ab109ee1061"
+  integrity sha512-MYlEfn5VrLNsgudQTVJeNaQFUAI7DkhnOjdpAp4T+ku1TfQClewlbSuTVHiA+8skNBgaf02TL/kLOvig4y3G8w==
 
 uglify-js@3.4.x:
   version "3.4.10"
