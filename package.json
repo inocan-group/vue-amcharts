@@ -7,14 +7,14 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "storybook:build": "vue-cli-service storybook:build -c config/storybook",
-    "storybook:serve": "STORYBOOK_VUE_DEV_TOOLS=1 run-all 'vue-devtools' 'vue-cli-service storybook:serve -p 6006 -c config/storybook'"
+    "storybook:serve": "STORYBOOK_VUE_DEV_TOOLS=1 run-all 'vue-devtools' 'vue-cli-service storybook:serve -p 6006 -c config/storybook -s ./public'"
   },
   "dependencies": {
-    "@amcharts/amcharts4": "^4.9.3",
+    "@amcharts/amcharts4": "^4.9.6",
     "@vue/composition-api": "^0.4.0",
     "common-types": "^1.13.1",
     "core-js": "^3.6.4",
-    "plotly.js-dist": "^1.52.2",
+    "plotly.js-dist": "^1.52.3",
     "rough-viz": "^1.0.5",
     "vue": "^2.6.11"
   },

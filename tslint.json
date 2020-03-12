@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "interface-name": [
+      false,
+      "never-prefix"
+    ]
+  }
+}

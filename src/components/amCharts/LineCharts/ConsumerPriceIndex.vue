@@ -3,16 +3,6 @@
     <h1>{{ title }}</h1>
     <div class="chart" ref="chartdiv"></div>
     <div class="footer"><slot /></div>
-
-    <div class="composable">
-      <am-chart data="https://somewhere.com" theme="xyz">
-        <xy-chart>
-          <date-axis #xAxis />
-          <value-axis #yAxis />
-          <series data="https://" yProp="Temperature" xProp="Date" />
-        </xy-chart>
-      </am-chart>
-    </div>
   </div>
 </template>
 
@@ -45,7 +35,7 @@ export default defineComponent({
 
     onMounted(async () => {
       chart.value = am4core.create((chartdiv.value as unknown) as HTMLElement, am4charts.XYChart)
-      chart.value.paddingRight = 20
+      chart.value.paddingRight = 2
 
       data.value = cpi
       chart.value.data = data.value

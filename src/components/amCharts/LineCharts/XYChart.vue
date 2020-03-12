@@ -1,5 +1,8 @@
 <template>
-  <div class="chart" ref="chartdiv"></div>
+  <div class="outer">
+    Hello World
+    <div class="chart" ref="chartdiv">Hello World</div>
+  </div>
 </template>
 
 <script lang="ts">
