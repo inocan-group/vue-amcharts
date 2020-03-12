@@ -1,33 +1,12 @@
 import { IChartConfigApi, IChart } from '../ChartTypes/chart-types'
 import { onMounted, ref, Ref, reactive, onBeforeUnmount, computed } from '@vue/composition-api'
 import * as am4core from '@amcharts/amcharts4/core'
-import { Chart, Series } from '@amcharts/amcharts4/charts'
+import { Chart } from '@amcharts/amcharts4/charts'
 import { IDictionary } from 'common-types'
-import { getChartData } from '../shared'
 
 export function useChart<T extends Chart>(name: string, chartType: new () => T, props: IDictionary) {
   const chartdiv: Ref<HTMLElement | null> = ref(null)
   const chart: Ref<T | null> = ref(null)
-
-  /** data which has been remotely loaded by chart */
-  // const remoteData: Ref<IDictionary[]> = ref([])
-
-  /**
-   * Gets the chart data regardless of whether it came from the user of this
-   * component directly or whether the consumer passed in a URL (and the
-   * data needed to be loaded)
-   */
-  // const chartData = computed(() => {
-  //   if (Array.isArray(props.data)) {
-  //     return props.data as IDictionary[]
-  //   }
-
-  //   if (remoteData.value.length === 0) {
-  //     getChartData(remoteData, props.data) // async get the data
-  //   }
-
-  //   return remoteData.value
-  // })
 
   const chartData = computed(() => {
     return chart.value && chart.value.data ? chart.value.data : []

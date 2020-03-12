@@ -1,6 +1,6 @@
 <template>
   <div class="xy-chart">
-    <div ref="chartdiv" />
+    <div class="chart" ref="chartdiv" />
     <slot />
   </div>
 </template>
@@ -10,9 +10,16 @@ import * as am4core from '@amcharts/amcharts4/core'
 import { XYChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
 import { defineComponent, ref, Ref, reactive, onMounted, computed, isRef } from '@vue/composition-api'
-import { useChart } from '../composables/useChart'
+import { useChart, useRegistry } from '../composables'
 import { IDictionary } from 'common-types'
-import { IAxisDefinition, ISeriesDefinition, ILegendDefinition, IChartChildApi, IXyChartSlotProps } from '../ChartTypes'
+import {
+  IAxisDefinition,
+  ISeriesDefinition,
+  ILegendDefinition,
+  IChartChildApi,
+  IXyChartSlotProps,
+  XyChart,
+} from '../ChartTypes'
 
 am4core.useTheme(am4themesAnimated)
 
@@ -33,6 +40,22 @@ export default defineComponent({
   },
 
   setup(props, context): IChartChildApi<XYChart> & IXyChartSlotProps & IDictionary {
+    const { registerAsParent } = useRegistry<XYChart>(props, context)
+
+    const {
+      registrants,
+      acceptChildRegistration,
+      acceptChildMessage,
+      depSequence,
+      readyForChildren,
+    } = registerAsParent([
+      [1, null, 'xAxis'],
+      [1, null, 'yAxis'],
+      [1, null, 'series'],
+      [0, 1, 'legend'],
+      [0, null, 'features'],
+    ])
+
     const {
       chart,
       chartData,
@@ -70,6 +93,10 @@ export default defineComponent({
     onMounted(() => {
       drawChart()
       const c = chart.value as XYChart
+      c.height = 800
+      c.contentHeight = 800
+      readyForChildren(c)
+
       if (typeof props.data === 'string') {
         c.dataSource.url = props.data
       } else {
@@ -123,9 +150,22 @@ export default defineComponent({
       yAxis,
       series,
       legend,
+      registrants,
+      acceptChildRegistration,
+      acceptChildMessage,
+      depSequence,
     }
   },
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.xy-chart {
+  width: 100%;
+  height: 800px;
+}
+.chart {
+  width: 100%;
+  height: 100%;
+}
+</style>
