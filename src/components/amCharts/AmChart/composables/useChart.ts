@@ -12,52 +12,52 @@ export function useChart<T extends Chart>(name: string, chartType: new () => T, 
     return chart.value && chart.value.data ? chart.value.data : []
   })
 
-  const configAxis: IChartConfigApi<T>['configAxis'] = (storage, config) => (
-    name,
-    constructor,
-    dimension,
-    callback,
-    options = {},
-  ) => {
-    console.log(`Configuring ${name} axis on dimension ${dimension}`, storage)
-    storage[dimension][name] = {
-      constructor,
-      options,
-      callback,
-    }
-  }
+  // const configAxis: IChartConfigApi<T>['configAxis'] = (storage, config) => (
+  //   name,
+  //   constructor,
+  //   dimension,
+  //   callback,
+  //   options = {},
+  // ) => {
+  //   console.log(`Configuring ${name} axis on dimension ${dimension}`, storage)
+  //   storage[dimension][name] = {
+  //     constructor,
+  //     options,
+  //     callback,
+  //   }
+  // }
 
-  const configSeries: IChartConfigApi<T>['configSeries'] = (storage, config) => (
-    name,
-    constructor,
-    callback,
-    options,
-  ) => {
-    console.log(`Configuring ${name} series with the following options`, options)
-    const instance = new constructor()
-    storage[name] = {
-      constructor,
-      instance,
-      callback,
-      options,
-    }
+  // const configSeries: IChartConfigApi<T>['configSeries'] = (storage, config) => (
+  //   name,
+  //   constructor,
+  //   callback,
+  //   options,
+  // ) => {
+  //   console.log(`Configuring ${name} series with the following options`, options)
+  //   const instance = new constructor()
+  //   storage[name] = {
+  //     constructor,
+  //     instance,
+  //     callback,
+  //     options,
+  //   }
 
-    return instance
-  }
+  //   return instance
+  // }
 
-  const features: IDictionary<{ type: string; constructor: new () => any; options: IDictionary }> = reactive({})
+  // const features: IDictionary<{ type: string; constructor: new () => any; options: IDictionary }> = reactive({})
 
-  /**
-   *
-   */
-  const addFeature = (name, type, constructor, options) => {
-    features[name] = { type, constructor, options }
-    return chart as Ref<IChart>
-  }
+  // /**
+  //  *
+  //  */
+  // const addFeature = (name, type, constructor, options) => {
+  //   features[name] = { type, constructor, options }
+  //   return chart as Ref<IChart>
+  // }
 
-  const configLegend: IChartConfigApi<T>['configLegend'] = options => config => {
-    //
-  }
+  // const configLegend: IChartConfigApi<T>['configLegend'] = options => config => {
+  //   //
+  // }
 
   const drawChart = () => {
     chart.value = am4core.create<T>(chartdiv.value as HTMLElement, chartType)
@@ -71,11 +71,11 @@ export function useChart<T extends Chart>(name: string, chartType: new () => T, 
     chart,
     chartData,
     chartdiv,
-    configAxis,
-    configSeries,
-    configLegend,
+    // configAxis,
+    // configSeries,
+    // configLegend,
     drawChart,
-    features,
-    addFeature,
+    // features,
+    // addFeature,
   }
 }

@@ -28,17 +28,16 @@ export default defineComponent({
     const { register, done } = useRegistry<ValueAxis>(props, context)
     const instance = new ValueAxis()
 
-    const onRegistration = (chart: IChart) => {
+    const registration = (chart: IChart) => {
       const axis = props.dimension === 'x' ? chart.xAxis : chart.yAxis
+      console.log(`registering ValueAxis on ${props.dimension}`, { chart, axis })
       axis.push(instance)
       done()
     }
 
-    console.log(`registering ValueAxis on ${props.dimension}`)
-
-    // props.dimension === 'x'
-    //   ? register(ChartType.xAxis, props.name, { constructor: ValueAxis, instance }, onRegistration)
-    //   : register(ChartType.yAxis, props.name, { constructor: ValueAxis, instance }, onRegistration)
+    props.dimension === 'x'
+      ? register(ChartType.xAxis, props.name, { constructor: ValueAxis, instance, registration })
+      : register(ChartType.yAxis, props.name, { constructor: ValueAxis, instance, registration })
 
     return { ValueAxis, axis: instance }
   },

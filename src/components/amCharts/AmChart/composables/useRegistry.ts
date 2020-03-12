@@ -1,32 +1,38 @@
 import { IDictionary } from 'common-types'
-import { SetupContext } from '@vue/composition-api'
+import { SetupContext, reactive } from '@vue/composition-api'
 import { CombinedVueInstance } from 'vue/types/vue'
-import { IChart } from '../ChartTypes'
 import { EventEmitter } from 'events'
 
-export interface IRegistrationStatus {
+export interface IRegistrationStatus<T> {
   constructor: new () => any
   instance?: any
+  registration: IRegistrationCallback<T>
   /** the child has has been signaled to start the setup routine */
   kickedOff: boolean
   /** the child has completed setup */
   ready: boolean
 }
 
-export type IRegistrationConfig = Omit<IRegistrationStatus, 'ready' | 'kickedOff'>
+export type IRegistrationConfig<T> = Omit<IRegistrationStatus<T>, 'ready' | 'kickedOff'>
 
 export interface IChildCardinality {
   min: number
   max: number | null
 }
 
-export interface IRegistry<T> {
-  registrants: IDictionary<IDictionary<IRegistrationStatus>>
+export enum EventMessages {
+  readyForChildren = 'readyForChildren',
+  completed = 'completed',
+  unregister = 'unregister',
+}
+
+export interface IRegistry<P> {
+  registrants: IDictionary<IDictionary<IRegistrationStatus<P>>>
   depSequence: string[]
   cardinality: IDictionary<IChildCardinality>
-  readyForChildren(data: T): T
-  acceptChildRegistration<T>(type: T & string, name: string, config: IRegistrationConfig): Promise<IChart>
-  acceptChildMessage<T>(message: string, type: T & string, name: string, options: IDictionary)
+  readyForChildren(data: P): void
+  acceptChildRegistration(type: string, name: string, config: IRegistrationConfig<P>): Promise<P>
+  acceptChildMessage(message: string, type: string, name: string, options: IDictionary): void
 }
 
 /** provide the min, max of cardinality and then the name of the child */
@@ -40,6 +46,7 @@ export function useRegistry<P>(props: IDictionary, context: SetupContext) {
   const parent: CombinedVueInstance<any, any, any, any, any> = context.parent
   let childType: string
   let childName: string
+  let parentClass: P
   const ee = new EventEmitter()
 
   return {
@@ -52,10 +59,12 @@ export function useRegistry<P>(props: IDictionary, context: SetupContext) {
     registerAsParent: (childrenAndCardinality: IChildWithCardinality[]) => {
       const registry = (childrenAndCardinality: IChildWithCardinality[]) => {
         const depSequence = childrenAndCardinality.map(i => i[2])
-        const registrants = depSequence.reduce((agg, curr) => {
-          agg[curr] = {}
-          return agg
-        }, {})
+        const registrants: IDictionary<IDictionary<IRegistrationStatus<P>>> = reactive(
+          depSequence.reduce((agg: IDictionary, curr) => {
+            agg[curr] = {}
+            return agg
+          }, {}),
+        )
         /** puts a child into a wait state until all deps are resolved */
         const waitForDeps = async (type: string) => {
           return new Promise(resolve => {
@@ -71,7 +80,11 @@ export function useRegistry<P>(props: IDictionary, context: SetupContext) {
               resolve()
             }
             const priorStep = depSequence[idx]
-            ee.on('completed', (dep: keyof typeof depSequence) => {
+            ee.on(EventMessages.completed, (dep: string) => {
+              const currentStep = registrants[dep]
+              if (Object.keys(currentStep).length === 0) {
+                ee.emit(EventMessages.completed, dep)
+              }
               if (dep === priorStep) {
                 resolve()
               }
@@ -84,13 +97,18 @@ export function useRegistry<P>(props: IDictionary, context: SetupContext) {
          */
         const isReadyForChildren = async (): Promise<P> => {
           return new Promise(resolve => {
-            ee.on('readyForChildren', data => resolve(data))
+            ee.on(EventMessages.readyForChildren, (data: P) => {
+              console.log('ready for children')
+              resolve(data)
+            })
           })
         }
 
         return {
           readyForChildren: (data: P) => {
-            ee.emit('readyForChildren', data)
+            console.log('emit')
+            parentClass = data
+            ee.emit(EventMessages.readyForChildren, data)
           },
           registrants,
           depSequence,
@@ -103,21 +121,36 @@ export function useRegistry<P>(props: IDictionary, context: SetupContext) {
             {},
           ),
           /** accept registration requests from children */
-          async acceptChildRegistration(type: string, name: string, config: IRegistrationConfig) {
-            registry[type][name] = {
+          acceptChildRegistration: async (type, name, config) => {
+            console.log({ type, name, registrants })
+
+            registrants[type][name] = {
               ...config,
               kickedOff: false,
               ready: false,
             }
-            const obj: P = await isReadyForChildren()
-            await waitForDeps(type)
+            console.log('wait for parent')
+            const obj = await isReadyForChildren()
+            console.log('parent ready')
+
+            const data = await waitForDeps(type)
+            registrants[type][name].kickedOff = true
+            console.log(`kicked off ${type}`)
+            await registrants[type][name].registration(parentClass)
+            console.log(`completed ${type}/${name}`)
+            registrants[type][name].ready = true
+
+            ee.emit(EventMessages.completed, { type, name })
             return obj
           },
           /** accept a message from a child component */
-          acceptChildMessage(message: string, type: string, name: string, options?: IDictionary) {
+          acceptChildMessage(message: keyof typeof EventMessages, type: string, name: string, options?: IDictionary) {
+            console.log(`recieved message ${message}`)
+
             switch (message) {
-              case 'ready':
+              case EventMessages.completed:
                 registrants[type][name].ready = true
+                ee.emit(EventMessages.completed, { type, name })
                 break
               case 'unregister':
                 delete registrants[type][name]
@@ -136,7 +169,7 @@ export function useRegistry<P>(props: IDictionary, context: SetupContext) {
      * Register with the parent component and then await startup events before returning
      * with a reference to the `chart` object.
      */
-    register: async (type: string, name: string, config: IRegistrationConfig, callback: IRegistrationCallback<P>) => {
+    register: async (type: string, name: string, config: IRegistrationConfig<P>) => {
       childType = type
       childName = name
       if (!parent.acceptChildRegistration) {
@@ -145,7 +178,7 @@ export function useRegistry<P>(props: IDictionary, context: SetupContext) {
         )
       }
 
-      return parent.acceptChildRegistration(type, name, config)
+      parent.acceptChildRegistration(type, name, config)
     },
 
     /**

@@ -50,7 +50,7 @@ export interface IChartConfigApi<T> {
     storage: ByAxisDimension<IDictionary<IAxisDefinition<any>>>,
     config: IDictionary,
   ): IChartChildApi<T>['addAxis']
-  configSeries<S>(storage: IDictionary<ISeriesDefinition>, config: IDictionary): IChartChildApi<T>['addSeries']
+  configSeries<S>(storage: IDictionary<ISeriesDefinition<S>>, config: IDictionary): IChartChildApi<T>['addSeries']
   configLegend(config?: IDictionary): IChartChildApi<T>['addLegend']
 }
 
