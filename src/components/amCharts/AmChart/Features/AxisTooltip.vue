@@ -9,13 +9,13 @@ export default defineComponent({
   name: 'AxisTooltip',
 
   setup(props) {
-    
-  }
-}
+    //
+  },
+})
 </script>
 
 <style scoped>
 .axis-tooltip {
   opacity: 1;
 }
-</style> 
+</style>

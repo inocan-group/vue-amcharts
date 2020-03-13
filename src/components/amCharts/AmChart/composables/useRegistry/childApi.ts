@@ -4,6 +4,7 @@ import { IParentRegistry, EventMessages, Configuration } from './registry-types'
 
 export function childApi<C, P>(props: IDictionary, context: SetupContext, constructor?: new () => any) {
   const parent = (context.parent as unknown) as IParentRegistry<P>
+  type types = keyof typeof parent.registrants
   let childType: string
   let childName: string
 
@@ -29,6 +30,10 @@ export function childApi<C, P>(props: IDictionary, context: SetupContext, constr
      */
     unregister: () => {
       parent.acceptChildMessage(EventMessages.unregister, childType, childName)
+    },
+
+    getChild: (type: types, name: string) => {
+      return parent.registrants[type][name]
     },
   }
 }

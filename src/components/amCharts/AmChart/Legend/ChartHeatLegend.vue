@@ -9,13 +9,13 @@ export default defineComponent({
   name: 'ChartHeatLegend',
 
   setup(props) {
-    
-  }
-}
+    //
+  },
+})
 </script>
 
 <style scoped>
 .chart-heatLegend {
   opacity: 1;
 }
-</style> 
+</style>

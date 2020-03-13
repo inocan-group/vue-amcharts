@@ -3,17 +3,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, SetupContext } from '@vue/composition-api'
+import { IDictionary } from 'common-types'
 
 export default defineComponent({
   name: '${TM_FILENAME_BASE}',
 
-  setup() {
+  setup(props: IDictionary, context: SetupContext) {
     ${0}
 
     return {}
   }
-}\)
+})
 </script>
 
 <style scoped>

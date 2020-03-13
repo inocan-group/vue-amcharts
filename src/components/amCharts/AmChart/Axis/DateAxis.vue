@@ -25,17 +25,16 @@ export default defineComponent({
 
   setup(props, context) {
     const { register } = useRegistry(props, context, DateAxis)
-    const axis: Ref<DateAxis | null> = ref(null)
+    const axis: Ref<DateAxis> = ref(new DateAxis())
 
     const configure: Configuration<IChart> = async chart => {
-      axis.value = new DateAxis()
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       dimension.push(axis.value)
     }
 
     props.dimension === 'x'
-      ? register(ChartType.xAxis, props.name, configure)
-      : register(ChartType.yAxis, props.name, configure)
+      ? register(ChartType.xAxis, props.name, configure, { instance: axis.value })
+      : register(ChartType.yAxis, props.name, configure, { instance: axis.value })
 
     return { DateAxis, axis }
   },

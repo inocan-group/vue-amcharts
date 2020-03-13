@@ -9,13 +9,13 @@ export default defineComponent({
   name: 'AxisRange',
 
   setup(props) {
-    
-  }
-}
+    //
+  },
+})
 </script>
 
 <style scoped>
 .axis-range {
   opacity: 1;
 }
-</style> 
+</style>

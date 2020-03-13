@@ -22,6 +22,10 @@ export default defineComponent({
       type: String,
       default: 'y',
     },
+    options: {
+      type: Object,
+      default: {},
+    },
   },
 
   setup(props, context) {
@@ -30,13 +34,16 @@ export default defineComponent({
 
     const configure = async (chart: IChart) => {
       axis.value = new ValueAxis()
+      if (axis.value.tooltip) {
+        axis.value.tooltip.disabled
+      }
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       dimension.push(axis.value)
     }
 
     props.dimension === 'x'
-      ? register(ChartType.xAxis, props.name, configure)
-      : register(ChartType.yAxis, props.name, configure)
+      ? register(ChartType.xAxis, props.name, configure, { instance: axis.value })
+      : register(ChartType.yAxis, props.name, configure, { instance: axis.value })
 
     return { ValueAxis, axis }
   },

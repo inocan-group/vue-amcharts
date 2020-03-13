@@ -9,7 +9,7 @@
 import * as am4core from '@amcharts/amcharts4/core'
 import { XYChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
-import { defineComponent, ref, Ref, reactive, onMounted, computed, isRef } from '@vue/composition-api'
+import { defineComponent, ref, Ref, reactive, onMounted, computed, isRef, onBeforeUnmount } from '@vue/composition-api'
 import { useChart, useRegistry } from '../composables'
 import { IDictionary } from 'common-types'
 import {
@@ -47,6 +47,7 @@ export default defineComponent({
       [1, null, 'xAxis'],
       [1, null, 'yAxis'],
       [1, null, 'series'],
+      [0, 1, 'cursor'],
       [0, 1, 'legend'],
       [0, null, 'features'],
     ])
@@ -66,6 +67,10 @@ export default defineComponent({
 
       await configureChildren(c)
       console.log('children configured')
+    })
+
+    onBeforeUnmount(() => {
+      if (chart.value) chart.value.dispose()
     })
 
     return {

@@ -33,23 +33,26 @@ export default defineComponent({
       type: String,
       default: 'default',
     },
+    tooltipText: {
+      type: String,
+      default: '',
+    },
   },
 
   setup(props, context) {
     const { register } = useRegistry(props, context, LineSeries)
-    const series: Ref<LineSeries | null> = ref(null)
+    const series: Ref<LineSeries> = ref(new LineSeries())
 
     const configure = async (chart: IChart) => {
-      series.value = chart.series.push(new LineSeries())
-      if (series.value) {
-        series.value.dataFields.valueY = props.yProp
-        series.value.dataFields.dateX = props.xProp
-      }
+      series.value = chart.series.push(series.value)
+      series.value.dataFields.valueY = props.yProp
+      series.value.dataFields.dateX = props.xProp
+      series.value.tooltipText = props.tooltipText
     }
 
     register(ChartType.series, props.name, configure)
 
-    return { LineSeries }
+    return { LineSeries, series }
   },
 })
 </script>

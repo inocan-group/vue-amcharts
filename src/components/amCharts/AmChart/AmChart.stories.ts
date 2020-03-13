@@ -8,10 +8,10 @@ export const xyChart = () => ({
   <xy-chart data="http://localhost:6006/cpi.json">
     <date-axis name="dates" dimension="x" />
     <value-axis name="primary" dimension="y" />
-    <!-- <xy-scrollbar axis="x" series="dates" /> -->
+    <xy-scrollbar axis="x" series="dates" />
 
-    <line-series name="cpi" yProp="Index" xProp="Date"  />
-    <!-- <line-series yProp="Percent" xProp="Date"  /> -->
+    <line-series name="cpi" yProp="Index" xProp="Date" tooltipText="Inflation {Inflation}, CPI: {Index}" />
+    <!-- <line-series name="percent" yProp="Percent" xProp="Date"  /> -->
   </xy-chart>
   `,
 })
