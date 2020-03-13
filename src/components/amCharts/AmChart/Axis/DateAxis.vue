@@ -3,11 +3,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api'
+import { defineComponent, ref, Ref } from '@vue/composition-api'
 import { useAxis, useRegistry } from '../composables'
 import { IChartChildApi, AxisDimension, IChart } from '../ChartTypes'
 import { DateAxis } from '@amcharts/amcharts4/charts'
 import { ChartType } from '..'
+import { Configuration } from '../composables/useRegistry/registry-types'
 
 export default defineComponent({
   name: 'DateAxis',
@@ -23,20 +24,20 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const { register } = useRegistry<DateAxis>(props, context)
-    const instance = new DateAxis()
+    const { register } = useRegistry(props, context, DateAxis)
+    const axis: Ref<DateAxis | null> = ref(null)
 
-    const configure = async (chart: IChart) => {
-      const axis = props.dimension === 'x' ? chart.xAxes : chart.yAxes
-      console.log(`registering DateAxis on ${props.dimension}`, { chart, axis })
-      axis.push(instance)
+    const configure: Configuration<IChart> = async chart => {
+      axis.value = new DateAxis()
+      const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
+      dimension.push(axis.value)
     }
 
     props.dimension === 'x'
       ? register(ChartType.xAxis, props.name, configure)
       : register(ChartType.yAxis, props.name, configure)
 
-    return { DateAxis, axis: instance }
+    return { DateAxis, axis }
   },
 })
 </script>

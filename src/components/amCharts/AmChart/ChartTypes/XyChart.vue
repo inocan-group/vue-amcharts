@@ -43,13 +43,7 @@ export default defineComponent({
     const { registerAsParent } = useRegistry<XYChart>(props, context)
     const { chart, chartData, chartdiv, drawChart } = useChart<XYChart>('xy-chart', XYChart, props)
 
-    const {
-      registrants,
-      acceptChildRegistration,
-      acceptChildMessage,
-      depSequence,
-      readyForChildren,
-    } = registerAsParent([
+    const { registrants, acceptChildRegistration, acceptChildMessage, configureChildren } = registerAsParent([
       [1, null, 'xAxis'],
       [1, null, 'yAxis'],
       [1, null, 'series'],
@@ -57,18 +51,21 @@ export default defineComponent({
       [0, null, 'features'],
     ])
 
-    onMounted(() => {
+    onMounted(async () => {
       drawChart()
       const c = chart.value as XYChart
       c.height = 800
       c.contentHeight = 800
-      readyForChildren(c)
 
       if (typeof props.data === 'string') {
         c.dataSource.url = props.data
       } else {
         c.data = props.data as IDictionary[]
       }
+      console.log('data loaded', c.data)
+
+      await configureChildren(c)
+      console.log('children configured')
     })
 
     return {
@@ -78,7 +75,6 @@ export default defineComponent({
       registrants,
       acceptChildRegistration,
       acceptChildMessage,
-      depSequence,
     }
   },
 })

@@ -1,15 +1,19 @@
 import { IDictionary } from 'common-types'
 
-export type IChildCallbackConfiguration<P> = (data: P) => Promise<void>
+export interface Configuration<P> {
+  (data: P): Promise<void>
+}
 
-export interface IRegistrationStatus<T> extends IDictionary {
-  constructor?: new () => any
-  configure: IChildCallbackConfiguration<T>
+export interface IRegistrationStatus<T> extends IRegistrationConfig<T> {
   /** the child has completed setup */
   ready: boolean
 }
 
-export type IRegistrationConfig<T> = Omit<IRegistrationStatus<T>, 'ready' | 'started'>
+export interface IRegistrationConfig<T> extends IDictionary {
+  constructor?: new () => any
+  /** a callback function to let the child configure itself */
+  configure: Configuration<T>
+}
 
 export interface IChildCardinality {
   min: number
@@ -36,8 +40,10 @@ export interface IParentRegistry<P> {
   registrants: IDictionary<IDictionary<IRegistrationStatus<P>>>
   depSequence: string[]
   cardinality: IDictionary<IChildCardinality>
-  readyForChildren(data: P): void
-  acceptChildRegistration(type: string, name: string, config: IRegistrationStatus<P>): Promise<void>
+  configureChildren(data: P): void
+  /** accept registration from child components */
+  acceptChildRegistration(type: string, name: string, config: IRegistrationConfig<P>): void
+  /** accept messages from child components */
   acceptChildMessage(message: string, type: string, name: string, options?: IDictionary): void
 }
 

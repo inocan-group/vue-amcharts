@@ -37,18 +37,19 @@ export default defineComponent({
 
   setup(props, context) {
     const { register } = useRegistry(props, context, LineSeries)
-    const instance = new LineSeries()
+    const series: Ref<LineSeries | null> = ref(null)
 
     const configure = async (chart: IChart) => {
-      console.log('series', chart.series.dataFields, props.xProp, props.yProp)
-      chart.series.push(new LineSeries())
-      chart.series.dataFields.dateX = props.xProp
-      chart.series.dataFields.valueY = props.yProp
+      series.value = chart.series.push(new LineSeries())
+      if (series.value) {
+        series.value.dataFields.valueY = props.yProp
+        series.value.dataFields.dateX = props.xProp
+      }
     }
 
     register(ChartType.series, props.name, configure)
 
-    return { LineSeries, series: instance }
+    return { LineSeries }
   },
 })
 </script>
