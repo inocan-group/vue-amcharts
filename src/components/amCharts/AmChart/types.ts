@@ -3,5 +3,6 @@ export enum ChartType {
   yAxis = 'yAxis',
   series = 'series',
   legend = 'legend',
+  cursor = 'cursor',
   features = 'features',
 }

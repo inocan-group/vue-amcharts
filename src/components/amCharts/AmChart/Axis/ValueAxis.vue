@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from '@vue/composition-api'
+import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { IValueAxisProps } from './index'
 import { useAxis, useRegistry } from '../composables'
 import { IDictionary } from 'common-types'
@@ -19,16 +19,15 @@ export default defineComponent({
       default: 'values',
     },
     dimension: {
-      type: String,
-      default: 'y',
+      validator: v => ['y', 'x', 'z'].includes(v),
     },
     options: {
       type: Object,
-      default: {},
+      default: () => {},
     },
   },
 
-  setup(props, context) {
+  setup(props: IDictionary, context: SetupContext) {
     const { register } = useRegistry(props, context, ValueAxis)
     const axis: Ref<ValueAxis | null> = ref(null)
 

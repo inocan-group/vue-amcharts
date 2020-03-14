@@ -1,15 +1,16 @@
-import { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar } from './index'
+import { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, ChartCursor, ChartLegend } from './index'
 
 export default { title: 'amCharts/Composable' }
 
-export const xyChart = () => ({
-  components: { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar },
+export const lineChart = () => ({
+  components: { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, ChartCursor, ChartLegend },
   template: `
   <xy-chart data="http://localhost:6006/cpi.json">
     <date-axis name="dates" dimension="x" />
     <value-axis name="primary" dimension="y" />
     <xy-scrollbar axis="x" series="dates" />
-
+    <chart-cursor />
+    <chart-legend />
     <line-series name="cpi" yProp="Index" xProp="Date" tooltipText="Inflation {Inflation}, CPI: {Index}" />
     <!-- <line-series name="percent" yProp="Percent" xProp="Date"  /> -->
   </xy-chart>

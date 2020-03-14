@@ -3,18 +3,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-import { Cursor } from '@amcharts/amcharts4/charts'
-import { useRegistry } from '../composables'
+import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
+import { useRegistry } from '@/components/amCharts/AmChart/composables'
+import { ChartType, IChart } from '@/components/amCharts/AmChart'
+import { Cursor } from '@amcharts/amcharts4/charts'
 
 export default defineComponent({
   name: 'ChartCursor',
 
-  setup(props: IDictionary, context) {
-    const { register, getChild } = useRegistry(props, context, Cursor)
+  setup(props: IDictionary, context: SetupContext) {
+    const { register } = useRegistry(props, context, Cursor)
+    const cursor: Ref<Cursor> = ref(new Cursor())
 
-    return {}
+    const configure = async (chart: IChart) => {
+      chart.cursor = cursor.value
+    }
+
+    register(ChartType.cursor, 'cursor', configure)
+
+    return { ChartCursor: Cursor, cursor }
   },
 })
 </script>

@@ -32,7 +32,21 @@ export function childApi<C, P>(props: IDictionary, context: SetupContext, constr
       parent.acceptChildMessage(EventMessages.unregister, childType, childName)
     },
 
-    getChild: (type: types, name: string) => {
+    /**
+     * **getComponent**
+     *
+     * Allows a **child** component to ask the **parent** for access to other components. You must state a
+     * component _type_ but you can then optionally add the component _name_ if more than one may exist
+     * and you know the name.
+     */
+    getComponent: (type: types, name?: string) => {
+      const components = parent.registrants[type]
+      if (Object.keys(components).length === 0) {
+        throw new Error(`Attempt to get a "${type}" component failed as there are none registered with this chart!`)
+      }
+      if (!name) {
+        name = Object.keys(parent.registrants[type])[0]
+      }
       return parent.registrants[type][name]
     },
   }

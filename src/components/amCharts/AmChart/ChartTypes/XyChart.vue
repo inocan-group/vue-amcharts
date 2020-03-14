@@ -41,7 +41,7 @@ export default defineComponent({
 
   setup(props, context): IDictionary {
     const { registerAsParent } = useRegistry<XYChart>(props, context)
-    const { chart, chartData, chartdiv, drawChart } = useChart<XYChart>('xy-chart', XYChart, props)
+    const { chart, chartData, chartdiv, drawChart, legend } = useChart<XYChart>('xy-chart', XYChart, props)
 
     const { registrants, acceptChildRegistration, acceptChildMessage, configureChildren } = registerAsParent([
       [1, null, 'xAxis'],
@@ -75,6 +75,7 @@ export default defineComponent({
 
     return {
       chart,
+      legend,
       chartData,
       chartdiv,
       registrants,

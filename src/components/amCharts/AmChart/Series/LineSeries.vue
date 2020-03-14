@@ -40,14 +40,20 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const { register } = useRegistry(props, context, LineSeries)
+    const { register, getComponent } = useRegistry(props, context, LineSeries)
     const series: Ref<LineSeries> = ref(new LineSeries())
 
     const configure = async (chart: IChart) => {
       series.value = chart.series.push(series.value)
+      series.value.name = props.name
       series.value.dataFields.valueY = props.yProp
       series.value.dataFields.dateX = props.xProp
       series.value.tooltipText = props.tooltipText
+      if (props.tooltipText && !getComponent('cursor')) {
+        console.warn(
+          `You have some tooltip text for the ${props.name} LineSeries component but there is no Cursor on this chart so it will not be displayed!`,
+        )
+      }
     }
 
     register(ChartType.series, props.name, configure)
