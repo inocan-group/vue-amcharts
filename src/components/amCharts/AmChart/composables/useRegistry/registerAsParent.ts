@@ -5,15 +5,11 @@ import {
   EventMessages,
   IChildCardinality,
 } from './registry-types'
-import { CombinedVueInstance } from 'vue/types/vue'
 import { IDictionary } from 'common-types'
-import { EventEmitter } from 'events'
 import { dictionaryToArray } from './dictionaryToArray'
 import { reactive } from '@vue/composition-api'
 
-export const registerAsParent = function<P>(parent: CombinedVueInstance<any, any, any, any, any> & IParentRegistry<P>) {
-  const ee = new EventEmitter()
-
+export const registerAsParent = function<P>() {
   return (childrenAndCardinality: IChildWithCardinality[]) => {
     const depSequence = childrenAndCardinality.map(i => i[2])
     const registrants: IDictionary<IDictionary<IRegistrationStatus<P>>> = reactive(
@@ -60,15 +56,14 @@ export const registerAsParent = function<P>(parent: CombinedVueInstance<any, any
       },
 
       /** accept a message from a child component */
-      acceptChildMessage(
-        message: keyof typeof EventMessages,
-        childType: string,
-        childName: string,
-        options?: IDictionary,
-      ) {
+      acceptChildMessage(message: keyof typeof EventMessages, childType: string, childName: string, ...args: any[]) {
         switch (message) {
           case 'unregister':
             delete registrants[childType][childName]
+            break
+          case 'addToRegistration':
+            const [property, value] = args
+            registrants[childType][childName][property] = value
             break
           default:
             console.warn(

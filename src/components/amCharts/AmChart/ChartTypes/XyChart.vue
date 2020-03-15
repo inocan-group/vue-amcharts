@@ -63,10 +63,9 @@ export default defineComponent({
       } else {
         c.data = props.data as IDictionary[]
       }
-      console.log('data loaded', c.data)
 
       await configureChildren(c)
-      console.log('children configured')
+      console.log(`data loaded [ uid: ${c.dataSource.uid} ]`, c.data)
     })
 
     onBeforeUnmount(() => {

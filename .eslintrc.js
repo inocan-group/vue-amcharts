@@ -16,6 +16,7 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-case-declarations': [0, 'never'],
     '@typescript-eslint/no-inferrable-types': [0, 'never'],
     '@typescript-eslint/interface-name-prefix': [0, 'never'],
     '@typescript-eslint/no-empty-function': [0, 'never'],

@@ -16,20 +16,33 @@ export default defineComponent({
       validator: v => ['left', 'right', 'top', 'bottom', 'absolute'].includes(v),
       default: 'bottom',
     },
+    /**
+     * Gives positioning info for alternative axis; depends on left/right versus top/bottom
+     * position.
+     */
+    positionAlt: {
+      validator: v => ['start', 'center', 'end'].includes(v),
+      default: 'center',
+    },
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register } = useRegistry(props, context, Legend)
+    const { register } = useRegistry(props, context, ChartType.legend, 'legend')
     const legend: Ref<Legend> = ref(new Legend())
 
     const configure = async (chart: IChart) => {
       legend.value.position = props.position
+      if (['left', 'right'].includes(props.position)) {
+        legend.value.valign = props.positionAlt
+      } else if (['top', 'bottom'].includes(props.position)) {
+        legend.value.contentAlign = props.positionAlt
+      }
       chart.legend = legend.value
     }
 
-    register(ChartType.legend, 'legend', configure, { instance: legend.value })
+    register(configure, { instance: legend.value })
 
-    return { Legend, legend }
+    return { Legend, instance: legend }
   },
 })
 </script>

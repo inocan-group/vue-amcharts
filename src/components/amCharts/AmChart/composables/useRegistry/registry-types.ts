@@ -9,10 +9,16 @@ export interface IRegistrationStatus<T> extends IRegistrationConfig<T> {
   ready: boolean
 }
 
-export interface IRegistrationConfig<T> extends IDictionary {
-  constructor?: new () => any
+export interface IRegistrationConfig<T = any> extends IDictionary {
+  // TODO: see if we can't type this better
+  instance?: IDictionary
   /** a callback function to let the child configure itself */
   configure: Configuration<T>
+
+  /** the name of the property which should be set for given type of axis */
+  dataField?: string
+  /** the name of the property which this axis is on (aka, 'xAxis', 'yAxis') */
+  axis?: string
 }
 
 export interface IChildCardinality {
@@ -34,6 +40,10 @@ export enum EventMessages {
   register = 'register',
   /** a _child_ component has unregistered */
   unregister = 'unregister',
+  /**
+   * Allows components to add additional information to their registration with the parent
+   */
+  addToRegistration = 'addToRegistration',
 }
 
 export interface IParentRegistry<P> {
@@ -44,7 +54,7 @@ export interface IParentRegistry<P> {
   /** accept registration from child components */
   acceptChildRegistration(type: string, name: string, config: IRegistrationConfig<P>): void
   /** accept messages from child components */
-  acceptChildMessage(message: string, type: string, name: string, options?: IDictionary): void
+  acceptChildMessage(message: string, type: string, name: string, ...args: any[]): void
 }
 
 /** provide the min, max of cardinality and then the name of the child */

@@ -20,6 +20,14 @@ export default defineComponent({
       type: String,
       default: 'x',
     },
+    /**
+     * in cases where there are more than one axis for a given dimension, you must name which one you want,
+     * if you do NOT then it will use the first one
+     */
+    namedAxis: {
+      type: String,
+      default: undefined,
+    },
     tooltipText: {
       type: String,
       default: '',
@@ -34,18 +42,20 @@ export default defineComponent({
       if (props.tooltipText) {
         scrollbar.value.tooltipText = props.tooltipText
       }
-      if (props.axis === 'x') {
-        const axis = getComponent('xAxis', 'dates').instance
+      if (props.axis === 'x' || props.axis === undefined) {
+        const axis = getComponent('xAxis', props.namedAxis)
+        console.log({ axis })
+
         scrollbar.value.series.push(axis)
         chart.scrollbarX = scrollbar.value
       } else {
-        const axis = getComponent('yAxis', 'dates').instance
+        const axis = getComponent('yAxis', props.namedAxis)
         scrollbar.value.series.push(axis)
         chart.scrollbarY = scrollbar.value
       }
     }
 
-    register(ChartType.features, 'scrollbar', configure)
+    register(ChartType.features, 'scrollbar', configure, { instance: scrollbar })
 
     return { XYChartScrollbar }
   },

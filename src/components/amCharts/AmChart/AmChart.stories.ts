@@ -6,24 +6,43 @@ export const lineChart = () => ({
   components: { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, ChartCursor, ChartLegend },
   template: `
   <xy-chart data="http://localhost:6006/cpi.json">
-    <date-axis name="dates" dimension="x" />
-    <value-axis name="primary" dimension="y" />
+    <date-axis 
+      dimension="x" 
+    />
+    <value-axis 
+      id="cpi" 
+      name="Consumer Price Index" 
+      dimension="y" 
+    />
+    <value-axis 
+      id="percent" 
+      name="Percentage Change" 
+      dimension="y"
+      min=-1
+      max=1
+    />
+
     <xy-scrollbar axis="x" series="dates" />
+
+    <line-series 
+      id="cpi"
+      name="CPI"
+      yProp="Index" 
+      xProp="Date" 
+      tooltipText="Inflation {Inflation}, CPI: {Index}"
+      strokeWidth=3 
+    />
+    <line-series 
+      id="percent"
+      name="Percent Change" 
+      yProp="Percent" 
+      xProp="Date" 
+      yAxis="percent" 
+      tooltipText="Inflation change [bold]{Inflation}[/]"
+    />
+
     <chart-cursor />
     <chart-legend />
-    <line-series name="cpi" yProp="Index" xProp="Date" tooltipText="Inflation {Inflation}, CPI: {Index}" />
-    <!-- <line-series name="percent" yProp="Percent" xProp="Date"  /> -->
   </xy-chart>
   `,
 })
-
-// foo: `
-// <xy-chart :data="http://localhost:6006/cpi.json" slot-props="{ xAxis, yAxis, series }">
-//   <date-axis dimension="x"  />
-//   <value-axis dimension="y" name="primary" />
-//   <value-axis dimension="y" name="secondary" />
-
-//   <xy-scrollbar :series="series.cpi" />
-//   <line-series name="cpi" xProp="Index" yProp="Date" :yAxis="YAxis.primary" />
-//   <line-series xProp="Percent" yProp="Date" :yAxis="YAxis.secondary" />`
-// </xy-chart>`
