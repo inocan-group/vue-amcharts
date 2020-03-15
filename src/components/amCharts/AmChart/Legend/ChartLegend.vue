@@ -27,7 +27,7 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register } = useRegistry(props, context, ChartType.legend, 'legend')
+    const { register } = useRegistry(props, context)
     const legend: Ref<Legend> = ref(new Legend())
 
     const configure = async (chart: IChart) => {
@@ -40,7 +40,7 @@ export default defineComponent({
       chart.legend = legend.value
     }
 
-    register(configure, { instance: legend.value })
+    register(ChartType.legend, 'legend', configure, { instance: legend.value })
 
     return { Legend, instance: legend }
   },

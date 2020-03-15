@@ -22,7 +22,7 @@ export function useSeries(props: IDictionary, context: SetupContext) {
     const x = getRegistration('xAxis', props.xAxis)
 
     // assign the axis to the series
-    const xAxis: Axis = getComponent<Axis>('xAxis', props.xAxis)
+    const xAxis: Axis = getComponent<Axis>('xAxis', props.xAxis)    
     series.value.xAxis = xAxis
     const yAxis: Axis = getComponent<Axis>('yAxis', props.yAxis)
     series.value.yAxis = yAxis
@@ -47,7 +47,7 @@ export function useSeries(props: IDictionary, context: SetupContext) {
         series.value.dataFields.categoryY = props.yProp
         break
       default:
-        console.warn(`The dataField type of "${y.dataField}" for the Y axis is unknown!`)
+        throw new AmchartError(`The dataField type of "${y.dataField}" for the Y-axis is unknown!`, 'unknown-data-field')
     }
 
     switch (x.dataField) {
@@ -64,7 +64,10 @@ export function useSeries(props: IDictionary, context: SetupContext) {
         console.warn(`The dataField type of "${x.dataField}" for the Y axis is unknown!`)
     }
 
-    console.log(props.id, JSON.stringify(series.value.dataFields))
+    (series.value as LineSeries).events.once("dataitemsvalidated", (e)=> {
+      console.log(`Data items validated for series ${props.id}:`, {data: e.target.data, dataSetId: e.target.currentDataSetId, isInvalid: e.target.dataInvalid, parent: e.target.parent?.config, theSame: e.target === series.value})
+      
+    })
 
     return {
       x: { axisUid: xAxis.uid, dataSource: xAxis.dataSource.uid, dataField: x.dataField, opposite: xAxis.renderer.opposite, dataProp: props.xProp, axisId: props.yAxis || firstComponentName('xAxis') },

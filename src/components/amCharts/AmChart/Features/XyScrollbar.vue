@@ -35,7 +35,7 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const { register, getComponent } = useRegistry(props, context, XYChartScrollbar)
+    const { register, getComponent } = useRegistry(props, context)
     const scrollbar: Ref<XYChartScrollbar> = ref(new XYChartScrollbar())
 
     const configure = async (chart: IChart) => {
