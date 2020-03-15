@@ -4,13 +4,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
-import { IValueAxisProps } from './index'
-import { useAxis, useRegistry } from '../composables'
+import { useRegistry } from '../composables'
 import { IDictionary } from 'common-types'
-import { AxisDimension, IChart } from '../ChartTypes'
-import { ValueAxis, Chart } from '@amcharts/amcharts4/charts'
+import { IChart } from '../ChartTypes'
+import { ValueAxis } from '@amcharts/amcharts4/charts'
 import { ChartType } from '../types'
-import { Label } from '@amcharts/amcharts4/.internal/core/elements/Label'
 import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
 
 export default defineComponent({
@@ -35,6 +33,18 @@ export default defineComponent({
       type: [String, Number],
       default: undefined,
     },
+    logarithmic: {
+      type: [String, Boolean],
+      default: () => Boolean(false),
+    },
+    numberFormat: {
+      type: String,
+      default: undefined,
+    },
+    secondaryAxes: {
+      type: [Function, Object],
+      default: undefined,
+    },
 
     options: {
       type: Object,
@@ -52,6 +62,8 @@ export default defineComponent({
 
     const configure = async (chart: IChart) => {
       axis.value.title.text = props.name || props.name === undefined ? props.id : ''
+      axis.value.logarithmic = Boolean(props.logarithmic)
+
       if (axis.value.tooltip) {
         axis.value.tooltip.disabled
       }
@@ -61,9 +73,16 @@ export default defineComponent({
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       dimension.push(axis.value)
 
-      if (notFirstOnAxis) {
+      // When secondary axis are added; we have certain default behavior
+      // (assuming there isn't an explicit definition)
+      if (notFirstOnAxis && !props.secondaryAxes) {
         axis.value.renderer.opposite = true
+        axis.value.renderer.grid.template.strokeOpacity = 0
+      } else if (props.secondaryAxes !== undefined) {
+        // TODO: implement this
       }
+      if (props.numberFormat !== undefined)
+        axis.value.renderer.axis.numberFormatter.outputFormat = String(props.numberFormat)
 
       addToRegistration('id', axis.value.uid)
       addToRegistration('dataSource', axis.value.dataSource.uid)

@@ -59,40 +59,28 @@ export default defineComponent({
 
     const configure = async (chart: IChart) => {
       axisConfig.value = setupAxes(series)
-      // const axisY: Axis = getComponent('yAxis', props.yAxis)
-      // const dataFieldY: string = getRegistration('yAxis', props.yAxis).dataField
-
-      // series.value.dataFields.dateX = props.xProp
-
-      // if (props.yAxis) series.value.yAxis = axisY
-
-      // yAxisUid.value = axisY.uid
-      // addToRegistration('yAxis', axisY.uid)
-      // console.log(`The ValueAxis "${props.id}" has yAxis of ${axisY.uid}, uses prop ${props.yProp}`)
-      // // get named xAxis or first defined xAxis
-      // const axisX = getComponent('xAxis', props.xAxis)
-
-      // // series.value.xAxis = (axis as unknown) as Axis<any>
-      // // xAxis.value = axis.uid
-      // addToRegistration('xAxis', axisX.uid)
-      // console.log(`The ValueAxis "${props.id}" has xAxis of ${axisX.uid}, uses prop ${props.xProp}`)
 
       series.value = chart.series.push(series.value)
       series.value.name = props.name
       series.value.strokeWidth = Number(props.strokeWidth)
-      // series.value.dataFields.valueY = props.yProp
-      // series.value.dataFields.dateX = props.xProp
+
       series.value.tooltipText = props.tooltipText
       if (props.tooltipText && !getRegistration('cursor')) {
         console.warn(
           `You have some tooltip text for the ${props.name} LineSeries component but there is no Cursor on this chart so it will not be displayed!`,
         )
       }
+      console.log({
+        dataFields: series.value.dataFields,
+        dataSets: series.value.dataSets,
+        responsive: series.value.responsive,
+        mainDataSet: series.value.mainDataSet,
+      })
     }
 
     register(ChartType.series, props.id, configure, { instance: series })
 
-    return { LineSeries, series, axisConfig }
+    return { instance: series, axisConfig }
   },
 })
 </script>

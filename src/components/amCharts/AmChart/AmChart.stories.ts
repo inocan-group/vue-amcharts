@@ -6,9 +6,7 @@ export const lineChart = () => ({
   components: { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, ChartCursor, ChartLegend },
   template: `
   <xy-chart data="http://localhost:6006/cpi.json">
-    <date-axis 
-      dimension="x" 
-    />
+    <date-axis dimension="x" />
     <value-axis 
       id="cpi" 
       name="Consumer Price Index" 
@@ -18,28 +16,28 @@ export const lineChart = () => ({
       id="percent" 
       name="Percentage Change" 
       dimension="y"
-      min=-1
-      max=1
+      numberFormat="%"
     />
 
-    <xy-scrollbar axis="x" series="dates" />
+    <xy-scrollbar axis="x" /> 
 
     <line-series 
       id="cpi"
       name="CPI"
       yProp="Index" 
       xProp="Date" 
-      tooltipText="Inflation {Inflation}, CPI: {Index}"
+      tooltipText="CPI: [bold]{Index}[/]"
       strokeWidth=3 
     />
+    
     <line-series 
       id="percent"
       name="Percent Change" 
-      yProp="Percent" 
+      yProp="Inflation" 
       xProp="Date" 
-      yAxis="percent" 
+      yAxis="percent"
       tooltipText="Inflation change [bold]{Inflation}[/]"
-    />
+    /> 
 
     <chart-cursor />
     <chart-legend />

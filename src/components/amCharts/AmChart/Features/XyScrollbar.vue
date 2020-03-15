@@ -3,11 +3,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from '@vue/composition-api'
-import { IChartChildApi, IChart } from '..'
-import { XYChartScrollbar, XYChart } from '@amcharts/amcharts4/charts'
+import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
+import { IChart } from '..'
+import { XYChartScrollbar, LineSeries, ColumnSeries } from '@amcharts/amcharts4/charts'
 import { useRegistry } from '../composables'
 import { ChartType } from '../types'
+import { IDictionary } from 'common-types'
 
 export default defineComponent({
   name: 'XyScrollbar',
@@ -17,16 +18,8 @@ export default defineComponent({
       default: '',
     },
     axis: {
-      type: String,
+      validator: v => ['y', 'x'].includes(v),
       default: 'x',
-    },
-    /**
-     * in cases where there are more than one axis for a given dimension, you must name which one you want,
-     * if you do NOT then it will use the first one
-     */
-    namedAxis: {
-      type: String,
-      default: undefined,
     },
     tooltipText: {
       type: String,
@@ -34,7 +27,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, context) {
+  setup(props: IDictionary, context: SetupContext) {
     const { register, getComponent } = useRegistry(props, context)
     const scrollbar: Ref<XYChartScrollbar> = ref(new XYChartScrollbar())
 
@@ -43,14 +36,12 @@ export default defineComponent({
         scrollbar.value.tooltipText = props.tooltipText
       }
       if (props.axis === 'x' || props.axis === undefined) {
-        const axis = getComponent('xAxis', props.namedAxis)
-        console.log({ axis })
-
-        scrollbar.value.series.push(axis)
+        const series = getComponent<LineSeries | ColumnSeries>('series', props.series)
+        scrollbar.value.series.push(series)
         chart.scrollbarX = scrollbar.value
       } else {
-        const axis = getComponent('yAxis', props.namedAxis)
-        scrollbar.value.series.push(axis)
+        const series = getComponent<LineSeries | ColumnSeries>('series', props.series)
+        scrollbar.value.series.push(series)
         chart.scrollbarY = scrollbar.value
       }
     }
