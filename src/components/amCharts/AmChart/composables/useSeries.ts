@@ -1,9 +1,41 @@
-
-import { Ref, SetupContext } from '@vue/composition-api'
-import type { Axis, LineSeries, ColumnSeries } from '@amcharts/amcharts4/charts'
+import { Ref, SetupContext, watch, toRefs } from '@vue/composition-api'
+import { Axis, LineSeries, ColumnSeries } from '@amcharts/amcharts4/charts'
 import { IDictionary } from 'common-types'
 import { useRegistry } from './useRegistry/useRegistry'
 import { AmchartError } from '../errors'
+
+export const seriesProps = {
+  id: {
+    type: String,
+    default: 'default',
+  },
+  name: {
+    type: String,
+    default: '',
+  },
+  xProp: {
+    type: String,
+    default: '',
+  },
+  xAxis: {
+    type: String,
+    default: undefined,
+  },
+  yProp: {
+    type: String,
+    default: undefined,
+    required: true,
+  },
+  yAxis: {
+    type: String,
+    default: undefined,
+  },
+  /** the text of the tooltip, which can include { variable } names too */
+  tooltipText: {
+    type: String,
+    default: '',
+  },
+}
 
 export function useSeries(props: IDictionary, context: SetupContext) {
   const { getRegistration, getComponent, firstComponentName } = useRegistry(props, context)
@@ -22,17 +54,27 @@ export function useSeries(props: IDictionary, context: SetupContext) {
     const x = getRegistration('xAxis', props.xAxis)
 
     // assign the axis to the series
-    const xAxis: Axis = getComponent<Axis>('xAxis', props.xAxis)    
+    const xAxis: Axis = getComponent<Axis>('xAxis', props.xAxis)
     series.value.xAxis = xAxis
     const yAxis: Axis = getComponent<Axis>('yAxis', props.yAxis)
     series.value.yAxis = yAxis
 
     // validate that the Axis is providing a dataField
-    if(!x.dataField) {
-      throw new AmchartError(`While trying to associate the ${props.id} series with the x-Axis; noticed that the Axis does not expose the "dataField" field in its registration! Properties exposed: ${Object.keys(x)}`,`invalid-registry`)
+    if (!x.dataField) {
+      throw new AmchartError(
+        `While trying to associate the ${
+          props.id
+        } series with the x-Axis; noticed that the Axis does not expose the "dataField" field in its registration! Properties exposed: ${Object.keys(
+          x,
+        )}`,
+        `invalid-registry`,
+      )
     }
-    if(!y.dataField) {
-      throw new AmchartError(`While trying to associate the ${props.id} series with the y-Axis; noticed that the Axis does not expose the "dataField" field in its registration! `,`invalid-registry`)
+    if (!y.dataField) {
+      throw new AmchartError(
+        `While trying to associate the ${props.id} series with the y-Axis; noticed that the Axis does not expose the "dataField" field in its registration! `,
+        `invalid-registry`,
+      )
     }
 
     // associate series props to appropriate dataField
@@ -47,7 +89,10 @@ export function useSeries(props: IDictionary, context: SetupContext) {
         series.value.dataFields.categoryY = props.yProp
         break
       default:
-        throw new AmchartError(`The dataField type of "${y.dataField}" for the Y-axis is unknown!`, 'unknown-data-field')
+        throw new AmchartError(
+          `The dataField type of "${y.dataField}" for the Y-axis is unknown!`,
+          'unknown-data-field',
+        )
     }
 
     switch (x.dataField) {
@@ -64,17 +109,41 @@ export function useSeries(props: IDictionary, context: SetupContext) {
         console.warn(`The dataField type of "${x.dataField}" for the Y axis is unknown!`)
     }
 
-    (series.value as LineSeries).events.once("dataitemsvalidated", (e)=> {
-      console.log(`Data items validated for series ${props.id}:`, {data: e.target.data, dataSetId: e.target.currentDataSetId, isInvalid: e.target.dataInvalid, parent: e.target.parent?.config, theSame: e.target === series.value})
-      
+    ;(series.value as LineSeries).events.once('dataitemsvalidated', e => {
+      console.log(`Data items validated for series ${props.id}:`, {
+        data: e.target.data,
+        dataSetId: e.target.currentDataSetId,
+        isInvalid: e.target.dataInvalid,
+        parent: e.target.parent?.config,
+        theSame: e.target === series.value,
+      })
     })
 
     return {
-      x: { axisUid: xAxis.uid, dataSource: xAxis.dataSource.uid, dataField: x.dataField, opposite: xAxis.renderer.opposite, dataProp: props.xProp, axisId: props.yAxis || firstComponentName('xAxis') },
-      y: { axisUid: yAxis.uid, dataSource: yAxis.dataSource.uid, dataField: y.dataField, opposite: yAxis.renderer.opposite, dataProp: props.yProp, axisId: props.yAxis || firstComponentName('yAxis') },
+      x: {
+        axisUid: xAxis.uid,
+        dataSource: xAxis.dataSource.uid,
+        dataField: x.dataField,
+        opposite: xAxis.renderer.opposite,
+        dataProp: props.xProp,
+        axisId: props.yAxis || firstComponentName('xAxis'),
+      },
+      y: {
+        axisUid: yAxis.uid,
+        dataSource: yAxis.dataSource.uid,
+        dataField: y.dataField,
+        opposite: yAxis.renderer.opposite,
+        dataProp: props.yProp,
+        axisId: props.yAxis || firstComponentName('yAxis'),
+      },
     }
-
   }
 
-  return { setupAxes }
+  const setupEvents = (series: Ref<LineSeries>) => {
+    // series.value.events.onAll((evt: any) => {
+    //   console.log(`Something happened with a series:`, evt)
+    // })
+  }
+
+  return { setupAxes, setupEvents }
 }

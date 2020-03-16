@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { useAxis, useRegistry } from '../composables'
-import { IChartChildApi, AxisDimension, IChart } from '../ChartTypes'
+import { IChart } from '../ChartTypes'
 import { DateAxis } from '@amcharts/amcharts4/charts'
 import { ChartType } from '..'
 import { Configuration } from '../composables/useRegistry/registry-types'
@@ -21,21 +21,26 @@ export default defineComponent({
     },
     name: {
       type: String,
-      default: '',
+      default: undefined,
     },
     dimension: {
       validator: v => ['y', 'x', 'z'].includes(v),
+    },
+    dateFormat: {
+      type: String,
+      default: undefined,
     },
   },
 
   setup(props: IDictionary, context: SetupContext) {
     // TODO: There is opportunity to make Axis leverage reusable code
-    const { register, howMany, addToRegistration } = useRegistry(props, context, DateAxis)
+    const { register, howMany, addToRegistration } = useRegistry(props, context)
     const axis: Ref<DateAxis> = ref(new DateAxis())
     const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
     const notFirstOnAxis = howMany(dim) > 0
 
     const configure: Configuration<IChart> = async chart => {
+      axis.value.tooltipDateFormat = 'MMM YYYY'
       if (notFirstOnAxis) {
         axis.value.renderer.opposite = true
       }

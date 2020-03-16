@@ -9,17 +9,9 @@
 import * as am4core from '@amcharts/amcharts4/core'
 import { XYChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
-import { defineComponent, ref, Ref, reactive, onMounted, computed, isRef, onBeforeUnmount } from '@vue/composition-api'
+import { defineComponent, onMounted, onBeforeUnmount } from '@vue/composition-api'
 import { useChart, useRegistry } from '../composables'
 import { IDictionary } from 'common-types'
-import {
-  IAxisDefinition,
-  ISeriesDefinition,
-  ILegendDefinition,
-  IChartChildApi,
-  IXyChartSlotProps,
-  XyChart,
-} from '../ChartTypes'
 
 am4core.useTheme(am4themesAnimated)
 
@@ -37,11 +29,15 @@ export default defineComponent({
       type: String,
       default: 'animated',
     },
+    responsive: {
+      type: Boolean,
+      default: Boolean(false),
+    },
   },
 
   setup(props, context): IDictionary {
     const { registerAsParent } = useRegistry<XYChart>(props, context)
-    const { chart, chartData, chartdiv, drawChart, legend } = useChart<XYChart>('xy-chart', XYChart, props)
+    const { chart, chartData, chartdiv, drawChart } = useChart<XYChart>('xy-chart', XYChart, props)
 
     const { registrants, acceptChildRegistration, acceptChildMessage, configureChildren } = registerAsParent([
       [1, null, 'xAxis'],
@@ -64,8 +60,9 @@ export default defineComponent({
         c.data = props.data as IDictionary[]
       }
 
+      c.responsive.enabled = props.responsive
+
       await configureChildren(c)
-      console.log(`data loaded [ uid: ${c.dataSource.uid} ]`, c.data)
     })
 
     onBeforeUnmount(() => {
@@ -74,7 +71,6 @@ export default defineComponent({
 
     return {
       chart,
-      legend,
       chartData,
       chartdiv,
       registrants,

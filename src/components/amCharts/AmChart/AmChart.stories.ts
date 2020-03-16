@@ -1,9 +1,25 @@
-import { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, ChartCursor, ChartLegend } from './index'
+import { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, ChartCursor, ChartLegend, ColumnSeries } from './index'
+import { text, select } from '@storybook/addon-knobs'
 
 export default { title: 'amCharts/Composable' }
 
 export const lineChart = () => ({
-  components: { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, ChartCursor, ChartLegend },
+  components: { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, ChartCursor, ChartLegend, ColumnSeries },
+  props: {
+    series1Name: { default: text('Series 1 Name', 'CPI') },
+    series2Name: { default: text('Series 2 Name', 'Percent Change') },
+    maxTooltipDistance: {
+      default: select(
+        'When to show both series tooltips',
+        {
+          'When Close': 20,
+          'Pretty Close': 100,
+          Always: undefined,
+        },
+        20,
+      ),
+    },
+  },
   template: `
   <xy-chart data="http://localhost:6006/cpi.json">
     <date-axis dimension="x" />
@@ -23,7 +39,7 @@ export const lineChart = () => ({
 
     <line-series 
       id="cpi"
-      name="CPI"
+      :name="series1Name"
       yProp="Index" 
       xProp="Date" 
       tooltipText="CPI: [bold]{Index}[/]"
@@ -32,14 +48,14 @@ export const lineChart = () => ({
     
     <line-series 
       id="percent"
-      name="Percent Change" 
+      :name="series2Name" 
       yProp="Inflation" 
       xProp="Date" 
       yAxis="percent"
       tooltipText="Inflation change [bold]{Inflation}[/]"
     /> 
 
-    <chart-cursor />
+    <chart-cursor fullWidthX="true" :maxTooltipDistance="maxTooltipDistance" />
     <chart-legend />
   </xy-chart>
   `,

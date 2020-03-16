@@ -1,4 +1,5 @@
 export * from './useChart'
 export * from './useAxis'
 export * from './useSeries'
+export * from './useProps'
 export * from './useRegistry/useRegistry'

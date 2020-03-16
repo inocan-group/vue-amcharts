@@ -61,7 +61,7 @@ export default defineComponent({
     const instanceId: Ref<string> = ref('')
 
     const configure = async (chart: IChart) => {
-      axis.value.title.text = props.name || props.name === undefined ? props.id : ''
+      axis.value.title.text = props.name === '' ? '' : props.name || props.id
       axis.value.logarithmic = Boolean(props.logarithmic)
 
       if (axis.value.tooltip) {
