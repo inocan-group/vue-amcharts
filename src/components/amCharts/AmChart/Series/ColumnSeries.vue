@@ -16,7 +16,7 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, getRegistration } = useRegistry(props, context)
+    const { register } = useRegistry(props, context)
     const { setupAxes } = useSeries(props, context)
     const series: Ref<ColumnSeries> = ref(new ColumnSeries())
     const axisConfig: Ref<IDictionary> = ref({})
