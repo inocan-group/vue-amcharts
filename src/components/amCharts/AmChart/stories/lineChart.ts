@@ -63,7 +63,7 @@ export const lineChart = () => ({
       tooltipText="Inflation change [bold]{Inflation}[/]"
     /> 
 
-    <chart-cursor fullWidthX="true" :maxTooltipDistance="maxTooltipDistance" />
+    <chart-cursor :maxTooltipDistance="maxTooltipDistance" />
     <chart-legend />
   </xy-chart>
   `,

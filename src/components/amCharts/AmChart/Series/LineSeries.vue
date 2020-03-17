@@ -37,16 +37,18 @@ export default defineComponent({
     const axisConfig: Ref<IDictionary> = ref({})
 
     const s = series.value
-    const propertyConfig = (current: unknown) => ({
+    const propertyConfig = {
       name: s,
       strokeWidth: () => {
-        s.strokeWidth = Number(current)
+        s.strokeWidth = Number(props.strokeWidth)
         s.invalidate()
       },
       tooltipText: s,
       color: () => {
-        s.stroke = color(props.color)
-        s.invalidate()
+        if (props.color !== undefined) {
+          s.stroke = color(props.color)
+          s.invalidate()
+        }
       },
       show: () => {
         if (props.show) {
@@ -57,18 +59,19 @@ export default defineComponent({
           s.invalidate()
         }
       },
-    })
+    }
 
     onPropChange(async (prop: string, current) => {
-      respondTo(prop, current, propertyConfig(current))
+      respondTo(prop, current, propertyConfig)
     })
 
     const configure = async (chart: IChart) => {
       axisConfig.value = setupAxes(series)
       setupEvents(series)
+      initializeProps(propertyConfig)
       series.value = chart.series.push(series.value)
       initializeProps(propertyConfig)
-      series.value.name = props.name
+
       try {
         getRegistration('cursor')
       } catch (e) {

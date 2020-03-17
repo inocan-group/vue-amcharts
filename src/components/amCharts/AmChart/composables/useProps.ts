@@ -20,8 +20,8 @@ export type IResponseOffset = [IDictionary, string]
 export function useProps<T extends IDictionary = IDictionary<unknown>, K extends keyof T = keyof T>(props: T) {
   let registeredOnChangeEvent: IPropsOnChange<T>
 
-  const setProp = (prop: string, value: any, actions: IDictionary) => {
-    const action = actions[prop]
+  const setProp = (prop: string, value: any, actionConfig: IDictionary) => {
+    const action = actionConfig[prop]
     if (action) {
       if (Array.isArray(action)) {
         // if ([2, 3].includes(action.length)) {
