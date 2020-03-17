@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
-import { useRegistry } from '../composables'
+import { useRegistry, useProps } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChart } from '../ChartTypes'
 import { ValueAxis } from '@amcharts/amcharts4/charts'
@@ -54,11 +54,19 @@ export default defineComponent({
 
   setup(props: IDictionary, context: SetupContext) {
     const { register, addToRegistration, howMany } = useRegistry(props, context)
+    const { onPropChange } = useProps(props)
     const axis: Ref<ValueAxis> = ref(new ValueAxis())
     const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
     const notFirstOnAxis = howMany(dim) > 0
     const dataSource: Ref<string> = ref('')
     const instanceId: Ref<string> = ref('')
+
+    onPropChange(async (prop, current) => {
+      if (prop === 'name') {
+        axis.value.title.text = current
+      }
+      return
+    })
 
     const configure = async (chart: IChart) => {
       axis.value.title.text = props.name === '' ? '' : props.name || props.id

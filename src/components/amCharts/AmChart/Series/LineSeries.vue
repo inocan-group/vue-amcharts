@@ -3,12 +3,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from '@vue/composition-api'
+import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { LineSeries } from '@amcharts/amcharts4/charts'
 import { useSeries, useRegistry, seriesProps, useProps } from '../composables'
 import { IChart } from '..'
 import { ChartType } from '../types'
 import { IDictionary } from 'common-types'
+import { color } from '@amcharts/amcharts4/core'
+
+type Legend = import('@amcharts/amcharts4/charts').Legend
 
 export default defineComponent({
   name: 'LineSeries',
@@ -20,36 +23,52 @@ export default defineComponent({
       type: [Number, String],
       default: 1,
     },
+    color: {
+      type: String,
+      default: undefined,
+    },
   },
 
-  setup(props, context) {
-    const { onChange } = useProps(props)
+  setup(props: IDictionary, context: SetupContext) {
+    const { onPropChange, respondTo, initializeProps } = useProps(props)
     const { register, getRegistration } = useRegistry(props, context)
     const { setupAxes, setupEvents } = useSeries(props, context)
     const series: Ref<LineSeries> = ref(new LineSeries())
     const axisConfig: Ref<IDictionary> = ref({})
 
-    // const mapper = (props: IDictionary) =>  {
-    //   name: 'name',
-    //   strokeWidth: () => Number(props.strokeWidth),
+    const s = series.value
+    const propertyConfig = (current: unknown) => ({
+      name: s,
+      strokeWidth: () => {
+        s.strokeWidth = Number(current)
+        s.invalidate()
+      },
+      tooltipText: s,
+      color: () => {
+        s.stroke = color(props.color)
+        s.invalidate()
+      },
+      show: () => {
+        if (props.show) {
+          s.show()
+          s.invalidate()
+        } else {
+          s.hide()
+          s.invalidate()
+        }
+      },
+    })
 
-    // }
-
-    onChange(async (prop: string, current, old) => {
-      console.log(`Prop "${prop}" changed: `, current, old)
-
-      return
+    onPropChange(async (prop: string, current) => {
+      respondTo(prop, current, propertyConfig(current))
     })
 
     const configure = async (chart: IChart) => {
       axisConfig.value = setupAxes(series)
       setupEvents(series)
-
       series.value = chart.series.push(series.value)
+      initializeProps(propertyConfig)
       series.value.name = props.name
-      series.value.strokeWidth = Number(props.strokeWidth)
-
-      series.value.tooltipText = props.tooltipText
       try {
         getRegistration('cursor')
       } catch (e) {
@@ -60,10 +79,6 @@ export default defineComponent({
         }
       }
     }
-
-    // const update = async (chart: IChart, property: string, value: any) => {
-    //   //
-    // }
 
     register(ChartType.series, props.id, configure, { instance: series })
 

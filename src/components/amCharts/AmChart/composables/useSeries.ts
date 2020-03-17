@@ -35,6 +35,9 @@ export const seriesProps = {
     type: String,
     default: '',
   },
+  show: {
+    validator: (v: string | boolean) => [true, false].includes(Boolean(v)),
+  },
 }
 
 export function useSeries(props: IDictionary, context: SetupContext) {

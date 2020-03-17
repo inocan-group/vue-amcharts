@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
-import { useRegistry } from '@/components/amCharts/AmChart/composables'
+import { useRegistry, useProps } from '@/components/amCharts/AmChart/composables'
 import { ChartType, IChart } from '@/components/amCharts/AmChart'
 import { Cursor } from '@amcharts/amcharts4/charts'
 import { color } from '@amcharts/amcharts4/core'
@@ -29,7 +29,15 @@ export default defineComponent({
 
   setup(props: IDictionary, context: SetupContext) {
     const { register } = useRegistry(props, context)
+    const { onPropChange, respondTo } = useProps(props)
     const cursor: Ref<Cursor> = ref(new Cursor())
+
+    onPropChange(async (prop: string, current) => {
+      const c = cursor.value
+      respondTo(prop, current, {
+        maxTooltipDistance: c,
+      })
+    })
 
     const configure = async (chart: IChart) => {
       chart.cursor = cursor.value
