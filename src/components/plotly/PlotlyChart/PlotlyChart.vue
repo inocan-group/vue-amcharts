@@ -3,28 +3,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onBeforeUnmount, ref, Ref, watch, provide } from '@vue/composition-api'
+import { defineComponent, onMounted, onBeforeUnmount, ref, watch, provide, PropType } from '@vue/composition-api'
 import Plotly, { Root, PlotData, Layout } from 'plotly.js-dist'
 import { plotDataSymbol } from '@/shared/plotly'
 
 export default defineComponent({
   props: {
-    layout: Object as () => Partial<Layout>,
+    layout: Object as PropType<Partial<Layout>>,
   },
   setup(props) {
-    const chartdiv = ref(null)
-    const plotData: Ref<(Partial<PlotData> & { id: number })[]> = ref([])
+    const chartdiv = ref<HTMLElement>(null)
+    const plotData = ref<(Partial<PlotData> & { id?: number })[]>([])
 
     provide(plotDataSymbol, plotData)
 
     onMounted(() => {
-      Plotly.newPlot((chartdiv.value as unknown) as Root, plotData.value, props.layout)
+      Plotly.newPlot(chartdiv.value as Root, plotData.value, props.layout)
 
       // Re-layout if layout changes
       watch(
         () => props.layout,
         newLayout => {
-          Plotly.react((chartdiv.value as unknown) as Root, plotData.value, newLayout)
+          Plotly.react(chartdiv.value as Root, plotData.value, newLayout)
         },
         { lazy: true },
       )
@@ -34,7 +34,7 @@ export default defineComponent({
         plotData,
         newPlotData => {
           Plotly.animate(
-            (chartdiv.value as unknown) as Root,
+            chartdiv.value as Root,
             {
               data: newPlotData,
             },
@@ -55,7 +55,7 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
-      Plotly.purge((chartdiv.value as unknown) as Root)
+      Plotly.purge(chartdiv.value as Root)
     })
 
     return { chartdiv }
