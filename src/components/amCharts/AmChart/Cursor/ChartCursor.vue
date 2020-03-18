@@ -28,18 +28,13 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register } = useRegistry(props, context)
+    const { register, onChartConfig } = useRegistry(props, context)
     const { onPropChange, respondTo } = useProps(props)
     const cursor: Ref<Cursor> = ref(new Cursor())
 
-    onPropChange(async (prop: string, current) => {
-      const c = cursor.value
-      respondTo(prop, current, {
-        maxTooltipDistance: c,
-      })
-    })
+    register(ChartType.cursor, 'cursor')
 
-    const configure = async (chart: IChart) => {
+    onChartConfig((chart: IChart) => {
       chart.cursor = cursor.value
       chart.cursor.maxTooltipDistance =
         props.maxTooltipDistance === undefined ? undefined : Number(props.maxTooltipDistance)
@@ -51,9 +46,14 @@ export default defineComponent({
         // chart.cursor.lineX.fill = color('#8F3985')
         // chart.cursor.lineX.fillOpacity = 0.1
       }
-    }
+    })
 
-    register(ChartType.cursor, 'cursor', configure)
+    onPropChange(async (prop: string, current) => {
+      const c = cursor.value
+      respondTo(prop, current, {
+        maxTooltipDistance: c,
+      })
+    })
 
     return { ChartCursor: Cursor, cursor }
   },

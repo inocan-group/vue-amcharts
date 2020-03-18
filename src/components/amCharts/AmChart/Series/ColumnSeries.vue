@@ -16,12 +16,12 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register } = useRegistry(props, context)
+    const { register, onChartConfig } = useRegistry(props, context)
     const { setupAxes } = useSeries(props, context)
     const series: Ref<ColumnSeries> = ref(new ColumnSeries())
     const axisConfig: Ref<IDictionary> = ref({})
 
-    const configure = async (chart: IChart) => {
+    onChartConfig((chart: IChart) => {
       axisConfig.value = setupAxes(series)
       series.value = chart.series.push(series.value)
       series.value.name = props.name
@@ -32,9 +32,9 @@ export default defineComponent({
           `You have configured tooltip text for the ${props.name} LineSeries component but there is no Cursor on this chart so it will not be displayed!`,
         )
       }
-    }
+    })
 
-    register(ChartType.series, props.id, configure, { instance: series })
+    register(ChartType.series, props.id, { instance: series })
 
     return { instance: series, axisConfig }
   },

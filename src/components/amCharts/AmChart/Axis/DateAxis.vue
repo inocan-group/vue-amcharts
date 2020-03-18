@@ -4,11 +4,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
-import { useAxis, useRegistry } from '../composables'
+import { useRegistry } from '../composables'
 import { IChart } from '../ChartTypes'
 import { DateAxis } from '@amcharts/amcharts4/charts'
 import { ChartType } from '..'
-import { Configuration } from '../composables/useRegistry/registry-types'
 import { IDictionary } from 'common-types'
 import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
 
@@ -33,13 +32,14 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    // TODO: There is opportunity to make Axis leverage reusable code
-    const { register, howMany, addToRegistration } = useRegistry(props, context)
+    const { register, howMany, onChartConfig, addToRegistration } = useRegistry(props, context)
     const axis: Ref<DateAxis> = ref(new DateAxis())
     const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
     const notFirstOnAxis = howMany(dim) > 0
 
-    const configure: Configuration<IChart> = async chart => {
+    register(ChartType[dim], props.id, { instance: axis.value })
+
+    onChartConfig((chart: IChart) => {
       axis.value.tooltipDateFormat = 'MMM YYYY'
       if (notFirstOnAxis) {
         axis.value.renderer.opposite = true
@@ -48,9 +48,8 @@ export default defineComponent({
       dimension.push(axis.value)
       addToRegistration('id', props.id || props.name)
       addToRegistration('dataSource', axis.value.dataSource.uid)
-    }
+    })
 
-    register(ChartType[dim], props.id, configure, { instance: axis.value })
     addToRegistration('dataField', `date${capitalize(props.dimension)}`)
 
     // TODO: investigate means to make this information dynamic

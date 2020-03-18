@@ -1,7 +1,7 @@
 import { IDictionary } from 'common-types'
 
-export interface Configuration<P> {
-  (data: P): Promise<void>
+export interface IChildChartConfig<P> {
+  (data: P): Promise<void> | void
 }
 
 export interface IRegistrationStatus<T> extends IRegistrationConfig<T> {
@@ -12,8 +12,10 @@ export interface IRegistrationStatus<T> extends IRegistrationConfig<T> {
 export interface IRegistrationConfig<T = any> extends IDictionary {
   // TODO: see if we can't type this better
   instance?: IDictionary
-  /** a callback function to let the child configure itself */
-  configure: Configuration<T>
+  /**
+   * a callback function provide by the child component as part of it's `onChartConfig` lifecycle hook
+   */
+  configure?: IChildChartConfig<T>
 
   /** the name of the property which should be set for given type of axis */
   dataField?: string

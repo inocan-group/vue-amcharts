@@ -31,7 +31,7 @@ export default defineComponent({
 
   setup(props: IDictionary, context: SetupContext) {
     const { onPropChange, respondTo, initializeProps } = useProps(props)
-    const { register, getRegistration } = useRegistry(props, context)
+    const { register, getRegistration, onChartConfig } = useRegistry<IChart>(props, context)
     const { setupAxes, setupEvents } = useSeries(props, context)
     const series: Ref<LineSeries> = ref(new LineSeries())
     const axisConfig: Ref<IDictionary> = ref({})
@@ -65,7 +65,7 @@ export default defineComponent({
       respondTo(prop, current, propertyConfig)
     })
 
-    const configure = async (chart: IChart) => {
+    onChartConfig(chart => {
       axisConfig.value = setupAxes(series)
       setupEvents(series)
       initializeProps(propertyConfig)
@@ -81,9 +81,9 @@ export default defineComponent({
           )
         }
       }
-    }
+    })
 
-    register(ChartType.series, props.id, configure, { instance: series })
+    register(ChartType.series, props.id, { instance: series })
 
     return { instance: series, axisConfig }
   },

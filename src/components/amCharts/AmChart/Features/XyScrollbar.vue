@@ -28,10 +28,12 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, getComponent } = useRegistry(props, context)
+    const { register, getComponent, onChartConfig } = useRegistry(props, context)
     const scrollbar: Ref<XYChartScrollbar> = ref(new XYChartScrollbar())
 
-    const configure = async (chart: IChart) => {
+    register(ChartType.features, 'scrollbar', { instance: scrollbar })
+
+    onChartConfig((chart: IChart) => {
       if (props.tooltipText) {
         scrollbar.value.tooltipText = props.tooltipText
       }
@@ -44,9 +46,7 @@ export default defineComponent({
         scrollbar.value.series.push(series)
         chart.scrollbarY = scrollbar.value
       }
-    }
-
-    register(ChartType.features, 'scrollbar', configure, { instance: scrollbar })
+    })
 
     return { XYChartScrollbar }
   },

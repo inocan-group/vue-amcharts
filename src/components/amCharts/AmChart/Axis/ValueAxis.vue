@@ -53,7 +53,7 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, addToRegistration, howMany } = useRegistry(props, context)
+    const { register, addToRegistration, howMany, onChartConfig } = useRegistry(props, context)
     const { onPropChange } = useProps(props)
     const axis: Ref<ValueAxis> = ref(new ValueAxis())
     const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
@@ -61,14 +61,17 @@ export default defineComponent({
     const dataSource: Ref<string> = ref('')
     const instanceId: Ref<string> = ref('')
 
+    const accessibility = { axis: `${props.dimension}Axis`, dataField: `value${capitalize(props.dimension)}` }
+
+    register(ChartType[dim], props.id, { instance: axis.value, ...accessibility })
+
     onPropChange(async (prop, current) => {
       if (prop === 'name') {
         axis.value.title.text = current
       }
-      return
     })
 
-    const configure = async (chart: IChart) => {
+    onChartConfig((chart: IChart) => {
       axis.value.title.text = props.name === '' ? '' : props.name || props.id
       axis.value.logarithmic = Boolean(props.logarithmic)
 
@@ -96,11 +99,7 @@ export default defineComponent({
       addToRegistration('dataSource', axis.value.dataSource.uid)
       dataSource.value = axis.value.dataSource.uid
       instanceId.value = axis.value.uid
-    }
-
-    const accessibility = { axis: `${props.dimension}Axis`, dataField: `value${capitalize(props.dimension)}` }
-
-    register(ChartType[dim], props.id, configure, { instance: axis.value, ...accessibility })
+    })
 
     return {
       instance: axis,

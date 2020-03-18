@@ -54,14 +54,32 @@ export function useProps<T extends IDictionary = IDictionary<unknown>, K extends
   }
 
   /**
-   * An async function which is called when property changes are detected
+   * **onPropChange**
+   *
+   * Consumes a sync or _async_ function which is called whenever a VueJS _prop_ has changed.
+   * The function will be passed the `property` that changed, the new `value` of the prop and the `old`
+   * value for context so it can take the appropriate actions:
+   *
+   * ```typescript
+   * onPropChange( (prop, value, old ) => { ... })
+   * ```
+   *
+   * **Note:** _this "hook" is often used in conjunction with the `respondTo` export from **useProps**
+   * to map VueJS props to the appropriate action/change. See `respondTo` for more info._
+   *
+   * ```typescript
+   * onPropChange(async (prop: string, current) => {
+   *  respondTo(prop, current, propertyConfig)
+   * })
+   * ```
    */
   const onPropChange = (fn: IPropsOnChange<T>) => {
     registeredOnChangeEvent = fn
   }
 
   /**
-   * Detects changes
+   * Executed when VueJS property change is detected
+   *
    * @param prop the property which has changed
    */
   const onChange = (prop: string, current: any, old: any) => {

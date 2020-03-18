@@ -20,14 +20,14 @@ export const registerAsParent = function<P>() {
     )
 
     /**
-     * receives "completed" events events from individual children and then
-     * checks to see if a _type_ has completed and if it has then start next
-     * type until all types are complete
+     * Iterates through each _type_ of child component and then each component in that
+     * category. For each child component, it looks for the `onChartConfig` configuration
+     * and executes it if available.
      */
     const childRegistrationsComplete = async (data: any): Promise<void> => {
       for await (const type of Object.keys(registrants)) {
         const named = dictionaryToArray(registrants[type])
-        await Promise.all([...named.map(i => i.configure(data))])
+        await Promise.all([...named.map(i => (i.configure ? i.configure(data) : undefined)).filter(i => i)])
         Object.keys(registrants[type]).forEach(name => {
           registrants[type][name].ready = true
         })

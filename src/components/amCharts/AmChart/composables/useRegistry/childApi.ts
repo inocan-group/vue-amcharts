@@ -1,8 +1,9 @@
 import { IDictionary } from 'common-types'
 import { SetupContext } from '@vue/composition-api'
-import { IParentRegistry, EventMessages, Configuration } from './registry-types'
+import { IParentRegistry, EventMessages, IChildChartConfig } from './registry-types'
 import { AmchartError } from '../../errors'
 import { IGetChild } from './useRegistry'
+import { IChart } from '../..'
 let childType: string
 let childName: string
 
@@ -12,6 +13,8 @@ export function childApi<C, P>(
   setChild: (type: string, name: string) => void,
   getChild: () => IGetChild,
 ) {
+  let configurationEvent: IChildChartConfig<P>
+
   const parent = (context.parent as unknown) as IParentRegistry<P>
   type types = keyof typeof parent.registrants
 
@@ -49,15 +52,18 @@ export function childApi<C, P>(
      * Register with the parent component and then await startup events before returning
      * with a reference to the `chart` object.
      */
-    register: async (type: string, name: string, configure: Configuration<P>, options: IDictionary = {}) => {
+    register: async (type: string, name: string, options: IDictionary = {}) => {
+      console.log(`registering ${type}/${name}`)
       setChild(type, name)
+      console.log(`after registration: `, getChild())
+
       if (!parent.acceptChildRegistration) {
         throw new Error(
           `${type}/${name}'s attempt to register itself with it's parent failed as the parent has not registered as a Parent with useRegistry.`,
         )
       }
 
-      parent.acceptChildRegistration(type, name, { ...options, configure })
+      parent.acceptChildRegistration(type, name, options)
     },
 
     /**
@@ -66,6 +72,24 @@ export function childApi<C, P>(
     unregister: () => {
       const { childType, childName } = getChild()
       parent.acceptChildMessage(EventMessages.unregister, childType, childName)
+    },
+
+    /**
+     * **onChartConfig**
+     *
+     * An event that is fired by the parent component when it is asking for the child
+     * to configure itself. In most cases this is the child-components first opportunity
+     * to interact with e prepared DOM (although the _parent_ basically gets to decide
+     * precise timing).
+     */
+    onChartConfig: (fn: IChildChartConfig<P>) => {
+      const { childType, childName } = getChild()
+      // if (!childType) {
+
+      // }
+
+      configurationEvent = fn
+      parent.acceptChildMessage(EventMessages.addToRegistration, childType, childName, 'configure', fn)
     },
 
     /**
@@ -132,6 +156,8 @@ export function childApi<C, P>(
      */
     addToRegistration: (property: string, value: any) => {
       const { childType, childName } = getChild()
+      console.log(`adding to registry of ${childType}/${childName}`)
+
       parent.acceptChildMessage(EventMessages.addToRegistration, childType, childName, property, value)
     },
   }

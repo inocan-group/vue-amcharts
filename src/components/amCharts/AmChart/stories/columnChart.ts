@@ -3,7 +3,7 @@ import { text, select, boolean, array } from '@storybook/addon-knobs'
 import { subDays } from 'date-fns'
 
 function cycleData() {
-  const aWeekAgo = 
+  // const aWeekAgo =
 }
 
 export const columnChart = () => {
@@ -28,4 +28,3 @@ export const columnChart = () => {
     notes: `Shows animation of data in a very simple container`,
   }
 }
-

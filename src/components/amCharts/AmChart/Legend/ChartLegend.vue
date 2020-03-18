@@ -27,10 +27,12 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register } = useRegistry(props, context)
+    const { register, onChartConfig } = useRegistry(props, context)
     const legend: Ref<Legend> = ref(new Legend())
 
-    const configure = async (chart: IChart) => {
+    register(ChartType.legend, 'legend', { instance: legend.value })
+
+    onChartConfig(async (chart: IChart) => {
       legend.value.position = props.position
       if (['left', 'right'].includes(props.position)) {
         legend.value.valign = props.positionAlt
@@ -38,9 +40,7 @@ export default defineComponent({
         legend.value.contentAlign = props.positionAlt
       }
       chart.legend = legend.value
-    }
-
-    register(ChartType.legend, 'legend', configure, { instance: legend.value })
+    })
 
     return { Legend, instance: legend }
   },
