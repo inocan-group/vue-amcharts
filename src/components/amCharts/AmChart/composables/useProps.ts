@@ -1,5 +1,5 @@
 import { IDictionary } from 'common-types'
-import { watch, toRefs, Ref, ref } from '@vue/composition-api'
+import { watch, Ref, ref } from '@vue/composition-api'
 import { diff } from 'deep-object-diff'
 import { AmchartError } from '../errors'
 import set from 'lodash.set'
@@ -83,7 +83,8 @@ export function useProps<T extends IDictionary = IDictionary<unknown>, K extends
    * @param prop the property which has changed
    */
   const onChange = (prop: string, current: any, old: any) => {
-    const difference = diff(current, old)
+    console.log(`${prop} changed [ onChange ]`)
+
     if (registeredOnChangeEvent) {
       registeredOnChangeEvent(prop, current, old)
     }
@@ -91,7 +92,15 @@ export function useProps<T extends IDictionary = IDictionary<unknown>, K extends
 
   /**
    * Provides a convenient way to define what properties to set when a component property changes. It does this
-   * by mutating the root property passed to it. The signatures are:
+   * by mutating the root property passed to it.
+   *
+   * ```typescript
+   * respondTo(property, value, actions);
+   * ```
+   *
+   * where `actions` is of the type `IActionResponse`; it is a dictionary who's keys are
+   *
+   * The signatures are:
    *
    * ```typescript
    * {
@@ -118,6 +127,8 @@ export function useProps<T extends IDictionary = IDictionary<unknown>, K extends
   }
 
   Object.keys(props).forEach(prop => {
+    console.log(`watching ${prop}`)
+
     watch(
       () => ref(props[prop]),
       (current, old) => {

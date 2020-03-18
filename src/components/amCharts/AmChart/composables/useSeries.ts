@@ -142,11 +142,5 @@ export function useSeries(props: IDictionary, context: SetupContext) {
     }
   }
 
-  const setupEvents = (series: Ref<LineSeries>) => {
-    // series.value.events.onAll((evt: any) => {
-    //   console.log(`Something happened with a series:`, evt)
-    // })
-  }
-
-  return { setupAxes, setupEvents }
+  return { setupAxes }
 }

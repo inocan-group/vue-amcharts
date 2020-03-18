@@ -18,9 +18,26 @@ export function useCustomize<
   K extends keyof P = keyof P
 >(props: I, context: SetupContext, chartInstance: P) {
   const attributes = context.attrs
-  let consumerProperties: { onSetup: IActionConfiguration; onChange: IActionConfiguration } = {
+  let consumerProperties: {
+    onSetup: IActionConfiguration
+    onChange: IActionConfiguration
+  } = {
     onSetup: undefined,
     onChange: undefined,
+  }
+
+  /**
+   * given a stated set of attributes/props, sets up a watcher to detect change on all
+   */
+  const watchAttributes = (props: string[]) => {
+    // TODO: implement
+  }
+
+  /**
+   * unwatches custom properties which are no longer going to be watched
+   */
+  const unwatchAttributes = (props: string[]) => {
+    // TODO: implement
   }
 
   /**
@@ -53,20 +70,6 @@ export function useCustomize<
       new Set(Object.keys(consumerProperties.onSetup).concat(Object.keys(consumerProperties.onChange))),
     )
     watchAttributes(allProperties)
-  }
-
-  /**
-   * given a stated set of attributes/props, sets up a watcher to detect change on all
-   */
-  const watchAttributes = (props: string[]) => {
-    // TODO: implement
-  }
-
-  /**
-   * unwatches custom properties which are no longer going to be watched
-   */
-  const unwatchAttributes = (props: string[]) => {
-    // TODO: implement
   }
 
   /**
