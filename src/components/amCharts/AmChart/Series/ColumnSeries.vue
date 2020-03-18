@@ -21,6 +21,7 @@ export default defineComponent({
     const series: Ref<ColumnSeries> = ref(new ColumnSeries())
     const axisConfig: Ref<IDictionary> = ref({})
 
+    register(ChartType.series, props.id, { instance: series })
     onChartConfig((chart: IChart) => {
       axisConfig.value = setupAxes(series)
       series.value = chart.series.push(series.value)
@@ -33,8 +34,6 @@ export default defineComponent({
         )
       }
     })
-
-    register(ChartType.series, props.id, { instance: series })
 
     return { instance: series, axisConfig }
   },
