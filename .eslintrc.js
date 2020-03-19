@@ -21,5 +21,6 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': [0, 'never'],
     '@typescript-eslint/no-empty-function': [0, 'never'],
     semi: [2, 'never'],
+    '@typescript-eslint/interface-name-prefix': [0, 'never'],
   },
 }
