@@ -41,6 +41,7 @@ export default defineComponent({
 
     onChartConfig((chart: IChart) => {
       axis.value.tooltipDateFormat = 'MMM YYYY'
+
       if (notFirstOnAxis) {
         axis.value.renderer.opposite = true
       }

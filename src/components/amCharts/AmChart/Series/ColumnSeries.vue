@@ -5,9 +5,10 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { ColumnSeries } from '@amcharts/amcharts4/charts'
-import { useSeries, seriesProps, useRegistry } from '../composables'
+import { useSeries, seriesProps, useRegistry, useProps } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChart, ChartType } from '..'
+import { color } from '@amcharts/amcharts4/core'
 
 export default defineComponent({
   name: 'ColumnSeries',
@@ -18,14 +19,47 @@ export default defineComponent({
   setup(props: IDictionary, context: SetupContext) {
     const { register, onChartConfig } = useRegistry(props, context)
     const { setupAxes } = useSeries(props, context)
+    const { onPropChange, respondTo, initializeProps } = useProps(props)
     const series: Ref<ColumnSeries> = ref(new ColumnSeries())
     const axisConfig: Ref<IDictionary> = ref({})
 
     register(ChartType.series, props.id, { instance: series })
+
+    const actionConfig = {
+      name: series.value,
+      tooltipText: series.value,
+      show: () => {
+        if (props.show) {
+          series.value.show()
+          series.value.invalidate()
+        } else {
+          series.value.hide()
+          series.value.invalidate()
+        }
+      },
+      stroke: () => {
+        if (props.color !== undefined) {
+          series.value.stroke = color(props.color)
+          series.value.invalidate()
+        }
+      },
+      fill: () => {
+        if (props.color !== undefined) {
+          series.value.fill = color(props.color)
+          series.value.invalidate()
+        }
+      },
+    }
+
+    onPropChange((prop, value) => {
+      respondTo(prop, value, actionConfig)
+    })
+
     onChartConfig((chart: IChart) => {
       axisConfig.value = setupAxes(series)
+      initializeProps(actionConfig)
       series.value = chart.series.push(series.value)
-      series.value.name = props.name
+      // series.value.name = props.name
       // series.value.strokeWidth = Number(props.strokeWidth)
 
       if (props.tooltipText) {

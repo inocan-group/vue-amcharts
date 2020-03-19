@@ -8,13 +8,8 @@ export function useChart<T extends Chart>(name: string, chartType: new () => T, 
   const chartdiv: Ref<HTMLElement | null> = ref(null)
   const chart: Ref<T | null> = ref(null)
 
-  const chartData = computed(() => {
-    return chart.value && chart.value.data ? chart.value.data : []
-  })
-
   const drawChart = () => {
     chart.value = am4core.create<T>(chartdiv.value as HTMLElement, chartType)
-    console.log('chart is attached to DOM')
   }
 
   onBeforeUnmount(() => {
@@ -23,7 +18,6 @@ export function useChart<T extends Chart>(name: string, chartType: new () => T, 
 
   return {
     chart,
-    chartData,
     chartdiv,
     drawChart,
   }

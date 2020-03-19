@@ -38,6 +38,14 @@ export const seriesProps = {
   show: {
     validator: (v: string | boolean) => [true, false].includes(Boolean(v)),
   },
+  stroke: {
+    type: String,
+    default: undefined,
+  },
+  fill: {
+    type: String,
+    default: undefined,
+  },
 }
 
 export function useSeries(props: IDictionary, context: SetupContext) {

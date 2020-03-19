@@ -1,5 +1,5 @@
 import { IDictionary } from 'common-types'
-import { watch, Ref, ref } from '@vue/composition-api'
+import { watch, Ref, ref, isRef } from '@vue/composition-api'
 import { diff } from 'deep-object-diff'
 import { AmchartError } from '../errors'
 import set from 'lodash.set'
@@ -8,7 +8,11 @@ export type IPropsOnChange<T extends IDictionary, K extends keyof T = keyof T> =
   prop: string & K,
   current: T[K],
   old: T[K] | undefined,
-) => Promise<void>
+) => Promise<void> | void
+
+export interface IActionConfiguration<T extends IDictionary, K extends keyof T & string = keyof T & string> {
+  (prop: K, value: T, old: T | undefined): IDictionary
+}
 
 /** a dictionary with a dot-notation string offset */
 export type IResponseOffset = [IDictionary, string]
@@ -83,7 +87,7 @@ export function useProps<T extends IDictionary = IDictionary<unknown>, K extends
    * @param prop the property which has changed
    */
   const onChange = (prop: string, current: any, old: any) => {
-    console.log(`${prop} changed [ onChange ]`)
+    if (prop === 'data') console.log(`${prop} property changed`)
 
     if (registeredOnChangeEvent) {
       registeredOnChangeEvent(prop, current, old)
@@ -127,7 +131,7 @@ export function useProps<T extends IDictionary = IDictionary<unknown>, K extends
   }
 
   Object.keys(props).forEach(prop => {
-    console.log(`watching ${prop}`)
+    console.log(`watching ${prop} `)
 
     watch(
       () => ref(props[prop]),

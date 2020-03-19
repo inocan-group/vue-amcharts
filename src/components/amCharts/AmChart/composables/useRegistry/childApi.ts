@@ -53,9 +53,7 @@ export function childApi<C, P>(
      * with a reference to the `chart` object.
      */
     register: async (type: string, name: string, options: IDictionary = {}) => {
-      console.log(`registering ${type}/${name}`)
       setChild(type, name)
-      console.log(`after registration: `, getChild())
 
       if (!parent.acceptChildRegistration) {
         throw new Error(
@@ -84,9 +82,6 @@ export function childApi<C, P>(
      */
     onChartConfig: (fn: IChildChartConfig<P>) => {
       const { childType, childName } = getChild()
-      // if (!childType) {
-
-      // }
 
       configurationEvent = fn
       parent.acceptChildMessage(EventMessages.addToRegistration, childType, childName, 'configure', fn)

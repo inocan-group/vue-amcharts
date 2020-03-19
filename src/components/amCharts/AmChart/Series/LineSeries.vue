@@ -32,7 +32,7 @@ export default defineComponent({
   setup(props: IDictionary, context: SetupContext) {
     const { onPropChange, respondTo, initializeProps } = useProps(props)
     const { register, getRegistration, onChartConfig } = useRegistry<IChart>(props, context)
-    const { setupAxes, setupEvents } = useSeries(props, context)
+    const { setupAxes } = useSeries(props, context)
     const series: Ref<LineSeries> = ref(new LineSeries())
     const axisConfig: Ref<IDictionary> = ref({})
 
@@ -67,7 +67,7 @@ export default defineComponent({
 
     onChartConfig(chart => {
       axisConfig.value = setupAxes(series)
-      setupEvents(series)
+      // setupEvents(series)
       initializeProps(propertyConfig)
       series.value = chart.series.push(series.value)
       initializeProps(propertyConfig)

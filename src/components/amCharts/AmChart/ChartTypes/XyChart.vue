@@ -9,16 +9,17 @@
 import * as am4core from '@amcharts/amcharts4/core'
 import { XYChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
-import { defineComponent, onMounted, onBeforeUnmount } from '@vue/composition-api'
-import { useChart, useRegistry, useProps } from '../composables'
+import { defineComponent, onMounted, onBeforeUnmount, isRef } from '@vue/composition-api'
+import { useChart, useRegistry, useProps, IActionConfiguration } from '../composables'
 import { IDictionary } from 'common-types'
+import { diff } from 'deep-object-diff'
 
 am4core.useTheme(am4themesAnimated)
 
 export default defineComponent({
   props: {
     data: {
-      type: [String, Array],
+      type: [String, Array, Object],
       default: [],
     },
     license: {
@@ -38,7 +39,7 @@ export default defineComponent({
   setup(props: IDictionary, context): IDictionary {
     const { registerAsParent } = useRegistry<XYChart>(props, context)
     const { onPropChange, respondTo } = useProps(props)
-    const { chart, chartData, chartdiv, drawChart } = useChart<XYChart>('xy-chart', XYChart, props)
+    const { chart, chartdiv, drawChart } = useChart<XYChart>('xy-chart', XYChart, props)
     const { registrants, acceptChildRegistration, acceptChildMessage, configureChildren } = registerAsParent([
       [1, null, 'xAxis'],
       [1, null, 'yAxis'],
@@ -48,12 +49,15 @@ export default defineComponent({
       [0, null, 'features'],
     ])
 
-    const actionsConfig = () => {
+    const actionsConfig: IActionConfiguration<XYChart> = (prop, value, old) => {
       if (chart.value) {
         return {
           data: () => {
-            chart.value.data = props.data
-            chart.value.invalidate()
+            if (chart.value) {
+              const difference = old ? diff(value, old) : ['added', value]
+              chart.value.data = isRef(props.data) ? props.value.data : props.data
+              chart.value.invalidateRawData()
+            }
           },
           responsive: chart,
         }
@@ -62,10 +66,8 @@ export default defineComponent({
       }
     }
 
-    onPropChange(async (prop, value) => {
-      console.log(`${prop} changed`)
-
-      respondTo(prop, value, actionsConfig())
+    onPropChange(async (prop, value, old) => {
+      respondTo(prop, value, actionsConfig(value, old))
     })
 
     onMounted(async () => {
@@ -77,7 +79,8 @@ export default defineComponent({
       if (typeof props.data === 'string') {
         c.dataSource.url = props.data
       } else {
-        c.data = props.data as IDictionary[]
+        console.log(props.data, isRef(props.data))
+        c.data = isRef(props.data) ? props.value?.data : props.data
       }
 
       c.responsive.enabled = props.responsive
@@ -92,7 +95,6 @@ export default defineComponent({
 
     return {
       chart,
-      chartData,
       chartdiv,
       registrants,
       acceptChildRegistration,
