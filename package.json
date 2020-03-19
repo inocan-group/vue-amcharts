@@ -16,6 +16,7 @@
     "core-js": "^3.6.4",
     "deep-object-diff": "^1.1.0",
     "events": "^3.1.0",
+    "hyperdiff": "^2.0.5",
     "lodash.set": "^4.3.2",
     "plotly.js-dist": "^1.52.3",
     "rough-viz": "^1.0.5",
