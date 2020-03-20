@@ -37,6 +37,7 @@ export const seriesProps = {
   },
   show: {
     validator: (v: string | boolean) => [true, false].includes(Boolean(v)),
+    default: true,
   },
   stroke: {
     type: String,
@@ -44,6 +45,10 @@ export const seriesProps = {
   },
   fill: {
     type: String,
+    default: undefined,
+  },
+  strokeWidth: {
+    type: Number,
     default: undefined,
   },
 }
@@ -120,28 +125,18 @@ export function useSeries(props: IDictionary, context: SetupContext) {
         console.warn(`The dataField type of "${x.dataField}" for the Y axis is unknown!`)
     }
 
-    ;(series.value as LineSeries).events.once('dataitemsvalidated', e => {
-      console.log(`Data items validated for series ${props.id}:`, {
-        data: e.target.data,
-        dataSetId: e.target.currentDataSetId,
-        isInvalid: e.target.dataInvalid,
-        parent: e.target.parent?.config,
-        theSame: e.target === series.value,
-      })
-    })
-
     return {
       x: {
-        axisUid: xAxis.uid,
-        dataSource: xAxis.dataSource.uid,
+        axisUid: xAxis?.uid,
+        dataSource: xAxis.dataSource?.uid,
         dataField: x.dataField,
         opposite: xAxis.renderer.opposite,
         dataProp: props.xProp,
         axisId: props.yAxis || firstComponentName('xAxis'),
       },
       y: {
-        axisUid: yAxis.uid,
-        dataSource: yAxis.dataSource.uid,
+        axisUid: yAxis?.uid,
+        dataSource: yAxis.dataSource?.uid,
         dataField: y.dataField,
         opposite: yAxis.renderer.opposite,
         dataProp: props.yProp,

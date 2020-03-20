@@ -53,7 +53,7 @@ export function childApi<C, P>(
      * with a reference to the `chart` object.
      */
     register: async (type: string, name: string, options: IDictionary = {}) => {
-      setChild(type, name)
+      console.log('parent', parent)
 
       if (!parent.acceptChildRegistration) {
         throw new Error(
@@ -61,7 +61,11 @@ export function childApi<C, P>(
         )
       }
 
-      parent.acceptChildRegistration(type, name, options)
+      const assignedName = parent.acceptChildRegistration(type, name, options)
+      if (name !== assignedName) {
+        console.info(`Attempt to register a ${type} with the name "${name}" twice; will use ${assignedName} instead`)
+      }
+      setChild(type, assignedName)
     },
 
     /**
@@ -151,7 +155,6 @@ export function childApi<C, P>(
      */
     addToRegistration: (property: string, value: any) => {
       const { childType, childName } = getChild()
-      console.log(`adding to registry of ${childType}/${childName}`)
 
       parent.acceptChildMessage(EventMessages.addToRegistration, childType, childName, property, value)
     },

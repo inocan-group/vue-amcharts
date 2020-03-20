@@ -9,19 +9,17 @@
 import * as am4core from '@amcharts/amcharts4/core'
 import { XYChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
-import { defineComponent, onMounted, onBeforeUnmount, isRef } from '@vue/composition-api'
-import { useChart, useRegistry, useProps, IActionConfiguration } from '../composables'
+import { defineComponent, onMounted, onBeforeUnmount, SetupContext } from '@vue/composition-api'
+import { useChart, useRegistry, useProps, IActionConfiguration, useData, dataProperties } from '../composables'
 import { IDictionary } from 'common-types'
-import { diff } from 'deep-object-diff'
+import { unbox } from '../shared'
 
 am4core.useTheme(am4themesAnimated)
 
 export default defineComponent({
   props: {
-    data: {
-      type: [String, Array, Object],
-      default: [],
-    },
+    ...dataProperties,
+
     license: {
       type: String,
       default: '',
@@ -36,7 +34,7 @@ export default defineComponent({
     },
   },
 
-  setup(props: IDictionary, context): IDictionary {
+  setup(props: IDictionary, context: SetupContext): IDictionary {
     const { registerAsParent } = useRegistry<XYChart>(props, context)
     const { onPropChange, respondTo } = useProps(props)
     const { chart, chartdiv, drawChart } = useChart<XYChart>('xy-chart', XYChart, props)
@@ -49,16 +47,13 @@ export default defineComponent({
       [0, null, 'features'],
     ])
 
-    const actionsConfig: IActionConfiguration<XYChart> = (prop, value, old) => {
+    console.log({ acceptChildRegistration, acceptChildMessage })
+
+    // const { postDataChange } = useData(props, chart, { id: 'date', dataProps: ['price'], labelProps: ['date'] })
+
+    const actionsConfig: IActionConfiguration = () => {
       if (chart.value) {
         return {
-          data: () => {
-            if (chart.value) {
-              const difference = old ? diff(value, old) : ['added', value]
-              chart.value.data = isRef(props.data) ? props.value.data : props.data
-              chart.value.invalidateRawData()
-            }
-          },
           responsive: chart,
         }
       } else {
@@ -66,8 +61,12 @@ export default defineComponent({
       }
     }
 
-    onPropChange(async (prop, value, old) => {
-      respondTo(prop, value, actionsConfig(value, old))
+    // postDataChange((current: unknown) => {
+    //   console.log('back from data change:', current, chart.value.data)
+    // })
+
+    onPropChange((prop, value, old) => {
+      respondTo(prop, value, actionsConfig(prop, value, old))
     })
 
     onMounted(async () => {
@@ -77,10 +76,12 @@ export default defineComponent({
       c.contentHeight = 800
 
       if (typeof props.data === 'string') {
+        console.log('url is', props.data)
+
         c.dataSource.url = props.data
       } else {
-        console.log(props.data, isRef(props.data))
-        c.data = isRef(props.data) ? props.value?.data : props.data
+        const d = unbox(props.data)
+        if (d !== undefined) c.data = d
       }
 
       c.responsive.enabled = props.responsive

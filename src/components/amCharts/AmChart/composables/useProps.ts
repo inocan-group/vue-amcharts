@@ -1,6 +1,5 @@
 import { IDictionary } from 'common-types'
-import { watch, Ref, ref, isRef } from '@vue/composition-api'
-import { diff } from 'deep-object-diff'
+import { watch, ref } from '@vue/composition-api'
 import { AmchartError } from '../errors'
 import set from 'lodash.set'
 
@@ -10,8 +9,11 @@ export type IPropsOnChange<T extends IDictionary, K extends keyof T = keyof T> =
   old: T[K] | undefined,
 ) => Promise<void> | void
 
-export interface IActionConfiguration<T extends IDictionary, K extends keyof T & string = keyof T & string> {
-  (prop: K, value: T, old: T | undefined): IDictionary
+export interface IActionConfiguration<
+  T extends IDictionary = IDictionary,
+  K extends keyof T & string = keyof T & string
+> {
+  (prop: K & string, value: T, old: T | undefined): any
 }
 
 /** a dictionary with a dot-notation string offset */
@@ -131,14 +133,14 @@ export function useProps<T extends IDictionary = IDictionary<unknown>, K extends
   }
 
   Object.keys(props).forEach(prop => {
-    console.log(`watching ${prop} `)
-
-    watch(
-      () => ref(props[prop]),
-      (current, old) => {
-        onChange(prop, current ? current.value : undefined, old ? old.value : undefined)
-      },
-    )
+    if (prop !== 'data') {
+      watch(
+        () => ref(props[prop]),
+        (current, old) => {
+          onChange(prop, current ? current.value : undefined, old ? old.value : undefined)
+        },
+      )
+    }
   })
 
   return { onPropChange, respondTo, initializeProps }

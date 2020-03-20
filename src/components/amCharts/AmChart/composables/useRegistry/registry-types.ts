@@ -54,7 +54,7 @@ export interface IParentRegistry<P> {
   cardinality: IDictionary<IChildCardinality>
   configureChildren(data: P): void
   /** accept registration from child components */
-  acceptChildRegistration(type: string, name: string, config: IRegistrationConfig<P>): void
+  acceptChildRegistration(type: string, name: string, config: IRegistrationConfig<P>): string
   /** accept messages from child components */
   acceptChildMessage(message: string, type: string, name: string, ...args: any[]): void
 }

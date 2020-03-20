@@ -1,8 +1,8 @@
 import { IDictionary } from 'common-types'
 import { SetupContext } from '@vue/composition-api'
 import { setProp } from './shared'
+import { IActionConfiguration } from './useProps'
 
-export type IActionConfiguration = any
 export type IConsumerProperties = IActionConfiguration | [IActionConfiguration, IActionConfiguration]
 
 /**

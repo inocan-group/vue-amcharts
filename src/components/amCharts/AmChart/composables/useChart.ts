@@ -6,10 +6,16 @@ import { IDictionary } from 'common-types'
 
 export function useChart<T extends Chart>(name: string, chartType: new () => T, props: IDictionary) {
   const chartdiv: Ref<HTMLElement | null> = ref(null)
-  const chart: Ref<T | null> = ref(null)
+  const chart: Ref<T> = ref({} as T) // fake value; to be replaced onMounted
 
   const drawChart = () => {
+    const earlyData = chart.value.data
+    if (earlyData) console.log('Early data', earlyData)
+
     chart.value = am4core.create<T>(chartdiv.value as HTMLElement, chartType)
+    if (earlyData) {
+      chart.value.data = earlyData
+    }
   }
 
   onBeforeUnmount(() => {

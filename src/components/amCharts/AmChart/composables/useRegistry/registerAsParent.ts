@@ -18,6 +18,14 @@ export const registerAsParent = function<P>() {
         return agg
       }, {}),
     )
+    const cardinality = childrenAndCardinality.reduce(
+      (agg: IDictionary<IChildCardinality>, i: IChildWithCardinality) => {
+        const [min, max, name] = i
+        agg[name] = { min, max }
+        return agg
+      },
+      {},
+    )
 
     /**
      * Iterates through each _type_ of child component and then each component in that
@@ -41,18 +49,31 @@ export const registerAsParent = function<P>() {
       },
       registrants,
       depSequence,
-      cardinality: childrenAndCardinality.reduce((agg: IDictionary<IChildCardinality>, i: IChildWithCardinality) => {
-        const [min, max, name] = i
-        agg[name] = { min, max }
-        return agg
-      }, {}),
+      cardinality,
 
       /** accept registration requests from children */
       acceptChildRegistration: (type, name, config) => {
-        registrants[type][name] = {
+        let useName = name
+        let index = 2
+        const { max } = cardinality[type]
+        const quantity = Object.keys(registrants[type]).length
+        if (max && quantity >= max) {
+          throw new Error(
+            `Attempt to register too many ${type} children! The parent has limited the cardinality to a max of ${max}`,
+          )
+        }
+
+        while (registrants[type][useName]) {
+          useName = `${name}${index}`
+          index++
+        }
+
+        registrants[type][useName] = {
           ...config,
           ready: false,
         }
+
+        return useName
       },
 
       /** accept a message from a child component */

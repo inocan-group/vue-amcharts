@@ -38,17 +38,16 @@ export default defineComponent({
         }
       },
       stroke: () => {
-        if (props.color !== undefined) {
-          series.value.stroke = color(props.color)
+        if (props.stroke !== undefined) {
+          series.value.stroke = color(props.stroke)
           series.value.invalidate()
         }
       },
       fill: () => {
-        if (props.color !== undefined) {
-          series.value.fill = color(props.color)
-          series.value.invalidate()
-        }
+        series.value.fill = color(props.fill)
+        series.value.invalidate()
       },
+      strokeWidth: series.value,
     }
 
     onPropChange((prop, value) => {
@@ -57,8 +56,8 @@ export default defineComponent({
 
     onChartConfig((chart: IChart) => {
       axisConfig.value = setupAxes(series)
-      initializeProps(actionConfig)
       series.value = chart.series.push(series.value)
+      initializeProps(actionConfig)
       // series.value.name = props.name
       // series.value.strokeWidth = Number(props.strokeWidth)
 

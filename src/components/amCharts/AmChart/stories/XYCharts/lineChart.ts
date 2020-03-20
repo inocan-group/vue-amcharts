@@ -1,4 +1,13 @@
-import { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, ChartCursor, ChartLegend, ColumnSeries } from '../index'
+import {
+  XyChart,
+  DateAxis,
+  ValueAxis,
+  LineSeries,
+  XyScrollbar,
+  ChartCursor,
+  ChartLegend,
+  ColumnSeries,
+} from '../../index'
 import { text, select, boolean } from '@storybook/addon-knobs'
 
 export const lineChart = () => ({
@@ -27,7 +36,7 @@ export const lineChart = () => ({
     },
   },
   template: `
-  <xy-chart data="http://localhost:6006/cpi.json">
+  <xy-chart url="http://localhost:6006/cpi.json">
     <date-axis dimension="x" />
     <value-axis 
       id="cpi" 
