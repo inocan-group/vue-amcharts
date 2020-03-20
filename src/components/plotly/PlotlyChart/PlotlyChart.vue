@@ -3,13 +3,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onBeforeUnmount, ref, watch, provide, PropType } from '@vue/composition-api'
+import { defineComponent, onMounted, onBeforeUnmount, ref, watch, provide } from '@vue/composition-api'
 import Plotly, { Root, PlotData, Layout } from 'plotly.js-dist'
 import { plotDataSymbol } from '@/shared/plotly'
 
 export default defineComponent({
   props: {
-    layout: Object as PropType<Partial<Layout>>,
+    layout: Object as () => Partial<Layout>,
   },
   setup(props) {
     const chartdiv = ref<HTMLElement>(null)
