@@ -1,10 +1,6 @@
 import { XyChart, CandlestickSeries, ValueAxis, DateAxis, XyScrollbar, ChartCursor } from '../../index'
 import { text, select, boolean, array, number } from '@storybook/addon-knobs'
-import { IApiConfig } from '../../shared/api'
-
-function r(min: number = 1, max: number = 100) {
-  return Math.floor(Math.random() * (max - min)) + min
-}
+import { IApiConfig } from '../../composables/useData/api'
 
 const apiKey = process.env.ALPHA_VANTAGE
 
@@ -54,8 +50,10 @@ export const candlestickChart = () => {
         highProp="2. high"  
         dateProp="date"
       />
+      <!-- 
       <chart-cursor />
       <xy-scrollbar axis="x" />
+      -->
     </xy-chart>
 
   `,

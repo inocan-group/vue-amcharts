@@ -53,8 +53,6 @@ export function childApi<C, P>(
      * with a reference to the `chart` object.
      */
     register: async (type: string, name: string, options: IDictionary = {}) => {
-      console.log('parent', parent)
-
       if (!parent.acceptChildRegistration) {
         throw new Error(
           `${type}/${name}'s attempt to register itself with it's parent failed as the parent has not registered as a Parent with useRegistry.`,

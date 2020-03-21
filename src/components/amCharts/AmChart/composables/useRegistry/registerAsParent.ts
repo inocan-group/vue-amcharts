@@ -44,6 +44,9 @@ export const registerAsParent = function<P>() {
 
     // PARENT API
     return {
+      /**
+       * let's all children run their configuration/setup routines and then return
+       */
       configureChildren: async (data: P) => {
         await childRegistrationsComplete(data)
       },

@@ -52,7 +52,7 @@ export interface IParentRegistry<P> {
   registrants: IDictionary<IDictionary<IRegistrationStatus<P>>>
   depSequence: string[]
   cardinality: IDictionary<IChildCardinality>
-  configureChildren(data: P): void
+  configureChildren(data: P): Promise<void>
   /** accept registration from child components */
   acceptChildRegistration(type: string, name: string, config: IRegistrationConfig<P>): string
   /** accept messages from child components */

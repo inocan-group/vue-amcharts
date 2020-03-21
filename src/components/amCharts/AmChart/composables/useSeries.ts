@@ -3,6 +3,7 @@ import { Axis, LineSeries, ColumnSeries } from '@amcharts/amcharts4/charts'
 import { IDictionary } from 'common-types'
 import { useRegistry } from './useRegistry/useRegistry'
 import { AmchartError } from '../errors'
+import { ILooksLikeChart, useData } from './useData'
 
 export const seriesProps = {
   id: {
@@ -53,8 +54,14 @@ export const seriesProps = {
   },
 }
 
-export function useSeries(props: IDictionary, context: SetupContext) {
-  const { getRegistration, getComponent, firstComponentName } = useRegistry(props, context)
+export function useSeries<TProps extends IDictionary, TData>(
+  props: TProps,
+  context: SetupContext,
+  series: Ref<ILooksLikeChart<TData>>,
+) {
+  const { register, onChartConfig, getRegistration, getComponent, firstComponentName } = useRegistry(props, context)
+
+  const { dataReady, dataMeta } = useData<TProps>(props)
 
   const setupAxes = (series: Ref<LineSeries | ColumnSeries>) => {
     // data validation
@@ -145,5 +152,5 @@ export function useSeries(props: IDictionary, context: SetupContext) {
     }
   }
 
-  return { setupAxes }
+  return { dataReady, setupAxes, register, onChartConfig, dataMeta }
 }

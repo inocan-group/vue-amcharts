@@ -5,11 +5,12 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { CandlestickSeries } from '@amcharts/amcharts4/charts'
-import { useSeries, seriesProps, useRegistry, useProps, useData, dataProperties } from '../composables'
+import { useSeries, seriesProps, useProps } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChart, ChartType } from '..'
 import { color } from '@amcharts/amcharts4/core'
-import { removeProperties } from '../shared'
+import { removeProperties, unbox } from '../shared'
+import { dataProperties } from '../composables/useData'
 export default defineComponent({
   name: 'CandlestickSeries',
   props: {
@@ -52,11 +53,10 @@ export default defineComponent({
 
   setup(props: IDictionary, context: SetupContext) {
     props = { dataIdProp: props.dateProp, ...props }
-    const { register, onChartConfig } = useRegistry(props, context)
-    useSeries(props, context)
-
-    const { onPropChange, respondTo, initializeProps } = useProps(props)
     const series: Ref<CandlestickSeries> = ref(new CandlestickSeries())
+    const { dataReady, register, onChartConfig, dataMeta } = useSeries(props, context, series)
+    const { onPropChange, respondTo, initializeProps } = useProps(props)
+
     series.value.dataFields = {
       dateX: props.dateProp,
       valueY: props.closingProp,
@@ -64,18 +64,21 @@ export default defineComponent({
       lowValueY: props.lowProp,
       highValueY: props.highProp,
     }
-    const { postDataChange, dataMeta } = useData(props, series, {
+
+    register(ChartType.series, props.id, { instance: series })
+
+    const { postDataChange, postUrlChange } = dataReady(unbox(series), {
       id: 'date',
       dataProps: ['price'],
       labelProps: ['date'],
     })
 
-    register(ChartType.series, props.id, { instance: series })
-
     postDataChange(() => {
       console.log('candlestick post data change')
     })
-    series.value.invalidateData
+    postUrlChange(() => {
+      console.log('candlestick post url change')
+    })
 
     const actionConfig = {
       name: series.value,
@@ -112,7 +115,6 @@ export default defineComponent({
     })
 
     onChartConfig((chart: IChart) => {
-      // axisConfig.value = setupAxes(series)
       series.value = chart.series.push(series.value)
       initializeProps(actionConfig)
 

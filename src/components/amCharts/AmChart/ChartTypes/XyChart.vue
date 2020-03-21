@@ -9,10 +9,11 @@
 import * as am4core from '@amcharts/amcharts4/core'
 import { XYChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
-import { defineComponent, onMounted, onBeforeUnmount, SetupContext } from '@vue/composition-api'
-import { useChart, useRegistry, useProps, IActionConfiguration, useData, dataProperties } from '../composables'
+import { defineComponent, onMounted, SetupContext } from '@vue/composition-api'
+import { useChart, useProps, IActionConfiguration } from '../composables'
 import { IDictionary } from 'common-types'
-import { unbox } from '../shared'
+import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
+import { dataProperties } from '../composables/useData'
 
 am4core.useTheme(am4themesAnimated)
 
@@ -35,21 +36,21 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {
-    const { registerAsParent } = useRegistry<XYChart>(props, context)
     const { onPropChange, respondTo } = useProps(props)
-    const { chart, chartdiv, drawChart } = useChart<XYChart>('xy-chart', XYChart, props)
-    const { registrants, acceptChildRegistration, acceptChildMessage, configureChildren } = registerAsParent([
+    const parentConfig: IChildWithCardinality[] = [
       [1, null, 'xAxis'],
       [1, null, 'yAxis'],
       [1, null, 'series'],
       [0, 1, 'cursor'],
       [0, 1, 'legend'],
       [0, null, 'features'],
-    ])
-
-    console.log({ acceptChildRegistration, acceptChildMessage })
-
-    // const { postDataChange } = useData(props, chart, { id: 'date', dataProps: ['price'], labelProps: ['date'] })
+    ]
+    const { chart, chartdiv, acceptChildMessage, acceptChildRegistration, registrants, dataMeta } = useChart(
+      XYChart,
+      props,
+      context,
+      parentConfig,
+    )
 
     const actionsConfig: IActionConfiguration = () => {
       if (chart.value) {
@@ -70,33 +71,19 @@ export default defineComponent({
     })
 
     onMounted(async () => {
-      drawChart()
+      console.log('XYChart::onMounted')
+
       const c = chart.value as XYChart
       c.height = 800
       c.contentHeight = 800
-
-      if (typeof props.data === 'string') {
-        console.log('url is', props.data)
-
-        c.dataSource.url = props.data
-      } else {
-        const d = unbox(props.data)
-        if (d !== undefined) c.data = d
-      }
-
       c.responsive.enabled = props.responsive
       console.log('deferring to children')
-
-      await configureChildren(c)
-    })
-
-    onBeforeUnmount(() => {
-      if (chart.value) chart.value.dispose()
     })
 
     return {
       chart,
       chartdiv,
+      dataMeta,
       registrants,
       acceptChildRegistration,
       acceptChildMessage,

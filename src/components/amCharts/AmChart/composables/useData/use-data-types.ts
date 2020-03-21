@@ -1,8 +1,56 @@
 import { IDictionary, ms } from 'common-types'
-import { CSVParser, JSONParser, DataSource } from '@amcharts/amcharts4/core'
-import { ILooksLikeChart, IUrlInfo } from '../composables'
 import { Ref } from '@vue/composition-api'
-import get from 'lodash.get'
+
+/**
+ * Properties for components which can receive DATA
+ */
+export const dataProperties = {
+  /**
+   * If passing in data directly set the `data` property; this is typically
+   * an array of some data structure but can be any Object or Array data structure.
+   *
+   * **Note:** should you want to load data from an API/URL, then use the `url` property
+   * instead of the `data` property (do not use both)
+   */
+  data: {
+    type: [Object, Array],
+  },
+  /**
+   * Provide an API endpoint and optionally an options hash used to
+   * handle the results
+   */
+  url: {
+    type: [String, Array],
+    validator: (v: any) =>
+      (typeof v === 'string' && v.slice(0, 4) === 'http') ||
+      (Array.isArray(v) && v.length === 2 && typeof v[0] === 'string' && typeof v[1] === 'object'),
+  },
+  /**
+   * Allows consumers to state which property in the data is considered the `id` and aids in ensuring that
+   * data _updates_ are done in a smooth animated fashion
+   */
+  dataIdProp: {
+    type: String,
+  },
+}
+
+export interface ILooksLikeChart<TData> extends IDictionary {
+  data: TData[]
+  invalidateData: () => void
+  invalidateRawData: () => void
+  addData(rawDataItem: TData[], removeCount?: number): void
+}
+
+export interface IUrlInfo<T> {
+  url?: string
+  config: IApiConfig<T>
+}
+
+export interface IPropertyMeta<T extends IDictionary, K extends keyof T = keyof T> {
+  id: K
+  dataProps: K[]
+  labelProps: K[]
+}
 
 export interface IApiConfig<TData = IDictionary[], TOutput = TData> {
   format?: 'json' | 'csv'
@@ -69,19 +117,22 @@ export interface IApiConfig<TData = IDictionary[], TOutput = TData> {
   updateCurrentData?: boolean
 }
 
-export async function api<TData>(chart: ILooksLikeChart<any>, urlConfig: IUrlInfo<TData>) {
-  if (!chart) return
-  const { url, config: options } = urlConfig
-
-  chart.dataSource.parser = options.format === 'csv' ? new CSVParser() : new JSONParser()
-  chart.dataSource.parser.options.emptyAs = options.emptyAs
-  chart.dataSource.parser.options.dateFormat = options.dateFormat
-  chart.dataSource.parser.options.dateFields = options.dateFields
-
-  chart.dataSource.url = url
-  if (options.reloadFrequency) {
-    chart.dataSource.reloadFrequency = options.reloadFrequency
-    if (options.incremental !== undefined) chart.dataSource.incremental = options.incremental
-    if (options.updateCurrentData !== undefined) chart.dataSource.updateCurrentData = options.updateCurrentData
-  }
+export interface IDataMeta<T> {
+  containerName: string
+  strategy: 'load from API' | 'undefined' | 'pass via prop'
+  /** the property which acts as the primary key for data/records */
+  idProp: string
+  /** reference to the actual data container (chart/series) that is the source of the data */
+  source: ILooksLikeChart<T>
+  /** the current chart data which is being used by the chart */
+  chartData: T[]
+  /** structured info on what is provided in `props.url` */
+  urlConfig?: IUrlInfo<T>
+  /** the meta information used by amCharts to manage data change events */
+  propMeta?: IPropertyMeta<T>
 }
+
+export type IDataMetaReady<T> = IDataMeta<T> & { propMeta: IPropertyMeta<T> }
+export type IDataMetaForUrlDrivenChart<T> = IDataMetaReady<T> & { urlConfig: IUrlInfo<T> }
+
+export type IUrlProperty<T> = string | [string, IApiConfig<T>]
