@@ -29,7 +29,7 @@ export default defineComponent({
         { lazy: true },
       )
 
-      // Animates animatable charts if trace data changes. For non-animatable charts it just reacts instantaneously.
+      // Animates animatable charts if series data changes. For non-animatable charts it just reacts instantaneously.
       watch(
         plotData,
         newPlotData => {
