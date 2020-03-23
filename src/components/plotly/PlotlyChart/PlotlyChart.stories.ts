@@ -1,8 +1,8 @@
 import PlotlyChart from './PlotlyChart.vue'
-import PlotlyBarSeries from './PlotlyBarSeries.vue'
-import PlotlyPieSeries from './PlotlyPieSeries.vue'
-import PlotlyScatterSeries from './PlotlyScatterSeries.vue'
-import PlotlyLineSeries from './PlotlyLineSeries.vue'
+import PlotlyBarSeries from './Series/PlotlyBarSeries.vue'
+import PlotlyPieSeries from './Series/PlotlyPieSeries.vue'
+import PlotlyScatterSeries from './Series/PlotlyScatterSeries.vue'
+import PlotlyLineSeries from './Series/PlotlyLineSeries.vue'
 import { withKnobs, object, text } from '@storybook/addon-knobs'
 
 const SERIES_1 = 'Series 1'
