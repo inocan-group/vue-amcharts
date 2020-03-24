@@ -3,19 +3,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onBeforeUnmount, ref, watch, provide, PropType } from '@vue/composition-api'
-import Plotly, { Root, PlotData, Layout } from 'plotly.js-dist'
-import { plotDataSymbol } from '@/shared/plotly'
+import { defineComponent, onMounted, onBeforeUnmount, ref, watch } from '@vue/composition-api'
+import Plotly, { Root, Layout } from 'plotly.js-dist'
+import { IPlotData } from '@/@types/plotly'
 
 export default defineComponent({
   props: {
-    layout: Object as PropType<Partial<Layout>>,
+    layout: Object as () => Partial<Layout>,
   },
   setup(props) {
     const chartdiv = ref<HTMLElement>(null)
-    const plotData = ref<(Partial<PlotData> & { id?: number })[]>([])
-
-    provide(plotDataSymbol, plotData)
+    const plotData = ref<IPlotData[]>([])
 
     onMounted(() => {
       Plotly.newPlot(chartdiv.value as Root, plotData.value, props.layout)
@@ -29,7 +27,7 @@ export default defineComponent({
         { lazy: true },
       )
 
-      // Animates animatable charts if trace data changes. For non-animatable charts it just reacts instantaneously.
+      // Animates animatable charts if series data changes. For non-animatable charts it just reacts instantaneously.
       watch(
         plotData,
         newPlotData => {
@@ -58,7 +56,7 @@ export default defineComponent({
       Plotly.purge(chartdiv.value as Root)
     })
 
-    return { chartdiv }
+    return { chartdiv, plotData }
   },
 })
 </script>

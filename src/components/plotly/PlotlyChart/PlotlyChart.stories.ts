@@ -1,58 +1,58 @@
 import PlotlyChart from './PlotlyChart.vue'
-import PlotlyBarTrace from './PlotlyBarTrace.vue'
-import PlotlyPieTrace from './PlotlyPieTrace.vue'
-import PlotlyScatterTrace from './PlotlyScatterTrace.vue'
-import PlotlyLineTrace from './PlotlyLineTrace.vue'
+import PlotlyBarSeries from './PlotlyBarSeries.vue'
+import PlotlyPieSeries from './PlotlyPieSeries.vue'
+import PlotlyScatterSeries from './PlotlyScatterSeries.vue'
+import PlotlyLineSeries from './PlotlyLineSeries.vue'
 import { withKnobs, object, text } from '@storybook/addon-knobs'
 
-const TRACE_1 = 'Trace 1'
-const TRACE_2 = 'Trace 2'
+const SERIES_1 = 'Series 1'
+const SERIES_2 = 'Series 2'
 
 export default { title: 'plotly/PlotlyChart', decorators: [withKnobs] }
 
 export const bar = () => ({
-  components: { PlotlyChart, PlotlyBarTrace },
+  components: { PlotlyChart, PlotlyBarSeries },
   props: {
-    trace1: {
+    series1: {
       default: object(
-        'traceData',
+        'seriesData',
         {
           x: ['giraffes', 'orangutans', 'monkeys'],
           y: [20, 14, 23],
         },
-        TRACE_1,
+        SERIES_1,
       ),
     },
     name1: {
-      default: text('name', 'SF Zoo', TRACE_1),
+      default: text('name', 'SF Zoo', SERIES_1),
     },
-    trace2: {
+    series2: {
       default: object(
-        'traceData',
+        'seriesData',
         {
           x: ['giraffes', 'orangutans', 'monkeys'],
           y: [12, 18, 29],
         },
-        TRACE_2,
+        SERIES_2,
       ),
     },
     name2: {
-      default: text('name2', 'LA Zoo', TRACE_2),
+      default: text('name2', 'LA Zoo', SERIES_2),
     },
   },
   template: `
   <plotly-chart>
-    <plotly-bar-trace :trace-data="trace1" :name="name1" />
-    <plotly-bar-trace :trace-data="trace2" :name="name2" />
+    <plotly-bar-series :series-data="series1" :name="name1" />
+    <plotly-bar-series :series-data="series2" :name="name2" />
   </plotly-chart>
   `,
 })
 
 export const pie = () => ({
-  components: { PlotlyChart, PlotlyPieTrace },
+  components: { PlotlyChart, PlotlyPieSeries },
   props: {
-    traceData: {
-      default: object('traceData', {
+    seriesData: {
+      default: object('seriesData', {
         values: [19, 26, 55],
         labels: ['Residential', 'Non-Residential', 'Utility'],
       }),
@@ -60,51 +60,51 @@ export const pie = () => ({
   },
   template: `
   <plotly-chart>
-    <plotly-pie-trace :trace-data="traceData" />
+    <plotly-pie-series :series-data="seriesData" />
   </plotly-chart>
   `,
 })
 
 export const line = () => ({
-  components: { PlotlyChart, PlotlyLineTrace },
+  components: { PlotlyChart, PlotlyLineSeries },
   props: {
-    trace1: {
+    series1: {
       default: object(
-        'traceData',
+        'seriesData',
         {
           x: [2, 3, 4, 5],
           y: [16, 5, 11, 9],
         },
-        TRACE_1,
+        SERIES_1,
       ),
     },
     mode1: {
-      default: text('mode', 'lines', TRACE_1),
+      default: text('mode', 'lines', SERIES_1),
     },
-    trace2: {
+    series2: {
       default: object(
-        'traceData',
+        'seriesData',
         {
           x: [1, 2, 3, 4],
           y: [12, 9, 15, 12],
         },
-        TRACE_2,
+        SERIES_2,
       ),
     },
     mode2: {
-      default: text('mode', 'lines', TRACE_2),
+      default: text('mode', 'lines', SERIES_2),
     },
   },
   template: `
   <plotly-chart>
-    <plotly-line-trace :trace-data="trace1" :mode="mode1" />
-    <plotly-line-trace :trace-data="trace2" :mode="mode2" />
+    <plotly-line-series :series-data="series1" :mode="mode1" />
+    <plotly-line-series :series-data="series2" :mode="mode2" />
   </plotly-chart>
   `,
 })
 
 export const scatter = () => ({
-  components: { PlotlyChart, PlotlyScatterTrace },
+  components: { PlotlyChart, PlotlyScatterSeries },
   props: {
     layout: {
       default: object(
@@ -130,27 +130,27 @@ export const scatter = () => ({
         'Layout',
       ),
     },
-    trace1: {
+    series1: {
       default: object(
-        'traceData',
+        'seriesData',
         {
           x: [1, 2, 3, 4, 5],
           y: [1, 6, 3, 6, 1],
         },
-        TRACE_1,
+        SERIES_1,
       ),
     },
     mode1: {
-      default: text('mode', 'text+markers', TRACE_1),
+      default: text('mode', 'text+markers', SERIES_1),
     },
     name1: {
-      default: text('name', 'Team A', TRACE_1),
+      default: text('name', 'Team A', SERIES_1),
     },
     text1: {
-      default: object('text', ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'], TRACE_1),
+      default: object('text', ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'], SERIES_1),
     },
     textposition1: {
-      default: text('textposition', 'top center', TRACE_1),
+      default: text('textposition', 'top center', SERIES_1),
     },
     textfont1: {
       default: object(
@@ -158,33 +158,33 @@ export const scatter = () => ({
         {
           family: 'Raleway, sans-serif',
         },
-        TRACE_1,
+        SERIES_1,
       ),
     },
     marker1: {
-      default: object('marker', { size: 12 }, TRACE_1),
+      default: object('marker', { size: 12 }, SERIES_1),
     },
-    trace2: {
+    series2: {
       default: object(
-        'traceData',
+        'seriesData',
         {
           x: [1.5, 2.5, 3.5, 4.5, 5.5],
           y: [4, 1, 7, 1, 4],
         },
-        TRACE_2,
+        SERIES_2,
       ),
     },
     mode2: {
-      default: text('mode', 'text+markers', TRACE_2),
+      default: text('mode', 'text+markers', SERIES_2),
     },
     name2: {
-      default: text('name', 'Team B', TRACE_2),
+      default: text('name', 'Team B', SERIES_2),
     },
     text2: {
-      default: object('text', ['B-a', 'B-b', 'B-c', 'B-d', 'B-e'], TRACE_2),
+      default: object('text', ['B-a', 'B-b', 'B-c', 'B-d', 'B-e'], SERIES_2),
     },
     textposition2: {
-      default: text('textposition', 'bottom center', TRACE_2),
+      default: text('textposition', 'bottom center', SERIES_2),
     },
     textfont2: {
       default: object(
@@ -192,23 +192,23 @@ export const scatter = () => ({
         {
           family: 'Times New Roman',
         },
-        TRACE_2,
+        SERIES_2,
       ),
     },
     marker2: {
-      default: object('marker', { size: 12 }, TRACE_2),
+      default: object('marker', { size: 12 }, SERIES_2),
     },
   },
   template: `
   <plotly-chart :layout="layout">
-    <plotly-scatter-trace :trace-data="trace1"
+    <plotly-scatter-series :series-data="series1"
     :mode="mode1"
     :name="name1"
     :text="text1"
     :textposition="textposition1"
     :textfont="textfont1"
     :marker="marker1" />
-    <plotly-scatter-trace :trace-data="trace2"
+    <plotly-scatter-series :series-data="series2"
     :mode="mode2"
     :name="name2"
     :text="text2"
