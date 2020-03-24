@@ -24,9 +24,55 @@ export interface IActionConfiguration<
     | [IDictionary, string, ValueFunction<T, K>]
 }
 
-/** a dictionary with a dot-notation string offset */
-export type IResponseOffset = [IDictionary, string]
-/** a dictionary with a function */
+export interface IChangeDelta<T, K> {
+  property: K
+  before: T | undefined
+  after: T | undefined
+}
+
+export type IPropertyChangeAction<TProps, TComponent, TChart> =
+  /** If you just pass in the component then it will set `[TComponent][propChanged]` to new value */
+  | TComponent
+  /** */
+  | [TComponent, string]
+  /**  */
+  | [TComponent, string, IPropertyChangeCallback<TProps, TComponent, TChart>]
+  /**  */
+  | IPropertyChangeCallback<TProps, TComponent, TChart>
+
+/**
+ * A function reponsible for reacting to a particular properties change in value; most typically this is a
+ * `prop` passed into a component but can also represent a user defined `attribute`.
+ *
+ * Each _signature_ of this type of callback function receives the same inputs:
+ *
+ * @param delta describes the change ... including the _property name_ as well as the _before_ and _after_ values.
+ * For instance:
+ * ```typescript
+ * { property: 'name', before: 'foo', after: 'bar' }
+ * ```
+ * @param action this is the proscribed action to take when the given property has changed ... it can take on several
+ * signatures and you should refer to `IPropertyChangeAction` for full overview
+ *
+ * @param chartComponent this is a reference the charting component directly being managed by the component which you
+ * are configuring (e.g., a _series_, _legend_, etc.). This is more typically used by external users who are defining
+ * an attribute which they want to respond than internal component authors because the internal author should already
+ * have this variable in local scope.
+ *
+ * @param chart a reference to the parent `chart` component; if you are configuring at the parent level then this
+ * property is a duplicate of the `chartComponent`
+ */
+export type IPropertyChangeCallback<
+  TProps extends IDictionary = IDictionary,
+  TComponent extends IDictionary = IDictionary,
+  TChart extends IDictionary = IDictionary,
+  K extends keyof TProps & string = keyof TProps & string
+> = (
+  delta: IChangeDelta<TProps[K], K>,
+  // action: IPropertyChangeAction<TProps, K, TComponent | TChart>,
+  chartComponent: TComponent,
+  chart: TChart,
+) => void
 
 /**
  * Get notified of any component properties which change by importing the `onPropChange` hook

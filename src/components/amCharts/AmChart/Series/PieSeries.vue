@@ -36,6 +36,17 @@ export default defineComponent({
     strokeOpacity: {
       type: [Number, String],
     },
+    disableTicks: {
+      type: Boolean,
+      default: false,
+    },
+    disableLabels: {
+      type: Boolean,
+      default: false,
+    },
+    tooltipText: {
+      type: String,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext) {
@@ -44,6 +55,7 @@ export default defineComponent({
     const series: Ref<PieSeries> = ref(new PieSeries())
     const { dataReady, dataMeta } = useSeries(props, context, series)
     const dataFields: Ref<IDictionary> = ref(series.value.dataFields)
+    const ttt: Ref<string> = ref(series.value.tooltipText)
 
     register(ChartType.series, props.id || 'primary', series)
     dataReady(series, {
@@ -56,6 +68,8 @@ export default defineComponent({
       strokeWidth: [series, 'slices.template.strokeWidth', (v: string | number) => Number(v)],
       strokeOpacity: [series, 'slices.template.strokeOpacity', (v: string | number) => Number(v)],
       fillProp: [series, 'slices.template.propertyFields.fill', props.fillProp],
+      disableTicks: [series, 'ticks.template.disabled', props.disableTicks],
+      disableLabels: [series, 'labels.template.disabled', props.disableLabels],
     })
 
     onChartConfig(chart => {
@@ -69,12 +83,16 @@ export default defineComponent({
     })
 
     onPropChange((prop, current) => {
+      console.log(`${prop} changed`)
+      if (props.disableTicks) {
+        series.value.ticks.template.disabled = true
+      }
+      // TODO: another case where respondTo is not doing as it's supposed to
+
       respondTo(prop, current, actionsConfig)
-      series.value.hide()
-      series.value.show()
     })
 
-    return { dataFields, dataMeta }
+    return { dataFields, dataMeta, ttt }
   },
 })
 </script>

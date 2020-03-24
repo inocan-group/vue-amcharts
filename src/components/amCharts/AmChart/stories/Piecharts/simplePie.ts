@@ -48,6 +48,12 @@ export const simplePie = () => {
       show: {
         default: boolean('Show legend', false, 'Component'),
       },
+      disableTicks: {
+        default: boolean('Disable ticks', false, 'Component'),
+      },
+      disableLabels: {
+        default: boolean('Disable labels', false, 'Component'),
+      },
       width: {
         default: select(
           'Width of the container',
@@ -69,7 +75,14 @@ export const simplePie = () => {
     template: `
     <div class="container" :width="width" :height="height" >
     <pie-chart :data="pieData" :innerRadius="innerRadius">
-      <pie-series valueProp="count" categoryProp="category" :stroke="stroke" :strokeWidth="strokeWidth" />
+      <pie-series 
+        valueProp="count" 
+        categoryProp="category" 
+        :stroke="stroke" 
+        :strokeWidth="strokeWidth" 
+        :disableTicks="disableTicks"
+        :disableLabels="disableLabels"
+      />
       <chart-legend :show="show" position="right" />
     </pie-chart>
     </div>
