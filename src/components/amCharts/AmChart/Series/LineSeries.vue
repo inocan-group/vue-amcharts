@@ -68,7 +68,6 @@ export default defineComponent({
 
     onChartConfig(chart => {
       axisConfig.value = setupAxes(series)
-      // initializeProps(propertyConfig)
       series.value = chart.series.push(series.value)
       initializeProps(propertyConfig)
       console.log('axis config', axisConfig.value)

@@ -73,7 +73,7 @@ export const lineChart = () => ({
     /> 
 
     <chart-cursor :maxTooltipDistance="maxTooltipDistance" />
-    <chart-legend />
+    <chart-legend :show="Boolean(true)"/>
   </xy-chart>
   `,
 })
