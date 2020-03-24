@@ -45,12 +45,20 @@ export default defineComponent({
       [0, 1, 'legend'],
       [0, null, 'features'],
     ]
-    const { chart, chartdiv, acceptChildMessage, acceptChildRegistration, registrants, dataMeta } = useChart(
-      XYChart,
-      props,
-      context,
-      parentConfig,
-    )
+    const {
+      chart,
+      chartdiv,
+      acceptChildMessage,
+      acceptChildRegistration,
+      registrants,
+      dataMeta,
+      chartData,
+      postDataChange,
+    } = useChart(XYChart, props, context, parentConfig)
+
+    postDataChange(() => {
+      console.log(`XY Chart has data loaded`, props.data)
+    })
 
     const actionsConfig: IActionConfiguration = () => {
       if (chart.value) {
@@ -71,18 +79,16 @@ export default defineComponent({
     })
 
     onMounted(async () => {
-      console.log('XYChart::onMounted')
-
       const c = chart.value as XYChart
       c.height = 800
       c.contentHeight = 800
       c.responsive.enabled = props.responsive
-      console.log('deferring to children')
     })
 
     return {
       chart,
       chartdiv,
+      chartData,
       dataMeta,
       registrants,
       acceptChildRegistration,

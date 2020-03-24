@@ -1,12 +1,12 @@
 import { XyChart, CandlestickSeries, ValueAxis, DateAxis, XyScrollbar, ChartCursor } from '../../index'
-import { text, select, boolean, array, number } from '@storybook/addon-knobs'
-import { IApiConfig } from '../../composables/useData/api'
+import { select } from '@storybook/addon-knobs'
+import { IApiConfig } from '../../composables/useData'
 
 const apiKey = process.env.ALPHA_VANTAGE
 
 export const candlestickChart = () => {
-  const api = (symbol: string = 'MSFT') =>
-    [
+  function api(symbol: string = 'MSFT') {
+    return [
       `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${apiKey}`,
       {
         offset: 'Time Series (Daily)',
@@ -19,21 +19,19 @@ export const candlestickChart = () => {
         },
       },
     ] as IApiConfig
-
-  const tickers = {
-    msft: api('MSFT'),
-    aapl: api('AAPL'),
-    aal: api('AAL'),
   }
 
   return {
+    data: () => ({
+      tickers: {
+        MSFT: api('MSFT'),
+        AAPL: api('AAPL'),
+        AAL: api('AAL'),
+      },
+    }),
     props: {
       ticker: {
-        default: select(
-          'Ticker Symbol',
-          { Microsoft: tickers.msft, Apple: tickers.aapl, AmericanAirlines: tickers.aal } as any,
-          tickers.msft as any,
-        ),
+        default: select('Ticker Symbol', { Microsoft: 'MSFT', Apple: 'AAPL', AmericanAirlines: 'AAL' }, 'MSFT'),
       },
     },
     components: { XyChart, ValueAxis, CandlestickSeries, DateAxis, XyScrollbar, ChartCursor },
@@ -43,7 +41,7 @@ export const candlestickChart = () => {
       <value-axis name="Prices" dimension="y" />
       <candlestick-series 
         name="Daily Price Movement"
-        :url="ticker"
+        :url="tickers[ticker]"
         openningProp="1. open" 
         closingProp="4. close" 
         lowProp="3. low" 

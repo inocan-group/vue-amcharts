@@ -54,7 +54,26 @@ export default defineComponent({
   setup(props: IDictionary, context: SetupContext) {
     props = { dataIdProp: props.dateProp, ...props }
     const series: Ref<CandlestickSeries> = ref(new CandlestickSeries())
-    const { dataReady, register, onChartConfig, dataMeta } = useSeries(props, context, series)
+    const {
+      register,
+      chartData,
+      onChartConfig,
+      dataReady,
+      dataMeta,
+      postDataChange,
+      postUrlChange,
+      setupAxes,
+      addToRegistration,
+    } = useSeries(props, context, series)
+    const axisConfig: Ref<IDictionary> = ref({})
+    register(ChartType.series, props.id, series)
+
+    dataReady(series, {
+      id: 'date',
+      dataProps: ['price'],
+      labelProps: ['date'],
+    })
+
     const { onPropChange, respondTo, initializeProps } = useProps(props)
 
     series.value.dataFields = {
@@ -65,17 +84,23 @@ export default defineComponent({
       highValueY: props.highProp,
     }
 
-    register(ChartType.series, props.id, { instance: series })
-
-    const { postDataChange, postUrlChange } = dataReady(unbox(series), {
-      id: 'date',
-      dataProps: ['price'],
-      labelProps: ['date'],
-    })
-
     postDataChange(() => {
-      console.log('candlestick post data change')
+      console.log('candlestick post data', {
+        data: series.value.data,
+        dp: series.value.dataProvider,
+        source: series.value.dataSource,
+        sets: series.value.dataSets,
+      })
+
+      series.value.dataProvider = series.value
+      series.value.invalidateData()
+      console.log('candlestick post data change', {
+        provider: series.value.dataProvider,
+        source: series.value.dataSource,
+        data: series.value.data,
+      })
     })
+
     postUrlChange(() => {
       console.log('candlestick post url change')
     })
@@ -115,17 +140,21 @@ export default defineComponent({
     })
 
     onChartConfig((chart: IChart) => {
-      series.value = chart.series.push(series.value)
+      console.log('candlestick config started')
       initializeProps(actionConfig)
+      chart.series.push(series.value)
+      axisConfig.value = setupAxes(series)
 
       if (props.tooltipText) {
         console.warn(
           `You have configured tooltip text for the ${props.name} LineSeries component but there is no Cursor on this chart so it will not be displayed!`,
         )
       }
+
+      addToRegistration('data', series.value.data)
     })
 
-    return { instance: series, dataMeta }
+    return { series, dataMeta, chartData, axisConfig }
   },
 })
 </script>

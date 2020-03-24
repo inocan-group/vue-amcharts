@@ -10,7 +10,6 @@ import { IChart } from '..'
 import { ChartType } from '../types'
 import { IDictionary } from 'common-types'
 import { color } from '@amcharts/amcharts4/core'
-
 type Legend = import('@amcharts/amcharts4/charts').Legend
 
 export default defineComponent({
@@ -32,9 +31,10 @@ export default defineComponent({
   setup(props: IDictionary, context: SetupContext) {
     const { onPropChange, respondTo, initializeProps } = useProps(props)
     const { register, getRegistration, onChartConfig } = useRegistry<IChart>(props, context)
-    const { setupAxes } = useSeries(props, context)
     const series: Ref<LineSeries> = ref(new LineSeries())
+    const { setupAxes, dataReady } = useSeries(props, context, series)
     const axisConfig: Ref<IDictionary> = ref({})
+    dataReady(series)
 
     const s = series.value
     const propertyConfig = {
@@ -60,6 +60,7 @@ export default defineComponent({
         }
       },
     }
+    register(ChartType.series, props.id, series)
 
     onPropChange(async (prop: string, current) => {
       respondTo(prop, current, propertyConfig)
@@ -67,10 +68,10 @@ export default defineComponent({
 
     onChartConfig(chart => {
       axisConfig.value = setupAxes(series)
-      // setupEvents(series)
-      initializeProps(propertyConfig)
+      // initializeProps(propertyConfig)
       series.value = chart.series.push(series.value)
       initializeProps(propertyConfig)
+      console.log('axis config', axisConfig.value)
 
       try {
         getRegistration('cursor')
@@ -81,11 +82,11 @@ export default defineComponent({
           )
         }
       }
+      // TODO: why in the world does adding this to the registration cause conflicts!?!
+      // addToRegistration('axisConfig', axisConfig.value)
     })
 
-    register(ChartType.series, props.id, { instance: series })
-
-    return { instance: series, axisConfig }
+    return { series, axisConfig }
   },
 })
 </script>

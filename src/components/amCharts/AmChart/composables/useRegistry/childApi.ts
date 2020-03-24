@@ -3,9 +3,6 @@ import { SetupContext } from '@vue/composition-api'
 import { IParentRegistry, EventMessages, IChildChartConfig } from './registry-types'
 import { AmchartError } from '../../errors'
 import { IGetChild } from './useRegistry'
-import { IChart } from '../..'
-let childType: string
-let childName: string
 
 export function childApi<C, P>(
   props: IDictionary,
@@ -46,24 +43,34 @@ export function childApi<C, P>(
     return parent.registrants[type][name]
   }
 
+  const addToRegistration = (property: string | object, value?: any) => {
+    const { childType, childName } = getChild()
+    if (typeof property === 'object') {
+      Object.keys(property).forEach(prop => addToRegistration(prop, property[prop as keyof typeof property]))
+    } else {
+      console.log('adding to registration', { childType, childName, property, value })
+      parent.acceptChildMessage(EventMessages.addToRegistration, childType, childName, property, value)
+    }
+  }
+
   // CHILD API
   return {
     /**
      * Register with the parent component and then await startup events before returning
      * with a reference to the `chart` object.
      */
-    register: async (type: string, name: string, options: IDictionary = {}) => {
+    register: (type: string, id: string, instance?: C) => {
       if (!parent.acceptChildRegistration) {
         throw new Error(
-          `${type}/${name}'s attempt to register itself with it's parent failed as the parent has not registered as a Parent with useRegistry.`,
+          `${type}/${id}'s attempt to register itself with it's parent failed as the parent has not registered as a Parent with useRegistry.`,
         )
       }
 
-      const assignedName = parent.acceptChildRegistration(type, name, options)
-      if (name !== assignedName) {
-        console.info(`Attempt to register a ${type} with the name "${name}" twice; will use ${assignedName} instead`)
-      }
+      const assignedName = parent.acceptChildRegistration(type, id, instance)
       setChild(type, assignedName)
+      if (id !== assignedName) {
+        console.info(`Attempt to register a ${type} with the name "${id}" twice; will use ${assignedName} instead`)
+      }
     },
 
     /**
@@ -111,6 +118,7 @@ export function childApi<C, P>(
      * of `no-registry` or `no-instance`) if not found
      */
     getComponent: <T = IDictionary>(type: types, name?: string) => {
+      const { childType, childName } = getChild()
       const meta = getComponentMeta('getComponent', type, name)
       if (!meta.instance) {
         throw new AmchartError(
@@ -129,6 +137,7 @@ export function childApi<C, P>(
      * Gives the name of the _first_ component registered for a given _type_. This
      */
     firstComponentName: (type: types) => {
+      const { childType, childName } = getChild()
       if (Object.keys(parent.registrants[type]).length === 0) {
         throw new AmchartError(
           `Attempt by the ${childType}/${childName} to get the firstComponentName(${type}) failed because there are NO registered components of type ${type}.`,
@@ -151,10 +160,6 @@ export function childApi<C, P>(
      *
      * Allows children components to add to their registration information with the parent at run time
      */
-    addToRegistration: (property: string, value: any) => {
-      const { childType, childName } = getChild()
-
-      parent.acceptChildMessage(EventMessages.addToRegistration, childType, childName, property, value)
-    },
+    addToRegistration,
   }
 }

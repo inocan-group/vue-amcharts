@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
-import { useRegistry } from '@/components/amCharts/AmChart/composables'
+import { useRegistry, IActionConfiguration, useProps } from '@/components/amCharts/AmChart/composables'
 import { ChartType, IChart } from '@/components/amCharts/AmChart'
 import { Legend } from '@amcharts/amcharts4/charts'
 
@@ -24,13 +24,22 @@ export default defineComponent({
       validator: v => ['start', 'center', 'end'].includes(v),
       default: 'center',
     },
+    show: {
+      type: Boolean,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext) {
     const { register, onChartConfig } = useRegistry(props, context)
+    const { onPropChange, respondTo, initializeProps } = useProps(props)
     const legend: Ref<Legend> = ref(new Legend())
 
-    register(ChartType.legend, 'legend', { instance: legend.value })
+    register(ChartType.legend, 'legend', legend)
+    const actionsConfig: IActionConfiguration = () => ({
+      show: () => {
+        console.log('running')
+      },
+    })
 
     onChartConfig(async (chart: IChart) => {
       legend.value.position = props.position
@@ -40,9 +49,26 @@ export default defineComponent({
         legend.value.contentAlign = props.positionAlt
       }
       chart.legend = legend.value
+      if (props.show) {
+        legend.value.show()
+      } else {
+        legend.value.hide()
+      }
+      // TODO: figure out why the show/hide logic can't be done in the actionsConfig
+      initializeProps(actionsConfig)
     })
 
-    return { Legend, instance: legend }
+    onPropChange((prop, value) => {
+      console.log(`${prop} changed`)
+      if (props.show) {
+        legend.value.show()
+      } else {
+        legend.value.hide()
+      }
+      respondTo(prop, value, actionsConfig)
+    })
+
+    return { legend }
   },
 })
 </script>

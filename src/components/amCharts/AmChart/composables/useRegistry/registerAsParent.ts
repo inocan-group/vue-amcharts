@@ -8,6 +8,7 @@ import {
 import { IDictionary } from 'common-types'
 import { dictionaryToArray } from './dictionaryToArray'
 import { reactive } from '@vue/composition-api'
+import { unbox } from '../../shared'
 
 export const registerAsParent = function<P>() {
   return (childrenAndCardinality: IChildWithCardinality[]) => {
@@ -32,7 +33,9 @@ export const registerAsParent = function<P>() {
      * category. For each child component, it looks for the `onChartConfig` configuration
      * and executes it if available.
      */
-    const childRegistrationsComplete = async (data: any): Promise<void> => {
+    const childRegistrationsConfigured = async (data: any): Promise<void> => {
+      console.log('all registrations received, no to configure', registrants)
+
       for await (const type of Object.keys(registrants)) {
         const named = dictionaryToArray(registrants[type])
         await Promise.all([...named.map(i => (i.configure ? i.configure(data) : undefined)).filter(i => i)])
@@ -48,14 +51,14 @@ export const registerAsParent = function<P>() {
        * let's all children run their configuration/setup routines and then return
        */
       configureChildren: async (data: P) => {
-        await childRegistrationsComplete(data)
+        await childRegistrationsConfigured(data)
       },
       registrants,
       depSequence,
       cardinality,
 
       /** accept registration requests from children */
-      acceptChildRegistration: (type, name, config) => {
+      acceptChildRegistration: (type, name, instance) => {
         let useName = name
         let index = 2
         const { max } = cardinality[type]
@@ -72,8 +75,9 @@ export const registerAsParent = function<P>() {
         }
 
         registrants[type][useName] = {
-          ...config,
+          instance: unbox(instance),
           ready: false,
+          className: instance?.prototype?.name,
         }
 
         return useName

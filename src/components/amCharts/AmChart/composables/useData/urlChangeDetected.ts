@@ -2,21 +2,27 @@ import { IUrlInfo, IDataMetaForUrlDrivenChart } from './use-data-types'
 import { api } from './api'
 import { Ref } from '@vue/composition-api'
 
-export const urlChangeDetected = <TData>(
-  dataMeta: Ref<IDataMetaForUrlDrivenChart<TData>>,
-  preHook: (current: IUrlInfo<TData>, old: IUrlInfo<TData>) => Promise<boolean> | boolean,
-  postHook: (current: IUrlInfo<TData>, old: IUrlInfo<TData>) => Promise<void> | void,
-) => (current: IUrlInfo<TData>, prior: IUrlInfo<TData>) => {
-  console.log('url change detected', dataMeta.value.containerName, current, prior)
+export const urlChangeDetected = <TData>(dataMeta: Ref<IDataMetaForUrlDrivenChart<TData>>) => (
+  current: IUrlInfo<TData>,
+  prior: IUrlInfo<TData>,
+) => {
+  const { urlPostHook, urlPreHook } = dataMeta.value.hooks
 
-  if (preHook) {
-    if (!preHook(current, prior)) return
+  console.log('starting URL change detection', { current, prior, urlPostHook, urlPreHook })
+
+  if (!urlPreHook(current, prior)) return
+
+  if (current && current.url) {
+    console.log('url change', { who: dataMeta.value.sourceClass, dataMeta, current, prior })
+    dataMeta.value.urlConfig = current
+    if (prior && prior.url && prior.url === current.url) {
+      // no-op
+    } else {
+      console.log('making URL request', current.url, { prior: prior.url, meta: dataMeta.value.urlConfig })
+
+      api<TData>(dataMeta)
+    }
   }
-  dataMeta.value.urlConfig = current
 
-  if (current.url && prior && current.url !== prior.url) {
-    api<TData>(dataMeta)
-  }
-
-  if (postHook) postHook(current, prior)
+  urlPostHook(current, prior)
 }

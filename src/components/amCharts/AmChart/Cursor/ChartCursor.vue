@@ -32,7 +32,7 @@ export default defineComponent({
     const { onPropChange, respondTo } = useProps(props)
     const cursor: Ref<Cursor> = ref(new Cursor())
 
-    register(ChartType.cursor, 'cursor')
+    register(ChartType.cursor, 'cursor', cursor)
 
     onChartConfig((chart: IChart) => {
       chart.cursor = cursor.value

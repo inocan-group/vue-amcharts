@@ -31,7 +31,7 @@ export default defineComponent({
     const { register, getComponent, onChartConfig } = useRegistry(props, context)
     const scrollbar: Ref<XYChartScrollbar> = ref(new XYChartScrollbar())
 
-    register(ChartType.features, 'scrollbar', { instance: scrollbar })
+    register(ChartType.features, 'scrollbar', scrollbar)
 
     onChartConfig((chart: IChart) => {
       if (props.tooltipText) {

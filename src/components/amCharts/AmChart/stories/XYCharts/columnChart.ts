@@ -1,7 +1,6 @@
 import { XyChart, ColumnSeries, ValueAxis, DateAxis } from '../../index'
-import { text, select, boolean, array, number } from '@storybook/addon-knobs'
+import { select, boolean } from '@storybook/addon-knobs'
 import { format } from 'date-fns'
-import { IDictionary } from 'common-types'
 
 function d(d: Date) {
   return format(d, 'yyyy-MM-dd')
@@ -12,8 +11,6 @@ function r() {
 }
 
 type PricePoint = { date: string; price: number }
-
-console.log('calculating datasets')
 
 const basic: PricePoint[] = []
 const plus: PricePoint[] = []
@@ -28,30 +25,45 @@ for (const [i] of Array(6).entries()) {
 }
 plus.push({ date: date(6), price: r() } as PricePoint)
 
-const data = {
-  basic,
-  plus,
-  alt,
-}
-
-// const data = [ basic, plus, alt ]
 export const columnChart = () => {
   return {
+    data: () => ({
+      dataset: {
+        basic,
+        plus,
+        alt,
+        none: [],
+      },
+    }),
     props: {
       stroke: { default: select('stroke color', { blue: '#69B7DC', red: '#ff0000' }, '#69B7DC') },
       strokeWidth: { default: select('Column stroke width', { 0: 0, 1: 1, 3: 3, 5: 5, 8: 8 }, 3) },
       fill: { default: select('fill color', { blue: '#69B7DC', red: '#ff0000' }, '#69B7DC') },
-      dataset: {
-        default: select('data set', data as any, (data as IDictionary).basic),
+      datachoice: {
+        default: select('Dataset', { none: 'none', basic: 'basic', alt: 'alt', basicPlus: 'plus' }, 'basic'),
+      },
+      fixPriceAxis: {
+        default: boolean(`Fix axis's price range [0-100]`, false),
       },
     },
     components: { XyChart, ValueAxis, ColumnSeries, DateAxis },
 
     template: `
-    <xy-chart :data="dataset">
+    <xy-chart :data="dataset[datachoice]" dataIdProp="date" dataProperties="price">
       <date-axis dimension="x"/>
-      <value-axis dimension="y" />
-      <column-series xProp="date" yProp="price" :stroke="stroke" :fill="fill" :strokeWidth="strokeWidth" />
+      <value-axis 
+        name="Price" 
+        dimension="y" 
+        :min="fixPriceAxis ? 0 : ''" 
+        :max="fixPriceAxis ? 100 : ''" 
+      />
+      <column-series 
+        xProp="date" 
+        yProp="price" 
+        :stroke="stroke" 
+        :fill="fill" 
+        :strokeWidth="strokeWidth" 
+      />
     </xy-chart>
   `,
     notes: `Shows animation of data in a very simple container; highlighting add, update, and remove`,

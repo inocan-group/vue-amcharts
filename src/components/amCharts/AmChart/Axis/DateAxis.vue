@@ -37,9 +37,12 @@ export default defineComponent({
     const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
     const notFirstOnAxis = howMany(dim) > 0
 
-    register(ChartType[dim], props.id, { instance: axis.value })
+    register(ChartType[dim], props.id, axis)
 
     onChartConfig((chart: IChart) => {
+      addToRegistration('dataSource', axis.value.dataSource.uid)
+      addToRegistration('data', axis.value.data)
+
       axis.value.tooltipDateFormat = 'MMM YYYY'
 
       if (notFirstOnAxis) {
@@ -47,8 +50,6 @@ export default defineComponent({
       }
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       dimension.push(axis.value)
-      addToRegistration('id', props.id || props.name)
-      addToRegistration('dataSource', axis.value.dataSource.uid)
     })
 
     addToRegistration('dataField', `date${capitalize(props.dimension)}`)

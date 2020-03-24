@@ -1,9 +1,9 @@
-import { Ref, SetupContext, watch, toRefs } from '@vue/composition-api'
-import { Axis, LineSeries, ColumnSeries } from '@amcharts/amcharts4/charts'
+import { Ref, SetupContext, onBeforeUnmount } from '@vue/composition-api'
+import { Axis, LineSeries, ColumnSeries, Series } from '@amcharts/amcharts4/charts'
 import { IDictionary } from 'common-types'
 import { useRegistry } from './useRegistry/useRegistry'
 import { AmchartError } from '../errors'
-import { ILooksLikeChart, useData } from './useData'
+import { useData, removeEventClass } from './useData'
 
 export const seriesProps = {
   id: {
@@ -57,18 +57,20 @@ export const seriesProps = {
 export function useSeries<TProps extends IDictionary, TData>(
   props: TProps,
   context: SetupContext,
-  series: Ref<ILooksLikeChart<TData>>,
+  series: Ref<Series>,
 ) {
-  const { register, onChartConfig, getRegistration, getComponent, firstComponentName } = useRegistry(props, context)
-
-  const { dataReady, dataMeta } = useData<TProps>(props)
+  const { register, onChartConfig, getRegistration, getComponent, firstComponentName, addToRegistration } = useRegistry(
+    props,
+    context,
+  )
+  const { dataReady, dataMeta, postDataChange, postUrlChange, chartData } = useData(props)
 
   const setupAxes = (series: Ref<LineSeries | ColumnSeries>) => {
     // data validation
-    if (!props.xProp) {
+    if (!props.xProp && series.value.className !== 'CandlestickSeries') {
       throw new AmchartError(`The ${props.id} series does not define a "xProp" property!`, 'no-data-field')
     }
-    if (!props.yProp) {
+    if (!props.yProp && series.value.className !== 'CandlestickSeries') {
       throw new AmchartError(`The ${props.id} series does not define a "yProp" property!`, 'no-data-field')
     }
 
@@ -101,35 +103,37 @@ export function useSeries<TProps extends IDictionary, TData>(
     }
 
     // associate series props to appropriate dataField
-    switch (y.dataField) {
-      case 'valueY':
-        series.value.dataFields.valueY = props.yProp
-        break
-      case 'dateY':
-        series.value.dataFields.dateY = props.yProp
-        break
-      case 'categoryY':
-        series.value.dataFields.categoryY = props.yProp
-        break
-      default:
-        throw new AmchartError(
-          `The dataField type of "${y.dataField}" for the Y-axis is unknown!`,
-          'unknown-data-field',
-        )
-    }
+    if (series.value.className !== 'CandlestickSeries') {
+      switch (y.dataField) {
+        case 'valueY':
+          series.value.dataFields.valueY = props.yProp
+          break
+        case 'dateY':
+          series.value.dataFields.dateY = props.yProp
+          break
+        case 'categoryY':
+          series.value.dataFields.categoryY = props.yProp
+          break
+        default:
+          throw new AmchartError(
+            `The dataField type of "${y.dataField}" for the Y-axis is unknown!`,
+            'unknown-data-field',
+          )
+      }
 
-    switch (x.dataField) {
-      case 'valueX':
-        series.value.dataFields.valueX = props.xProp
-        break
-      case 'dateX':
-        series.value.dataFields.dateX = props.xProp
-        break
-      case 'categoryX':
-        series.value.dataFields.categoryX = props.xProp
-        break
-      default:
-        console.warn(`The dataField type of "${x.dataField}" for the Y axis is unknown!`)
+      switch (x.dataField) {
+        case 'valueX':
+          series.value.dataFields.valueX = props.xProp
+          break
+        case 'dateX':
+          series.value.dataFields.dateX = props.xProp
+          break
+        case 'categoryX':
+          series.value.dataFields.categoryX = props.xProp
+          break
+        default:
+          console.warn(`The dataField type of "${x.dataField}" for the Y axis is unknown!`)
+      }
     }
 
     return {
@@ -152,5 +156,20 @@ export function useSeries<TProps extends IDictionary, TData>(
     }
   }
 
-  return { dataReady, setupAxes, register, onChartConfig, dataMeta }
+  onBeforeUnmount(() => {
+    removeEventClass(dataMeta.value.sourceClass)
+    if (dataMeta.value?.source?.dispose) dataMeta.value.source.dispose()
+  })
+
+  return {
+    dataReady,
+    chartData,
+    setupAxes,
+    addToRegistration,
+    register,
+    onChartConfig,
+    dataMeta,
+    postDataChange,
+    postUrlChange,
+  }
 }

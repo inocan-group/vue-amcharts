@@ -12,47 +12,72 @@ function hasPriorValue<T>(prior: T[] | undefined): prior is T[] {
 }
 
 export const dataChangeDetected = <TData, K extends keyof TData = keyof TData>(
+  chartData: Ref<TData[]>,
   dataMeta: Ref<IDataMetaReady<TData>>,
-  preHook: (current: TData[], old: TData[]) => Promise<boolean> | boolean,
-  postHook: (current: TData[], old: TData[]) => Promise<void> | void,
 ) => (current: TData[], prior: TData[]) => {
-  const { source, propMeta } = dataMeta.value
+  const { dataPostHook, dataPreHook } = dataMeta.value.hooks
   if (typeof current === 'undefined' && typeof prior === 'undefined') return
-  console.log(`dataChangeDetected [${typeof current}/${typeof prior}]`, current)
-
-  const continueExecution = preHook ? preHook(current, prior) : true
-
+  console.log(`dataChangeDetected [ ${dataMeta.value.sourceClass} ]`, { current, prior, chartData: chartData.value })
+  // pre hook
+  const continueExecution = dataPreHook(current, prior)
   if (!continueExecution) {
+    console.log(`pre hook ends execution`)
+
     return
   }
-  console.log('continuing data change processing')
 
-  if (hasCurrentValue(current) && !hasPriorValue(prior)) {
+  if (current && current.length > 0) {
+    const currentKeys = Object.keys(current[0]) as Array<K & string>
+    const otherKeys: Array<K & string> = currentKeys.filter(i => !dataMeta.value.propMeta.dataProps.includes(i))
+    dataMeta.value.propMeta.labelProps = otherKeys
+  }
+
+  if (hasCurrentValue(current) && (!hasPriorValue(prior) || prior.length === 0)) {
     // All data is new
-    console.log('data is all new', current, source)
-
-    source.data = current
-    if (Array.isArray(prior)) {
-      source.invalidateData()
+    console.log('data is all new', current, dataMeta.value.source.data)
+    if (Array.isArray(current)) {
+      console.log('using ADD approach')
+      current.forEach(i => dataMeta.value.source.addData(i))
+    } else {
+      dataMeta.value.source.data = current
+      chartData = current
+      dataMeta.value.source.invalidateData()
     }
-  } else if (!hasCurrentValue(current) && hasPriorValue(prior)) {
+  } else if ((!hasCurrentValue(current) || current.length === 0) && hasPriorValue(prior)) {
     // All data has been removed
     console.log('data is all removed')
-
-    source.data = []
-    source.invalidateData()
+    dataMeta.value.source.data = []
+    chartData.value = []
+    dataMeta.value.source.invalidateData()
   } else if (hasCurrentValue(current) && hasPriorValue(prior)) {
     // Data has changed; address add/remove
-    const difference = diff<TData>(prior, current, propMeta.id)
-    console.log('data is different', difference, source)
-    source.addData(difference.added)
+    const difference = diff<TData>(dataMeta.value.source.data, current, dataMeta.value.propMeta.id)
+    if (difference.added.length === 0 && difference.removed.length === 0) {
+      console.log('no add/remove; processing differences', difference, dataMeta.value.source.data)
+    } else if (difference.added.length === 0) {
+      console.log(
+        `${difference.removed.length} removed; processing differences`,
+        difference,
+        dataMeta.value.source.data,
+      )
+    } else {
+      console.log('processing differences', difference)
+    }
+    if (difference.added.length > 0) {
+      dataMeta.value.source.addData(difference.added)
+      chartData.value = dataMeta.value.source.data
+    }
     difference.removed.forEach(i => {
-      const pk = i[propMeta.id]
-      const index = (source.data as TData[]).findIndex(i => i[propMeta.id] === pk)
+      const idProp = dataMeta.value.propMeta.id
+      const pk = i[idProp]
+      const index = (dataMeta.value.source.data as TData[]).findIndex(i => i?.[idProp] === pk)
       if (index !== -1) {
-        ;(source.data as TData[]).splice(index, 1)
-        source.invalidateData()
-        console.log(`Remove datum`, i, current.length, source.data.length)
+        // ;(dataMeta.value.source.data.data as TData[]).splice(index, 1)
+        delete dataMeta.value.source.data[index]
+        dataMeta.value.source.invalidateData()
+        delete dataMeta.value.source.data[index]
+        chartData.value = dataMeta.value.source.data
+        console.log(`Remove datum`, i, current.length, dataMeta.value.source.data.length)
       } else {
         console.warn(`A property was removed but it was NOT found in the source data structure`, i)
       }
@@ -60,33 +85,51 @@ export const dataChangeDetected = <TData, K extends keyof TData = keyof TData>(
     // deal with remaining overlap
     const changedData = difference.common.reduce(
       (agg: { dataChanged: TData[]; labelsChanged: TData[] }, rec: TData) => {
-        const currentRec = current.find(i => rec[propMeta.id] === i[propMeta.id]) as TData
-        if (!propMeta.dataProps.every(i => currentRec[i] === rec[i])) {
-          agg.dataChanged.push(rec)
+        const currentRec = current.find(i => rec[dataMeta.value.propMeta.id] === i[dataMeta.value.propMeta.id]) as TData
+        // check each data property for change
+        if (!dataMeta.value.propMeta.dataProps.every(i => currentRec[i] === rec[i])) {
+          agg.dataChanged.push(currentRec)
         }
-        if (!propMeta.labelProps.every(i => currentRec[i] === rec[i])) {
+        if (!dataMeta.value.propMeta.labelProps.every(i => currentRec[i] === rec[i])) {
           agg.labelsChanged.push(rec)
         }
         return agg
       },
       { dataChanged: [], labelsChanged: [] },
     )
-    console.log({ changedData, meta: { dataProps: propMeta.dataProps, labelProps: propMeta.labelProps } })
+    if (changedData.dataChanged.length > 0) {
+      console.log(`data props [ ${dataMeta.value.propMeta.dataProps.join(',')} ] have changed`, changedData.dataChanged)
+    }
+    if (changedData.labelsChanged.length > 0) {
+      console.log(
+        `label props [ ${dataMeta.value.propMeta.labelProps.join(', ')} ] have changed`,
+        changedData.labelsChanged,
+      )
+    }
+    console.log({
+      changedData,
+      meta: { dataProps: dataMeta.value.propMeta.dataProps, labelProps: dataMeta.value.propMeta.labelProps },
+    })
 
     if (changedData.labelsChanged.length > 0) {
-      source.data = current
-      source.invalidate()
+      dataMeta.value.source.data = current
+      chartData.value = current
+      dataMeta.value.source.invalidateData()
     } else if (changedData.dataChanged.length > 1) {
-      ;(source.data as TData[]).forEach((item, index) => {
-        const pk = item[propMeta.id]
-        const changedRecord = changedData.dataChanged.find(i => i[propMeta.id] === pk)
+      dataMeta.value.source.data.forEach((item, index) => {
+        const pk = item[dataMeta.value.propMeta.id]
+        const changedRecord = changedData.dataChanged.find(i => i[dataMeta.value.propMeta.id] === pk)
         if (changedRecord) {
-          propMeta.dataProps.forEach(p => {
-            console.log(`changing property [${index}][${p}]`, changedRecord[p])
+          dataMeta.value.propMeta.dataProps.forEach(p => {
+            console.log(
+              `changing property [${index}][${p}]`,
+              changedRecord[p],
+              `from ${dataMeta.value.source.data[index][p]}`,
+            )
 
-            source.data[index][p] = changedRecord[p]
+            dataMeta.value.source.data[index][p] = changedRecord[p]
           })
-          source.invalidateRawData()
+          dataMeta.value.source.invalidateRawData()
         }
       })
     } else {
@@ -96,6 +139,8 @@ export const dataChangeDetected = <TData, K extends keyof TData = keyof TData>(
         difference: difference.common,
       })
     }
-    if (postHook) postHook(current, prior)
   }
+  console.log(`about to call post hook for ${dataMeta.value.sourceClass}`, dataPostHook)
+
+  dataPostHook(current, prior)
 }

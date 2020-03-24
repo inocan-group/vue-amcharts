@@ -16,14 +16,21 @@ export interface IGetChild {
   childName: string
 }
 
-function getChild(): IGetChild {
-  return { childType, childName }
-}
-
 /**
  * Sets up registry functions for _child_, _parent_, or **both**.
  */
 export function useRegistry<P, C = any>(props: IDictionary, context: SetupContext) {
+  let childType: string = ''
+  let childName: string = ''
+
+  const getChild = () => {
+    return { childType, childName }
+  }
+  const setChild = (type: string, name: string) => {
+    childType = type
+    childName = name
+  }
+
   return {
     /**
      * Registers a component as a parent of other components.

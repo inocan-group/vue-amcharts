@@ -2,6 +2,7 @@ import { IDictionary } from 'common-types'
 import { watch, ref } from '@vue/composition-api'
 import { AmchartError } from '../errors'
 import set from 'lodash.set'
+import { unbox } from '../shared'
 
 export type IPropsOnChange<T extends IDictionary, K extends keyof T = keyof T> = (
   prop: string & K,
@@ -9,11 +10,18 @@ export type IPropsOnChange<T extends IDictionary, K extends keyof T = keyof T> =
   old: T[K] | undefined,
 ) => Promise<void> | void
 
+export type ValueFunction<T extends IDictionary = IDictionary, K extends keyof T & string = keyof T & string> = (
+  v: T[K],
+) => any
+
 export interface IActionConfiguration<
   T extends IDictionary = IDictionary,
   K extends keyof T & string = keyof T & string
 > {
-  (prop: K & string, value: T, old: T | undefined): any
+  (prop: K & string, value: T, old: T | undefined):
+    | IDictionary
+    | [IDictionary, string]
+    | [IDictionary, string, ValueFunction<T, K>]
 }
 
 /** a dictionary with a dot-notation string offset */
@@ -38,9 +46,9 @@ export function useProps<T extends IDictionary = IDictionary<unknown>, K extends
         // }
         const [base, offset, optFn] = action
         if (typeof offset === 'string') {
-          set(base, offset, optFn ? optFn() : value)
+          set(unbox(base), offset, optFn ? optFn() : value)
         } else if (typeof offset === 'function') {
-          set(base, offset(), value)
+          set(unbox(base), offset(), value)
         } else {
           throw new AmchartError(
             `The respondTo() helper was given an array signature for the property ${prop} but the second array element needs to be a string or a function and it was a ${typeof offset}`,

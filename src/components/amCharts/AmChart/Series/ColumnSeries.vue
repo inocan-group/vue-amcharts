@@ -7,7 +7,7 @@ import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { ColumnSeries } from '@amcharts/amcharts4/charts'
 import { useSeries, seriesProps, useRegistry, useProps } from '../composables'
 import { IDictionary } from 'common-types'
-import { IChart, ChartType } from '..'
+import { IChart, ChartType } from '../index'
 import { color } from '@amcharts/amcharts4/core'
 
 export default defineComponent({
@@ -18,12 +18,13 @@ export default defineComponent({
 
   setup(props: IDictionary, context: SetupContext) {
     const { register, onChartConfig } = useRegistry(props, context)
-    const { setupAxes } = useSeries(props, context)
     const { onPropChange, respondTo, initializeProps } = useProps(props)
     const series: Ref<ColumnSeries> = ref(new ColumnSeries())
+    const { setupAxes, dataReady, addToRegistration } = useSeries(props, context, series)
+    dataReady(series.value)
     const axisConfig: Ref<IDictionary> = ref({})
 
-    register(ChartType.series, props.id, { instance: series })
+    register(ChartType.series, props.id, series)
 
     const actionConfig = {
       name: series.value,
@@ -58,8 +59,6 @@ export default defineComponent({
       axisConfig.value = setupAxes(series)
       series.value = chart.series.push(series.value)
       initializeProps(actionConfig)
-      // series.value.name = props.name
-      // series.value.strokeWidth = Number(props.strokeWidth)
 
       if (props.tooltipText) {
         console.warn(
@@ -68,7 +67,7 @@ export default defineComponent({
       }
     })
 
-    return { instance: series, axisConfig }
+    return { series, axisConfig }
   },
 })
 </script>

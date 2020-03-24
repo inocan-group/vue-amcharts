@@ -63,11 +63,16 @@ export default defineComponent({
 
     const accessibility = { axis: `${props.dimension}Axis`, dataField: `value${capitalize(props.dimension)}` }
 
-    register(ChartType[dim], props.id, { instance: axis.value, ...accessibility })
+    register(ChartType[dim], props.id, axis)
+    addToRegistration(accessibility)
 
     onPropChange(async (prop, current) => {
       if (prop === 'name') {
         axis.value.title.text = current
+      }
+      if (prop === 'min' || prop === 'max') {
+        axis.value[prop] = Number(current)
+        axis.value.invalidateRawData()
       }
     })
 
@@ -78,8 +83,11 @@ export default defineComponent({
       if (axis.value.tooltip) {
         axis.value.tooltip.disabled
       }
-      if (props.min !== undefined) axis.value.min = Number(props.min)
-      if (props.max !== undefined) axis.value.max = Number(props.max)
+
+      const min = props.min === '' ? undefined : props.min
+      const max = props.max === '' ? undefined : props.max
+      axis.value.min = min === undefined ? ((undefined as unknown) as number) : Number(min)
+      axis.value.max = max === undefined ? ((undefined as unknown) as number) : Number(max)
 
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       dimension.push(axis.value)
@@ -97,6 +105,7 @@ export default defineComponent({
 
       addToRegistration('id', axis.value.uid)
       addToRegistration('dataSource', axis.value.dataSource.uid)
+      addToRegistration('data', axis.value.data)
       dataSource.value = axis.value.dataSource.uid
       instanceId.value = axis.value.uid
     })

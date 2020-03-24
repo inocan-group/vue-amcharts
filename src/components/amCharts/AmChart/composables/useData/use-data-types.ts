@@ -1,5 +1,4 @@
 import { IDictionary, ms } from 'common-types'
-import { Ref } from '@vue/composition-api'
 
 /**
  * Properties for components which can receive DATA
@@ -32,13 +31,23 @@ export const dataProperties = {
   dataIdProp: {
     type: String,
   },
+  /**
+   * states which property or array of properties are used for the "data" in your data structure
+   *
+   * **Note:** properties _not_ included in this set of properties will be considered "labels" and
+   * when a _label_ changes it forces the chart to do a full redraw (aka, non-animated) versus where
+   * if only _data_ properties change then the chart will animate to the changed state
+   */
+  dataProperties: {
+    type: [String, Array],
+  },
 }
 
 export interface ILooksLikeChart<TData> extends IDictionary {
   data: TData[]
   invalidateData: () => void
   invalidateRawData: () => void
-  addData(rawDataItem: TData[], removeCount?: number): void
+  addData(rawDataItem: TData | TData[], removeCount?: number): void
 }
 
 export interface IUrlInfo<T> {
@@ -46,10 +55,10 @@ export interface IUrlInfo<T> {
   config: IApiConfig<T>
 }
 
-export interface IPropertyMeta<T extends IDictionary, K extends keyof T = keyof T> {
+export interface IPropertyMeta<T extends IDictionary, K extends keyof T & string = keyof T & string> {
   id: K
-  dataProps: K[]
-  labelProps: K[]
+  dataProps: Array<K>
+  labelProps: Array<K>
 }
 
 export interface IApiConfig<TData = IDictionary[], TOutput = TData> {
@@ -118,18 +127,31 @@ export interface IApiConfig<TData = IDictionary[], TOutput = TData> {
 }
 
 export interface IDataMeta<T> {
-  containerName: string
+  /** the amChart assigned UID for the component hosting the data */
+  uid: string
+  /** the class name of the component hosting the data */
+  sourceClass: string
   strategy: 'load from API' | 'undefined' | 'pass via prop'
-  /** the property which acts as the primary key for data/records */
-  idProp: string
   /** reference to the actual data container (chart/series) that is the source of the data */
   source: ILooksLikeChart<T>
-  /** the current chart data which is being used by the chart */
-  chartData: T[]
   /** structured info on what is provided in `props.url` */
   urlConfig?: IUrlInfo<T>
   /** the meta information used by amCharts to manage data change events */
   propMeta?: IPropertyMeta<T>
+  /**
+   * Hooks which `useData` provides to consumers to interject themselves into the flow of
+   * execution
+   */
+  hooks: {
+    /** the user's optionally registered pre-check for change */
+    dataPreHook: (current: T[], old: T[]) => Promise<boolean> | boolean
+    /** the user's optionally registered post-change hook */
+    dataPostHook: (current: T[], old: T[]) => Promise<void> | void
+    /** the user's, optionally registered, pre-URL change hook */
+    urlPreHook: (current: IUrlInfo<T>, old: IUrlInfo<T>) => Promise<boolean> | boolean
+    /** the user's, optionally registered, post-URL change hook */
+    urlPostHook: (current: IUrlInfo<T>, old: IUrlInfo<T>) => Promise<void> | void
+  }
 }
 
 export type IDataMetaReady<T> = IDataMeta<T> & { propMeta: IPropertyMeta<T> }

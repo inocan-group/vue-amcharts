@@ -1,18 +1,19 @@
-import { Ref, ref } from '@vue/composition-api'
+import { Ref, ref, watch, toRefs } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
-import { unbox } from '../../shared'
 import { api } from './api'
 import { AmchartError } from '../../errors'
 import {
   IUrlInfo,
   ILooksLikeChart,
   setupEvents,
-  setupWatchers,
+  setupPropertyWatchers,
   urlChangeDetected,
   dataChangeDetected,
   fakeContainer,
 } from './index'
 import { IPropertyMeta, IDataMeta, IDataMetaReady, IDataMetaForUrlDrivenChart } from './use-data-types'
+import { decomposeUrl } from './decomposeUrl'
+import { unbox } from '../../shared'
 
 /**
  * Helps manage chart data so that whether you are passing in a URL or raw data to the `data`/`url`
@@ -42,75 +43,67 @@ export function useData<
     throw new AmchartError(`Attach properties to either "data" or "url" but not both!`, `not-allowed`)
   }
 
-  /** the user's optionally registered pre-check for change */
-  let dataPreHook: (current: TData[], old: TData[]) => Promise<boolean> | boolean
-  /** the user's optionally registered post-change hook */
-  let dataPostHook: (current: TData[], old: TData[]) => Promise<void> | void
-  let urlPreHook: (current: IUrlInfo<TProps>, old: IUrlInfo<TProps>) => Promise<boolean> | boolean
-  let urlPostHook: (current: IUrlInfo<TProps>, old: IUrlInfo<TProps>) => Promise<void> | void
-  /**
-   * Get called immediately prior to data changing; return value determines
-   * whether the data change is accepted.
-   */
-  const preDataChange = (fn: (current: TData[], old: TData[]) => Promise<boolean> | boolean) => {
-    dataPreHook = fn
-  }
-  /**
-   * Execution/hook that is called immediately following a data change; this data
-   * change can be _either_ a result of the `data` property passed in changing
-   * -- or more likely -- the chart getting updated due to some user event or
-   * an async data loading event.
-   */
-  const postDataChange = (fn: (current: TData[], old: TData[]) => Promise<void> | void) => {
-    dataPostHook = fn
-  }
-  /**
-   * Hook which allows execution immediately prior to the `url` property being changed.
-   * Because this event is triggered explicitly by the consuming component, this hook
-   * is probably best used for debugging purposes only.
-   */
-  const preUrlChange = (fn: (current: IUrlInfo<TProps>, old: IUrlInfo<TProps>) => Promise<boolean> | boolean) => {
-    urlPreHook = fn
-  }
-  const postUrlChange = (fn: (current: IUrlInfo<TProps>, old: IUrlInfo<TProps>) => Promise<void> | void) => {
-    urlPostHook = fn
-  }
+  //#region HOOKS
+
+  //#endregion HOOKS
+
+  //#region DATA SETUP
+  const chartData: Ref<TData[]> = ref(fakeContainer.data)
+
+  const dataProps = props.dataProperties
+    ? typeof props.dataProperties === 'string'
+      ? props.dataProperties.includes(',')
+        ? props.dataProperties.split(',').map(i => i.trim())
+        : [props.dataProperties]
+      : props.dataProperties
+    : []
 
   // determine meta definition
   const initialMeta: IDataMeta<TData> = {
-    containerName: '',
+    sourceClass: '',
     strategy: props.url ? 'load from API' : props.data === undefined ? 'undefined' : 'pass via prop',
-    idProp: props.dataIdProp,
+    propMeta: {
+      id: props.dataIdProp,
+      dataProps,
+      labelProps: [],
+    },
     source: fakeContainer,
-    chartData: fakeContainer.data,
+    hooks: {
+      dataPreHook: () => true,
+      dataPostHook: () => undefined,
+      urlPreHook: () => true,
+      urlPostHook: () => undefined,
+    },
   }
 
   const dataMeta: Ref<IDataMeta<TData>> = ref(initialMeta)
-  if (props.url) {
-    dataMeta.value.urlConfig = { url: undefined, config: {} }
+  if (props.url && props.url !== undefined) {
+    dataMeta.value.urlConfig = decomposeUrl(props.url)
   }
 
   /**
    * Once the container is ready to receive data, we set up events and watchers
    * and optionally send an API request
    */
-  const dataIsReady = (
-    source: ILooksLikeChart<TData>,
-    propMeta: IPropertyMeta<TData> = { id: 'id', dataProps: [], labelProps: [] },
-  ) => {
+  const dataIsReady = (source: ILooksLikeChart<TData>, propMeta?: Partial<IPropertyMeta<TData>>) => {
     dataMeta.value.source = source
-    dataMeta.value.chartData = source.data
-    dataMeta.value.propMeta = propMeta
-    dataMeta.value.containerName = source?.constructor?.name || 'unknown'
+    chartData.value = source.data
 
-    setupEvents(dataMeta as Ref<IDataMetaReady<TData>>)
-    setupWatchers(
-      props,
-      dataChangeDetected(dataMeta as Ref<IDataMetaReady<TData>>, dataPreHook, dataPostHook),
-      urlChangeDetected(dataMeta as Ref<IDataMetaForUrlDrivenChart<TData>>, urlPreHook, urlPostHook),
-    )
+    if (propMeta) {
+      dataMeta.value.propMeta = {
+        ...dataMeta.value.propMeta,
+        ...propMeta,
+      } as IPropertyMeta<TData>
+    }
+    dataMeta.value.sourceClass = source?.constructor?.name || 'unknown'
+
+    const dataChange = dataChangeDetected(chartData, dataMeta as Ref<IDataMetaReady<TData>>)
+
+    setupEvents(dataChange, dataMeta as Ref<IDataMetaReady<TData>>)
+    setupPropertyWatchers(props, dataChange, urlChangeDetected(dataMeta as Ref<IDataMetaForUrlDrivenChart<TData>>))
 
     if (dataMeta.value?.urlConfig?.url) {
+      console.log('calling api', dataMeta.value.sourceClass)
       api<TData>(dataMeta as Ref<IDataMetaForUrlDrivenChart<TData>>)
     }
   }
@@ -120,14 +113,43 @@ export function useData<
    * to receive data
    */
   const dataReady = (
-    source: ILooksLikeChart<TData>,
+    source: ILooksLikeChart<TData> | Ref<ILooksLikeChart<TData>>,
     /** provide META about the various properties in the data array <T> */
     propMeta?: { id: K; dataProps: K[]; labelProps: K[] },
   ) => {
+    source = unbox(source)
+    dataMeta.value.uid = source.uid
     dataIsReady(source, propMeta)
-
-    return { preDataChange, postDataChange, preUrlChange, postUrlChange }
   }
 
-  return { dataReady, dataMeta }
+  /**
+   * Get called immediately prior to data changing; return value determines
+   * whether the data change is accepted.
+   */
+  const preDataChange = (fn: (current: TData[], old: TData[]) => Promise<boolean> | boolean) => {
+    dataMeta.value.hooks.dataPreHook = fn
+  }
+  /**
+   * Execution/hook that is called immediately following a data change; this data
+   * change can be _either_ a result of the `data` property passed in changing
+   * -- or more likely -- the chart getting updated due to some user event or
+   * an async data loading event.
+   */
+  const postDataChange = (fn: (current: TData[], old: TData[]) => Promise<void> | void) => {
+    console.log(`postDataChange has reassigned post hook in ${dataMeta.value.sourceClass}`, fn)
+    dataMeta.value.hooks.dataPostHook = fn
+  }
+  /**
+   * Hook which allows execution immediately prior to the `url` property being changed.
+   * Because this event is triggered explicitly by the consuming component, this hook
+   * is probably best used for debugging purposes only.
+   */
+  const preUrlChange = (fn: (current: IUrlInfo<TData>, old: IUrlInfo<TData>) => Promise<boolean> | boolean) => {
+    dataMeta.value.hooks.urlPreHook = fn
+  }
+  const postUrlChange = (fn: (current: IUrlInfo<TData>, old: IUrlInfo<TData>) => Promise<void> | void) => {
+    dataMeta.value.hooks.urlPostHook = fn
+  }
+
+  return { chartData, dataReady, dataMeta, preDataChange, postDataChange, preUrlChange, postUrlChange }
 }
