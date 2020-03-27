@@ -29,15 +29,21 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { onPropChange, respondTo, initializeProps } = useProps(props)
-    const { register, getRegistration, onChartConfig } = useRegistry<IChart>(props, context)
     const series: Ref<LineSeries> = ref(new LineSeries())
-    const { setupAxes, dataReady } = useSeries(props, context, series)
+    const {
+      register,
+      onChartConfig,
+      getRegistration,
+      setupAxes,
+      dataReady,
+      initializeProps,
+      childReady,
+      actionsConfig,
+    } = useSeries(props, context, series)
     const axisConfig: Ref<IDictionary> = ref({})
     dataReady(series)
 
-    const s = series.value
-    const propertyConfig = {
+    actionsConfig(s => ({
       name: s,
       strokeWidth: () => {
         s.strokeWidth = Number(props.strokeWidth)
@@ -59,17 +65,14 @@ export default defineComponent({
           s.invalidate()
         }
       },
-    }
-    register(ChartType.series, props.id, series)
+    }))
 
-    onPropChange(async (prop: string, current) => {
-      respondTo(prop, current, propertyConfig)
-    })
+    register(ChartType.series, props.id, LineSeries, series)
 
     onChartConfig(chart => {
       axisConfig.value = setupAxes(series)
       series.value = chart.series.push(series.value)
-      initializeProps(propertyConfig)
+      initializeProps()
       console.log('axis config', axisConfig.value)
 
       try {
@@ -84,6 +87,8 @@ export default defineComponent({
       // TODO: why in the world does adding this to the registration cause conflicts!?!
       // addToRegistration('axisConfig', axisConfig.value)
     })
+
+    childReady()
 
     return { series, axisConfig }
   },

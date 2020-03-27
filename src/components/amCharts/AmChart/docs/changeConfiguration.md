@@ -41,7 +41,7 @@ There is nothing wrong with this approach and it gives you pretty unlimited poss
 ```typescript
 const { actionsConfig } = useProps(props)
 
-actionsConfig((deltas, component, chart) => ({
+actionsConfig((component, chart, deltas) => ({
   // reflexive property setting
   stroke: component,
   // reflexive with functional intervention
@@ -58,9 +58,10 @@ actionsConfig((deltas, component, chart) => ({
 When you pull down `actionsConfig` from **useProps** you are getting a function which provides you
 fully typed configuration function. This ensures that you have access to useful state provided in `deltas`, `component`, and `chart`. Let's quickly touch on these three variables:
 
-- `deltas`: this provides a `before` and `after` state of the property when it changes
+- `prop`: is the property 
 - `component`: is a reference to the chart component which you are configuring (e.g., a _series_, a _legend_, etc.)
 - `chart`: is a reference to the top level amChart chart object (e.g., _PieChart_, _XYChart_, etc.)
+- `deltas`: this provides a `current` and `old` state of the property when it changes; if this is being run as part of initization this property will be left off
 
 Now it's worth noting that because everything surrounding the `actionsConfig` uses arrow functions, the block scope you are in when defining the actions will be available when the properties actually change too so you are free to have your functions reference any _in-scope_ variable here.
 
@@ -98,7 +99,7 @@ As you'll find from their own documentation, there are a LOT of different events
         <line-series :subscribe="mySeriesEvents(evt1, evt2)" />
         <chart-legend />
       </xy-chart>
-      ```
+      ``` 
 
       where `evt1` and `evt2` are the **amChart** events you want to listen to and `mySeriesEvents` is a higher order function like so:
 

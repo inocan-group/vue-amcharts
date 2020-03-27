@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { ColumnSeries } from '@amcharts/amcharts4/charts'
-import { useSeries, seriesProps, useRegistry, useProps } from '../composables'
+import { useSeries, seriesProps } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChart, ChartType } from '../index'
 import { color } from '@amcharts/amcharts4/core'
@@ -17,48 +17,51 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, onChartConfig } = useRegistry(props, context)
-    const { onPropChange, respondTo, initializeProps } = useProps(props)
     const series: Ref<ColumnSeries> = ref(new ColumnSeries())
-    const { setupAxes, dataReady, addToRegistration } = useSeries(props, context, series)
+    const {
+      actionsConfig,
+      register,
+      onChartConfig,
+      onPropChange,
+      initializeProps,
+      childReady,
+      setupAxes,
+      dataReady,
+    } = useSeries(props, context, series)
     dataReady(series.value)
     const axisConfig: Ref<IDictionary> = ref({})
 
-    register(ChartType.series, props.id, series)
+    register(ChartType.series, props.id, ColumnSeries, series)
 
-    const actionConfig = {
-      name: series.value,
-      tooltipText: series.value,
+    actionsConfig(s => ({
+      name: s,
+      tooltipText: s,
       show: () => {
         if (props.show) {
-          series.value.show()
-          series.value.invalidate()
+          s.show()
+          s.invalidate()
         } else {
-          series.value.hide()
-          series.value.invalidate()
+          s.hide()
+          s.invalidate()
         }
       },
       stroke: () => {
         if (props.stroke !== undefined) {
-          series.value.stroke = color(props.stroke)
-          series.value.invalidate()
+          s.stroke = color(props.stroke)
+          s.invalidate()
         }
       },
       fill: () => {
-        series.value.fill = color(props.fill)
-        series.value.invalidate()
+        s.fill = color(props.fill)
+        s.invalidate()
       },
-      strokeWidth: series.value,
-    }
-
-    onPropChange((prop, value) => {
-      respondTo(prop, value, actionConfig)
-    })
+      strokeWidth: s,
+    }))
 
     onChartConfig((chart: IChart) => {
       axisConfig.value = setupAxes(series)
       series.value = chart.series.push(series.value)
-      initializeProps(actionConfig)
+      initializeProps()
 
       if (props.tooltipText) {
         console.warn(
@@ -66,6 +69,8 @@ export default defineComponent({
         )
       }
     })
+
+    childReady()
 
     return { series, axisConfig }
   },

@@ -8,7 +8,7 @@
 <script lang="ts">
 import { defineComponent, SetupContext, onMounted } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
-import { useProps, useChart, IActionConfiguration } from '../composables'
+import { useChart } from '../composables'
 import { PieChart } from '@amcharts/amcharts4/charts'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
 import { dataProperties } from '../composables/useData'
@@ -24,7 +24,6 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { onPropChange, respondTo } = useProps(props)
     const parentConfig: IChildWithCardinality[] = [
       [1, null, 'series'],
       [0, 1, 'legend'],
@@ -32,13 +31,15 @@ export default defineComponent({
     ]
     const {
       chart,
-      chartIsReady,
       chartdiv,
       acceptChildMessage,
       acceptChildRegistration,
       registrants,
       dataMeta,
       chartData,
+      onPropChange,
+      respondTo,
+      actionsConfig,
     } = useChart(PieChart, props, context, parentConfig)
 
     onMounted(async () => {
@@ -48,30 +49,24 @@ export default defineComponent({
       c.responsive.enabled = props.responsive
     })
 
-    const actionsConfig: IActionConfiguration = () => {
-      if (chartIsReady(chart)) {
-        return {
-          responsive: chart,
-          innerRadius: () => {
-            if (typeof props.innerRadius === 'string') {
-              chart.value.innerRadius =
-                props.innerRadius.slice(-1) === '%'
-                  ? percent(Number(props.innerRadius.replace('%', '')))
-                  : Number(props.innerRadius.replace(/\s*px/, ''))
-            } else {
-              chart.value.innerRadius = props.innerRadius
-            }
-            chart.value.invalidateData()
-          },
+    actionsConfig(c => ({
+      responsive: c,
+      innerRadius: () => {
+        if (typeof props.innerRadius === 'string') {
+          c.innerRadius =
+            props.innerRadius.slice(-1) === '%'
+              ? percent(Number(props.innerRadius.replace('%', '')))
+              : Number(props.innerRadius.replace(/\s*px/, ''))
+        } else {
+          c.innerRadius = props.innerRadius
         }
-      } else {
-        return {}
-      }
-    }
+        c.invalidateData()
+      },
+    }))
 
-    onPropChange((prop, value, old) => {
-      respondTo(prop, value, actionsConfig(prop, value, old))
-    })
+    // onPropChange((prop, value, old) => {
+    //   respondTo(prop, value, old)
+    // })
 
     return {
       chart,

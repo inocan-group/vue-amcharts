@@ -1,22 +1,29 @@
 import { IDictionary } from 'common-types'
-import { SetupContext } from '@vue/composition-api'
-import { IParentRegistry, EventMessages, IChildChartConfig } from './registry-types'
+import { SetupContext, Ref } from '@vue/composition-api'
+import {
+  IParentRegistry,
+  EventMessages,
+  IChildConfigurationCallback,
+  ConstructorFor,
+  IRegistrationStatus,
+} from './registry-types'
 import { AmchartError } from '../../errors'
-import { IGetChild } from './useRegistry'
+import { IGetChild as IChildDefinition } from './useRegistry'
+import { unbox } from '../../shared'
 
 export function childApi<C, P>(
   props: IDictionary,
   context: SetupContext,
   setChild: (type: string, name: string) => void,
-  getChild: () => IGetChild,
+  getChild: () => IChildDefinition,
 ) {
-  let configurationEvent: IChildChartConfig<P>
+  let configurationEvent: IChildConfigurationCallback<P>
 
-  const parent = (context.parent as unknown) as IParentRegistry<P>
+  const parent = (context.parent as unknown) as IParentRegistry
   type types = keyof typeof parent.registrants
 
   /** get META for registry entry */
-  const getComponentMeta = (fnName: string, type: types, name?: string) => {
+  const getComponentMeta = <T extends IDictionary>(fnName: string, type: types, name?: string) => {
     const { childType, childName } = getChild()
     if (Object.keys(parent.registrants[type]).length === 0) {
       throw new AmchartError(
@@ -40,7 +47,7 @@ export function childApi<C, P>(
       )
     }
 
-    return parent.registrants[type][name]
+    return (parent.registrants[type][name] as unknown) as IRegistrationStatus<T>
   }
 
   const addToRegistration = (property: string | object, value?: any) => {
@@ -59,18 +66,31 @@ export function childApi<C, P>(
      * Register with the parent component and then await startup events before returning
      * with a reference to the `chart` object.
      */
-    register: (type: string, id: string, instance?: C) => {
+    register: <TComponent>(
+      type: string,
+      id: string,
+      constructor: ConstructorFor<TComponent>,
+      instance: Ref<TComponent>,
+    ) => {
       if (!parent.acceptChildRegistration) {
         throw new Error(
           `${type}/${id}'s attempt to register itself with it's parent failed as the parent has not registered as a Parent with useRegistry.`,
         )
       }
 
-      const assignedName = parent.acceptChildRegistration(type, id, instance)
+      const assignedName = parent.acceptChildRegistration(type, id, constructor, instance)
       setChild(type, assignedName)
       if (id !== assignedName) {
         console.info(`Attempt to register a ${type} with the name "${id}" twice; will use ${assignedName} instead`)
       }
+    },
+
+    /**
+     * Tells the parent that the child is ready to be configured
+     */
+    childReady: () => {
+      const { childType, childName } = getChild()
+      parent.acceptChildMessage(EventMessages.childReady, childType, childName)
     },
 
     /**
@@ -84,14 +104,11 @@ export function childApi<C, P>(
     /**
      * **onChartConfig**
      *
-     * An event that is fired by the parent component when it is asking for the child
-     * to configure itself. In most cases this is the child-components first opportunity
-     * to interact with e prepared DOM (although the _parent_ basically gets to decide
-     * precise timing).
+     * Registers a `configure` function with the Parent -- which can be either sync or async -- that
+     * the parent component will call once all children have indicated that they are ready for configuration
      */
-    onChartConfig: (fn: IChildChartConfig<P>) => {
+    onChartConfig: (fn: IChildConfigurationCallback<P>) => {
       const { childType, childName } = getChild()
-
       configurationEvent = fn
       parent.acceptChildMessage(EventMessages.addToRegistration, childType, childName, 'configure', fn)
     },
@@ -103,8 +120,8 @@ export function childApi<C, P>(
      *
      * If a registration is not found then a `AmchartError` will be thrown with a code of _no-registry_.
      */
-    getRegistration: (type: types, name?: string) => {
-      return getComponentMeta('getRegistration', type, name)
+    getRegistration: <T extends IDictionary = IDictionary>(type: types, name?: string) => {
+      return getComponentMeta<T>('getRegistration', type, name)
     },
 
     /**
@@ -117,9 +134,9 @@ export function childApi<C, P>(
      * **Note:** attempt to locate an _instance_ of the given component but will throw an error (code
      * of `no-registry` or `no-instance`) if not found
      */
-    getComponent: <T = IDictionary>(type: types, name?: string) => {
+    getComponent: <T extends IDictionary = IDictionary>(type: types & string, name?: string) => {
       const { childType, childName } = getChild()
-      const meta = getComponentMeta('getComponent', type, name)
+      const meta = getComponentMeta<T>('getComponent', type, name)
       if (!meta.instance) {
         throw new AmchartError(
           `The getComponent(${type}${
@@ -130,7 +147,7 @@ export function childApi<C, P>(
           'no-instance',
         )
       }
-      return meta.instance as T
+      return unbox(meta.instance)
     },
 
     /**
@@ -140,7 +157,7 @@ export function childApi<C, P>(
       const { childType, childName } = getChild()
       if (Object.keys(parent.registrants[type]).length === 0) {
         throw new AmchartError(
-          `Attempt by the ${childType}/${childName} to get the firstComponentName(${type}) failed because there are NO registered components of type ${type}.`,
+          `Attempt by the ${childType}/${childName} to get the firstComponentName(${childName}) failed because there are NO registered components of type ${childType}.`,
           'no-component',
         )
       }

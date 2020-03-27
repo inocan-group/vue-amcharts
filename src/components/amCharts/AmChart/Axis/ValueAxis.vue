@@ -53,42 +53,38 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, addToRegistration, howMany, onChartConfig } = useRegistry(props, context)
-    const { onPropChange } = useProps(props)
     const axis: Ref<ValueAxis> = ref(new ValueAxis())
+    const { register, addToRegistration, howMany, onChartConfig, getChart, childReady } = useRegistry(props, context)
+    const { actionsConfig, initializeProps } = useProps(props, axis, getChart)
     const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
+    const { onPropChange } = useProps(props, axis, getChart)
     const notFirstOnAxis = howMany(dim) > 0
     const dataSource: Ref<string> = ref('')
     const instanceId: Ref<string> = ref('')
 
     const accessibility = { axis: `${props.dimension}Axis`, dataField: `value${capitalize(props.dimension)}` }
 
-    register(ChartType[dim], props.id, axis)
+    register(ChartType[dim], props.id, ValueAxis, axis)
     addToRegistration(accessibility)
 
-    onPropChange(async (prop, current) => {
-      if (prop === 'name') {
-        axis.value.title.text = current
-      }
-      if (prop === 'min' || prop === 'max') {
-        axis.value[prop] = Number(current)
-        axis.value.invalidateRawData()
-      }
-    })
+    actionsConfig((a, chart, deltas) => ({
+      name: [a, 'title.text'],
+      logarithmic: [a, (v: boolean) => Boolean(v)],
+      min: () => {
+        const value = deltas ? deltas.current : props.min
+        a.min = value === undefined ? value : Number(value)
+        a.invalidateRawData()
+      },
+      max: () => {
+        const value = deltas ? deltas.current : props.max
+        a.max = value === undefined ? value : Number(value)
+        a.invalidateRawData()
+      },
+      numberFormat: [a, 'renderer.axis.numberFormatter.outputFormat'],
+    }))
 
     onChartConfig((chart: IChart) => {
-      axis.value.title.text = props.name === '' ? '' : props.name || props.id
-      axis.value.logarithmic = Boolean(props.logarithmic)
-
-      if (axis.value.tooltip) {
-        axis.value.tooltip.disabled
-      }
-
-      const min = props.min === '' ? undefined : props.min
-      const max = props.max === '' ? undefined : props.max
-      axis.value.min = min === undefined ? ((undefined as unknown) as number) : Number(min)
-      axis.value.max = max === undefined ? ((undefined as unknown) as number) : Number(max)
-
+      initializeProps()
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       dimension.push(axis.value)
 
@@ -100,8 +96,6 @@ export default defineComponent({
       } else if (props.secondaryAxes !== undefined) {
         // TODO: implement this
       }
-      if (props.numberFormat !== undefined)
-        axis.value.renderer.axis.numberFormatter.outputFormat = String(props.numberFormat)
 
       addToRegistration('id', axis.value.uid)
       addToRegistration('dataSource', axis.value.dataSource.uid)
@@ -109,6 +103,8 @@ export default defineComponent({
       dataSource.value = axis.value.dataSource.uid
       instanceId.value = axis.value.uid
     })
+
+    childReady()
 
     return {
       instance: axis,

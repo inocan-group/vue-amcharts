@@ -6,8 +6,7 @@
 import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
 import { PieSeries } from '@amcharts/amcharts4/charts'
-import { useRegistry, useProps, useSeries, IActionConfiguration } from '../composables'
-import { IChart } from '..'
+import { useSeries } from '../composables'
 import { ChartType } from '../types'
 import { color } from '@amcharts/amcharts4/core'
 
@@ -50,49 +49,41 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { onPropChange, respondTo, initializeProps } = useProps(props)
-    const { register, onChartConfig } = useRegistry<IChart>(props, context)
     const series: Ref<PieSeries> = ref(new PieSeries())
-    const { dataReady, dataMeta } = useSeries(props, context, series)
-    const dataFields: Ref<IDictionary> = ref(series.value.dataFields)
-    const ttt: Ref<string> = ref(series.value.tooltipText)
+    const { dataReady, dataMeta, childReady, actionsConfig, initializeProps, register, onChartConfig } = useSeries(
+      props,
+      context,
+      series,
+    )
 
-    register(ChartType.series, props.id || 'primary', series)
+    register(ChartType.series, props.id || 'primary', PieSeries, series)
+
     dataReady(series, {
       id: props.categoryProp,
       dataProps: [props.valueProp],
       labelProps: [props.categoryProp],
     })
-    const actionsConfig: IActionConfiguration = () => ({
-      stroke: [series, 'slices.template.stroke', (v: string) => color(v)],
-      strokeWidth: [series, 'slices.template.strokeWidth', (v: string | number) => Number(v)],
-      strokeOpacity: [series, 'slices.template.strokeOpacity', (v: string | number) => Number(v)],
-      fillProp: [series, 'slices.template.propertyFields.fill', props.fillProp],
-      disableTicks: [series, 'ticks.template.disabled', props.disableTicks],
-      disableLabels: [series, 'labels.template.disabled', props.disableLabels],
-    })
+
+    actionsConfig(s => ({
+      stroke: [s, 'slices.template.stroke', (v: string) => color(v)],
+      strokeWidth: [s, 'slices.template.strokeWidth', (v: string | number) => Number(v)],
+      strokeOpacity: [s, 'slices.template.strokeOpacity', (v: string | number) => Number(v)],
+      fillProp: [s, 'slices.template.propertyFields.fill'],
+      disableTicks: [s, 'ticks.template.disabled'],
+      disableLabels: [s, 'labels.template.disabled'],
+      valueProp: [s, 'dataFields.value'],
+      categoryProp: [s, 'dataFields.category'],
+      // tooltipText: s,
+    }))
 
     onChartConfig(chart => {
-      initializeProps(actionsConfig)
+      initializeProps()
       chart.series.push(series.value)
-      series.value.dataFields.value = props.valueProp
-      series.value.dataFields.category = props.categoryProp
-      dataFields.value = series.value.dataFields
-
-      console.log('pie series configured')
     })
 
-    onPropChange((prop, current) => {
-      console.log(`${prop} changed`)
-      if (props.disableTicks) {
-        series.value.ticks.template.disabled = true
-      }
-      // TODO: another case where respondTo is not doing as it's supposed to
+    childReady()
 
-      respondTo(prop, current, actionsConfig)
-    })
-
-    return { dataFields, dataMeta, ttt }
+    return { series, dataMeta }
   },
 })
 </script>

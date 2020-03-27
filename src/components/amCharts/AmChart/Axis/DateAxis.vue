@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
-import { useRegistry } from '../composables'
+import { useRegistry, useProps } from '../composables'
 import { IChart } from '../ChartTypes'
 import { DateAxis } from '@amcharts/amcharts4/charts'
 import { ChartType } from '..'
@@ -27,39 +27,40 @@ export default defineComponent({
     },
     dateFormat: {
       type: String,
-      default: undefined,
+      default: 'MMM YYYY',
     },
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, howMany, onChartConfig, addToRegistration } = useRegistry(props, context)
+    const { register, howMany, onChartConfig, addToRegistration, childReady, getChart } = useRegistry(props, context)
     const axis: Ref<DateAxis> = ref(new DateAxis())
     const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
     const notFirstOnAxis = howMany(dim) > 0
+    const { actionsConfig, initializeProps } = useProps(props, axis, getChart)
 
-    register(ChartType[dim], props.id, axis)
+    register(ChartType[dim], props.id, DateAxis, axis)
+
+    actionsConfig(a => ({
+      dateFormat: [a, 'tooltipDateFormat'],
+      opposite: [a, 'renderer.opposite', (v: boolean) => (v === undefined ? (notFirstOnAxis ? true : false) : v)],
+    }))
 
     onChartConfig((chart: IChart) => {
       addToRegistration('dataSource', axis.value.dataSource.uid)
       addToRegistration('data', axis.value.data)
 
-      axis.value.tooltipDateFormat = 'MMM YYYY'
+      initializeProps()
 
-      if (notFirstOnAxis) {
-        axis.value.renderer.opposite = true
-      }
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       dimension.push(axis.value)
     })
 
     addToRegistration('dataField', `date${capitalize(props.dimension)}`)
 
-    // TODO: investigate means to make this information dynamic
-    const zoomFactor = ref(axis.value.zoomFactor)
+    childReady()
 
     return {
       instance: axis,
-      zoomFactor,
       axis: `${props.dimension}Axis`,
       dataField: `date${capitalize(props.dimension)}`,
     }

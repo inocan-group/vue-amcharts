@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
-import { useRegistry, IActionConfiguration, useProps } from '@/components/amCharts/AmChart/composables'
+import { useRegistry, useProps } from '@/components/amCharts/AmChart/composables'
 import { ChartType, IChart } from '@/components/amCharts/AmChart'
 import { Legend } from '@amcharts/amcharts4/charts'
 
@@ -31,44 +31,35 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, onChartConfig } = useRegistry(props, context)
-    const { onPropChange, respondTo, initializeProps } = useProps(props)
+    const { register, onChartConfig, childReady, getChart } = useRegistry(props, context)
     const legend: Ref<Legend> = ref(new Legend())
+    const { actionsConfig, initializeProps } = useProps(props, legend, getChart)
 
-    register(ChartType.legend, 'legend', legend)
-    const actionsConfig: IActionConfiguration = () => ({
+    register(ChartType.legend, 'legend', Legend, legend)
+
+    onChartConfig(() => {
+      initializeProps()
+    })
+
+    actionsConfig((l, c, deltas) => ({
       show: () => {
-        console.log('running')
+        const conditional = deltas ? deltas.current : props.show
+        if (conditional) {
+          l.show()
+          if (['left', 'right'].includes(props.position)) {
+            l.valign = props.positionAlt
+          } else if (['top', 'bottom'].includes(props.position)) {
+            l.contentAlign = props.positionAlt
+          }
+        } else {
+          l.hide()
+        }
       },
-    })
+      position: l,
+      positionAlt: l,
+    }))
 
-    onChartConfig(async (chart: IChart) => {
-      legend.value.position = props.position
-      if (['left', 'right'].includes(props.position)) {
-        legend.value.valign = props.positionAlt
-      } else if (['top', 'bottom'].includes(props.position)) {
-        legend.value.contentAlign = props.positionAlt
-      }
-      chart.legend = legend.value
-      if (props.show) {
-        legend.value.show()
-      } else {
-        legend.value.hide()
-      }
-      // TODO: figure out why the show/hide logic can't be done in the actionsConfig
-      initializeProps(actionsConfig)
-    })
-
-    onPropChange((prop, value) => {
-      console.log(`${prop} changed`)
-      if (props.show) {
-        legend.value.show()
-      } else {
-        legend.value.hide()
-      }
-      respondTo(prop, value, actionsConfig)
-    })
-
+    childReady()
     return { legend }
   },
 })

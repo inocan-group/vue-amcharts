@@ -9,7 +9,7 @@ import { useSeries, seriesProps, useProps } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChart, ChartType } from '..'
 import { color } from '@amcharts/amcharts4/core'
-import { removeProperties, unbox } from '../shared'
+import { removeProperties } from '../shared'
 import { dataProperties } from '../composables/useData'
 export default defineComponent({
   name: 'CandlestickSeries',
@@ -52,7 +52,7 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    props = { dataIdProp: props.dateProp, ...props }
+    props.dataIdProp = props.dateProp
     const series: Ref<CandlestickSeries> = ref(new CandlestickSeries())
     const {
       register,
@@ -64,17 +64,18 @@ export default defineComponent({
       postUrlChange,
       setupAxes,
       addToRegistration,
+      actionsConfig,
+      childReady,
+      initializeProps,
     } = useSeries(props, context, series)
     const axisConfig: Ref<IDictionary> = ref({})
-    register(ChartType.series, props.id, series)
+    register(ChartType.series, props.id, CandlestickSeries, series)
 
     dataReady(series, {
       id: 'date',
       dataProps: ['price'],
       labelProps: ['date'],
     })
-
-    const { onPropChange, respondTo, initializeProps } = useProps(props)
 
     series.value.dataFields = {
       dateX: props.dateProp,
@@ -105,43 +106,39 @@ export default defineComponent({
       console.log('candlestick post url change')
     })
 
-    const actionConfig = {
-      name: series.value,
-      tooltipText: series.value,
+    actionsConfig(s => ({
+      name: s,
+      tooltipText: s,
       show: () => {
         if (props.show) {
-          series.value.show()
-          series.value.invalidate()
+          s.show()
+          s.invalidate()
         } else {
-          series.value.hide()
-          series.value.invalidate()
+          s.hide()
+          s.invalidate()
         }
       },
       stroke: () => {
         if (props.stroke !== undefined) {
-          series.value.stroke = color(props.stroke)
-          series.value.invalidate()
+          s.stroke = color(props.stroke)
+          s.invalidate()
         }
       },
       fill: () => {
-        series.value.fill = color(props.fill)
-        series.value.invalidate()
+        s.fill = color(props.fill)
+        s.invalidate()
       },
-      strokeWidth: series.value,
-      dateProp: series.value,
-      openningProp: series.value,
-      closingProp: series.value,
-      lowProp: series.value,
-      highProp: series.value,
-    }
+      strokeWidth: s,
+      dateProp: s,
+      openningProp: s,
+      closingProp: s,
+      lowProp: s,
+      highProp: s,
+    }))
 
-    onPropChange((prop, value) => {
-      respondTo(prop, value, actionConfig)
-    })
-
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       console.log('candlestick config started')
-      initializeProps(actionConfig)
+      initializeProps()
       chart.series.push(series.value)
       axisConfig.value = setupAxes(series)
 
@@ -153,6 +150,8 @@ export default defineComponent({
 
       addToRegistration('data', series.value.data)
     })
+
+    childReady()
 
     return { series, dataMeta, chartData, axisConfig }
   },

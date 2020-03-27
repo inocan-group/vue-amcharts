@@ -10,7 +10,7 @@ import * as am4core from '@amcharts/amcharts4/core'
 import { XYChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
 import { defineComponent, onMounted, SetupContext } from '@vue/composition-api'
-import { useChart, useProps, IActionConfiguration } from '../composables'
+import { useChart } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
 import { dataProperties } from '../composables/useData'
@@ -36,7 +36,6 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {
-    const { onPropChange, respondTo } = useProps(props)
     const parentConfig: IChildWithCardinality[] = [
       [1, null, 'xAxis'],
       [1, null, 'yAxis'],
@@ -54,28 +53,21 @@ export default defineComponent({
       dataMeta,
       chartData,
       postDataChange,
+      onPropChange,
+      respondTo,
+      actionsConfig,
     } = useChart(XYChart, props, context, parentConfig)
 
     postDataChange(() => {
       console.log(`XY Chart has data loaded`, props.data)
     })
 
-    const actionsConfig: IActionConfiguration = () => {
-      if (chart.value) {
-        return {
-          responsive: chart,
-        }
-      } else {
-        return {}
-      }
-    }
-
-    // postDataChange((current: unknown) => {
-    //   console.log('back from data change:', current, chart.value.data)
-    // })
+    actionsConfig(c => ({
+      responsive: c,
+    }))
 
     onPropChange((prop, value, old) => {
-      respondTo(prop, value, actionsConfig(prop, value, old))
+      // respondTo(prop, value, actionsConfig(prop, value, old))
     })
 
     onMounted(async () => {

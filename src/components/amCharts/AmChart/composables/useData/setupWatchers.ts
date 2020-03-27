@@ -1,5 +1,5 @@
 import { IUrlInfo, IUrlProperty } from './use-data-types'
-import { watch, ref } from '@vue/composition-api'
+import { watch, ref, reactive } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
 import { unbox } from '../../shared'
 import { decomposeUrl } from '.'
@@ -12,8 +12,6 @@ export function setupPropertyWatchers<TProps extends IDictionary, TData>(
   onDataChange: (current: TData[], prior: TData[]) => void,
   onUrlChange: (current: IUrlInfo<TData>, prior: IUrlInfo<TData>) => void,
 ) {
-  console.log(`Setting up property watchers `)
-
   // DATA
   watch(
     () => ref(props.data),
@@ -24,14 +22,13 @@ export function setupPropertyWatchers<TProps extends IDictionary, TData>(
 
   // URL
   if (!props.data) {
-    console.log('watch URL property')
+    const watchThisMotherFucker = reactive(props)
 
     watch(
-      () => ref(props.url as IUrlProperty<TData>),
+      () => ref(watchThisMotherFucker.url as IUrlProperty<TData>),
       (current, prior) => {
         const c = decomposeUrl<TData>(unbox(current))
         const p = decomposeUrl<TData>(unbox(prior))
-        console.log('URL change', current, prior, c, p)
 
         onUrlChange(c, p)
       },

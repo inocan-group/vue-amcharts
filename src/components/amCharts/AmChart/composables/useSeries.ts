@@ -3,7 +3,9 @@ import { Axis, LineSeries, ColumnSeries, Series } from '@amcharts/amcharts4/char
 import { IDictionary } from 'common-types'
 import { useRegistry } from './useRegistry/useRegistry'
 import { AmchartError } from '../errors'
-import { useData, removeEventClass } from './useData'
+import { useData, removeEventClass, ILooksLikeChart } from './useData'
+import { useProps } from '.'
+import { IChildConfigurationCallback } from './useRegistry/registry-types'
 
 export const seriesProps = {
   id: {
@@ -54,15 +56,39 @@ export const seriesProps = {
   },
 }
 
-export function useSeries<TProps extends IDictionary, TData>(
+/**
+ * Takes the following actions for series components:
+ *
+ * - registers as a child (passes back registry functions and lifecycle hooks)
+ * - handles unmounting/disposing amChart series component when removed from DOM
+ * - provides a `setupAxes` method for XY series
+ *
+ * @param props the reactive _props_ dictionary passed into the Vue component
+ * @param context the `SetupContext` provided to every Vue component
+ * @param series the working instance of a _series_ class
+ */
+export function useSeries<
+  TProps extends IDictionary,
+  TComponent,
+  TChart extends ILooksLikeChart<any> = ILooksLikeChart<any>
+>(
   props: TProps,
   context: SetupContext,
-  series: Ref<Series>,
+  series: Ref<TComponent>,
+  /** if the parent chart object is a KNOWN type then pass in the constructor for typing benefits */
+  chartConstructor?: new () => TChart,
 ) {
-  const { register, onChartConfig, getRegistration, getComponent, firstComponentName, addToRegistration } = useRegistry(
-    props,
-    context,
-  )
+  const {
+    register,
+    onChartConfig,
+    getRegistration,
+    getComponent,
+    firstComponentName,
+    addToRegistration,
+    getChart,
+    childReady,
+  } = useRegistry<TChart, TComponent>(props, context)
+  const { onPropChange, respondTo, actionsConfig, initializeProps } = useProps(props, series, getChart)
   const { dataReady, dataMeta, postDataChange, postUrlChange, chartData } = useData(props)
 
   const setupAxes = (series: Ref<LineSeries | ColumnSeries>) => {
@@ -163,7 +189,9 @@ export function useSeries<TProps extends IDictionary, TData>(
 
   return {
     dataReady,
+    getChart,
     chartData,
+    childReady,
     setupAxes,
     addToRegistration,
     register,
@@ -171,5 +199,11 @@ export function useSeries<TProps extends IDictionary, TData>(
     dataMeta,
     postDataChange,
     postUrlChange,
+    onPropChange,
+    respondTo,
+    initializeProps,
+    actionsConfig,
+    getRegistration,
+    getComponent,
   }
 }

@@ -1,4 +1,4 @@
-import { Ref, ref, watch, toRefs } from '@vue/composition-api'
+import { Ref, ref, watch, toRefs, reactive } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
 import { api } from './api'
 import { AmchartError } from '../../errors'
@@ -68,6 +68,7 @@ export function useData<
       labelProps: [],
     },
     source: fakeContainer,
+    uid: '',
     hooks: {
       dataPreHook: () => true,
       dataPostHook: () => undefined,
