@@ -24,8 +24,8 @@ export function useChart<TChart extends Chart, TProps extends IDictionary>(chart
 
   onMounted(async () => {
     chart.value = am4core.create(chartdiv.value as HTMLElement, chartType)
-    await configureChildren(chart.value)
     dataReady(chart.value as TChart)
+    await configureChildren(chart.value)
     if(chartMountedCallback) {
       chartMountedCallback(chart.value as TChart)
     }

@@ -20,9 +20,15 @@ export type IPropertyChangeAction<TValue, TComponent> =
   /**  */
   | [TComponent, string, IPropertyValueFunction<TValue>]
   /**  */
-  | IPropertyValueFunction<void>
+  | IPropertyValueFunction<TValue>
 
 export type IPropertyValueFunction<T> = (v: T) => any
+
+export function isPropertyValueFunction<TValue>(
+  thingy: IPropertyChangeAction<TValue, any>,
+): thingy is IPropertyValueFunction<TValue> {
+  return typeof thingy === 'function' ? true : false
+}
 
 /**
  * A function reponsible for reacting to a particular properties change in value; most typically this is a
@@ -63,7 +69,7 @@ export type ActionDictionary<
   TChart,
   TKey extends string = keyof TProps & string
 > = {
-  [K in TKey]: IPropertyChangeAction<TProps[K], TComponent, TChart>
+  [K in TKey]: IPropertyChangeAction<TProps[K], TComponent>
 }
 
 export interface IPropChange<TProps extends IDictionary, K extends string & keyof TProps = keyof TProps & string> {

@@ -7,13 +7,13 @@ import {
   ConstructorFor,
   hasParent,
   hasChart as parentHasChart,
+  IChildConfigurationCallback,
 } from './registry-types'
-import { IDictionary } from 'common-types'
+import { IDictionary, wait } from 'common-types'
 import { dictionaryToArray } from './dictionaryToArray'
 import { reactive, Ref, SetupContext } from '@vue/composition-api'
 import { unbox } from '../../shared'
 import set from 'lodash.set'
-import { ILooksLikeChart } from '../useData'
 import { AmchartError } from '../../errors'
 
 export const registerAsParent = function(context: SetupContext) {
@@ -34,34 +34,62 @@ export const registerAsParent = function(context: SetupContext) {
       {},
     )
 
+    const allChildrenReady = () => {
+      for (const type of Object.keys(registrants)) {
+        for (const name of Object.keys(registrants[type])) {
+          if (!registrants[type][name].readyForConfiguration) {
+            console.log(`The ${type}/${name} component is not yet ready`)
+
+            return false
+          }
+        }
+      }
+      return true
+    }
+
     /**
      * Iterates first through each _type_ of child component and then through each component in that
      * type. For each component which has defined an `onChartConfig` configuration, it runs this
      * in parallel to other configuration functions of it's _type_
      */
-    const childRegistrationsConfigured = async (parent: any): Promise<void> => {
-      console.log('all registrations received, no to configure', registrants)
+    const configureChildren = async (parent: any, count?: number): Promise<void> => {
+      console.log('parent is ready for children to configure', parent)
 
-      for await (const type of Object.keys(registrants)) {
-        const named = dictionaryToArray(registrants[type])
-        await Promise.all([...named.map(i => (i.configure ? i.configure(parent) : undefined)).filter(i => i)])
-        Object.keys(registrants[type]).forEach(name => {
-          registrants[type][name].configured = true
-        })
+      if (allChildrenReady()) {
+        console.log('all children are now ready to be configured too')
+
+        for await (const type of Object.keys(registrants)) {
+          const named = dictionaryToArray(registrants[type])
+          const configFns = named
+            .filter(i => i && i.configure !== undefined)
+            .map(i => i.configure) as IChildConfigurationCallback<any>[]
+
+          await Promise.all(configFns.map(i => i(parent)))
+
+          Object.keys(registrants[type]).forEach(name => {
+            registrants[type][name].configured = true
+          })
+        }
+      } else {
+        if (count && count > 5) {
+          throw new AmchartError(
+            `The chart ${parent.prototype.name} timed out waiting for children to be ready for configuration`,
+            `time-out`,
+          )
+        }
+        await wait(100)
+        count = count ? count + 1 : 1
+        configureChildren(parent, count)
       }
     }
 
     // PARENT API
     return {
-      /**
-       * let's all children run their configuration/setup routines and then return
-       */
-      configureChildren: async (parent: ILooksLikeChart<any>) => {
-        await childRegistrationsConfigured(parent)
-      },
       registrants,
       depSequence,
       cardinality,
+
+      configureChildren,
 
       /** accept registration requests from children */
       acceptChildRegistration: <TComponent>(
@@ -102,6 +130,7 @@ export const registerAsParent = function(context: SetupContext) {
             break
           case 'childReady':
             registrants[childType][childName].readyForConfiguration = true
+
             break
           case 'addToRegistration':
             const [property, value] = args

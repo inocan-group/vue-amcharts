@@ -55,7 +55,6 @@ export function childApi<C, P>(
     if (typeof property === 'object') {
       Object.keys(property).forEach(prop => addToRegistration(prop, property[prop as keyof typeof property]))
     } else {
-      console.log('adding to registration', { childType, childName, property, value })
       parent.acceptChildMessage(EventMessages.addToRegistration, childType, childName, property, value)
     }
   }

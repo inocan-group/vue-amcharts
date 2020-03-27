@@ -1,4 +1,10 @@
-import { IPropChange, IChangeValues, IPropertyChangeAction, ActionDictionary } from './props-types'
+import {
+  IPropChange,
+  IChangeValues,
+  IPropertyChangeAction,
+  ActionDictionary,
+  isPropertyValueFunction,
+} from './props-types'
 import set from 'lodash.set'
 import { IDictionary } from 'common-types'
 import { AmchartError } from '../../errors'
@@ -35,7 +41,7 @@ export function takeAction<TProps, TChart extends IDictionary, TComponent extend
     }
   } else {
     // NON-array signatures
-    if (typeof action === 'function') {
+    if (isPropertyValueFunction(action)) {
       // action is a function
       action(current)
     } else {

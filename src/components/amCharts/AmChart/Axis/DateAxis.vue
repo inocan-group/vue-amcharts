@@ -11,6 +11,9 @@ import { ChartType } from '..'
 import { IDictionary } from 'common-types'
 import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
 
+export type XYChart = import('@amcharts/amcharts4/charts').XYChart
+export type XYChart3D = import('@amcharts/amcharts4/charts').XYChart3D
+
 export default defineComponent({
   name: 'DateAxis',
   props: {
@@ -32,26 +35,30 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, howMany, onChartConfig, addToRegistration, childReady, getChart } = useRegistry(props, context)
+    const { register, howMany, onChartConfig, addToRegistration, childReady, getChart } = useRegistry<
+      XYChart | XYChart3D
+    >(props, context)
     const axis: Ref<DateAxis> = ref(new DateAxis())
     const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
     const notFirstOnAxis = howMany(dim) > 0
-    const { actionsConfig, initializeProps } = useProps(props, axis, getChart)
+    const { actionsConfig, initializeProps } = useProps<XYChart | XYChart3D>(props, axis, getChart)
 
     register(ChartType[dim], props.id, DateAxis, axis)
 
     actionsConfig(a => ({
-      dateFormat: [a, 'tooltipDateFormat'],
-      opposite: [a, 'renderer.opposite', (v: boolean) => (v === undefined ? (notFirstOnAxis ? true : false) : v)],
+      dateFormat: [a, 'tooltipDateFormat', v => (v === undefined ? 'MMM YYYY' : v)],
+      opposite: [a, 'renderer.opposite', v => (v === undefined ? (notFirstOnAxis ? true : false) : v)],
     }))
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(c => {
+      initializeProps()
+
       addToRegistration('dataSource', axis.value.dataSource.uid)
       addToRegistration('data', axis.value.data)
 
-      initializeProps()
+      const dimension = props.dimension === 'x' ? c.xAxes : c.yAxes
+      console.log('The dimension of chart', dimension, c)
 
-      const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       dimension.push(axis.value)
     })
 

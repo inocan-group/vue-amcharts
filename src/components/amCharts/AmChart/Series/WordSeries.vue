@@ -12,24 +12,44 @@ import { ChartType } from '..'
 export default defineComponent({
   name: 'WordCloudSeries',
   props: {
+    text: {
+      type: String,
+    },
+    excludeWords: {
+      type: Array,
+      default: () => ['the', 'an', 'to'],
+    },
+    maxCount: {
+      type: Number,
+      number: 100,
+    },
+    minValue: {
+      type: Number,
+      default: 1,
+    },
+    minWordLength: {
+      type: Number,
+      default: 2,
+    },
     rotationalThreshold: {
       type: Number,
       default: 0.7,
       validator: v => v >= 0 && v <= 1,
     },
-    color: {
-      type: String,
-    },
   },
 
   setup(props: IDictionary, context: SetupContext) {
     const series: Ref<WordCloudSeries> = ref(new WordCloudSeries())
-    const { register, childReady, chartData, onChartConfig, dataReady, dataMeta, actionsConfig } = useSeries(
-      props,
-      context,
-      series,
-      WordCloud,
-    )
+    const {
+      register,
+      childReady,
+      chartData,
+      onChartConfig,
+      dataReady,
+      dataMeta,
+      actionsConfig,
+      initializeProps,
+    } = useSeries(props, context, series, WordCloud)
     register(ChartType.series, props.id, WordCloudSeries, series)
     dataReady(series)
 
@@ -44,6 +64,11 @@ export default defineComponent({
     }
 
     actionsConfig(s => ({
+      text: s,
+      excludeWords: s,
+      maxCount: [s, v => Number(v)],
+      minValue: [s, v => Number(v)],
+      minWordLength: [s, v => Number(v)],
       wordProp: [s, 'dataFields.word'],
       weightProp: [s, 'dataFields.value'],
       minFontSize: [s, fontSize],
@@ -51,7 +76,8 @@ export default defineComponent({
     }))
 
     onChartConfig(chart => {
-      chart.series.push(series.value)
+      initializeProps()
+      series.value = chart.series.push(series.value)
     })
 
     childReady()

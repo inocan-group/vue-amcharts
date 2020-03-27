@@ -15,25 +15,6 @@ import { useChart, useEvents, IActionConfiguration } from '../composables'
 export default defineComponent({
   name: 'WordCloud',
   props: {
-    text: {
-      type: String,
-    },
-    excludeWords: {
-      type: Array,
-      default: ['the', 'an', 'to'],
-    },
-    maxCount: {
-      type: Number,
-      number: 100,
-    },
-    minValue: {
-      type: Number,
-      default: 1,
-    },
-    minWordLength: {
-      type: Number,
-      default: 2,
-    },
     /** the property which has the word (when passing an array directly to "data") */
     wordProp: {
       type: String,
@@ -78,16 +59,7 @@ export default defineComponent({
       onChartMounted,
     } = useChart(WordCloud, props, context, parentConfig)
 
-    const fontSize = (value: string | number) => {
-      return typeof value === 'number' ? value : value.slice(-1) === '%' ? value : Number(value)
-    }
-
     actionsConfig(wc => ({
-      text: wc,
-      excludeWords: wc,
-      maxCount: [wc, v => Number(v)],
-      minValue: [wc, v => Number(v)],
-      minWordLength: [wc, v => Number(v)],
       accuracy: [wc, v => Number(v)],
       randomness: [wc, v => Number(v)],
     }))

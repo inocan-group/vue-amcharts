@@ -34,8 +34,8 @@ export const simpleWordCloud = () => {
     components: { WordCloud, WordSeries },
 
     template: `
-    <word-cloud :text="words" :excludeWords="excludeWords" :minWordLength="minWordLength">
-      <word-series />
+    <word-cloud  >
+      <word-series :text="words" :excludeWords="excludeWords" :minWordLength="minWordLength" />
     </word-cloud>
   `,
     notes: `Shows animation of data in a very simple container; highlighting add, update, and remove`,

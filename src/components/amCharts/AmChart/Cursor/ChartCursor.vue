@@ -28,32 +28,31 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, onChartConfig } = useRegistry(props, context)
-    const { onPropChange, respondTo } = useProps(props)
+    const { register, onChartConfig, childReady, getChart, getComponent } = useRegistry(props, context)
     const cursor: Ref<Cursor> = ref(new Cursor())
+    const { actionsConfig, initializeProps } = useProps(props, cursor, getChart)
 
     register(ChartType.cursor, 'cursor', Cursor, cursor)
 
+    actionsConfig((c, chart) => ({
+      maxTooltipDistance: [c, v => (undefined ? undefined : Number(v))],
+      fullWidthX: v => {
+        if (v) {
+          chart.cursor.xAxis = getComponent('xAxis')
+          chart.cursor.fullWidthLineX = Boolean(v)
+          chart.cursor.lineX.strokeWidth = 0
+          chart.cursor.lineX.fill = color('#8F3985')
+          chart.cursor.lineX.fillOpacity = 0.1
+        }
+      },
+    }))
+
     onChartConfig((chart: IChart) => {
       chart.cursor = cursor.value
-      chart.cursor.maxTooltipDistance =
-        props.maxTooltipDistance === undefined ? undefined : Number(props.maxTooltipDistance)
-
-      if (props.fullWidthX) {
-        // chart.cursor.xAxis = getComponent('xAxis')
-        // chart.cursor.fullWidthLineX = Boolean(props.fullWidthX)
-        // chart.cursor.lineX.strokeWidth = 0
-        // chart.cursor.lineX.fill = color('#8F3985')
-        // chart.cursor.lineX.fillOpacity = 0.1
-      }
+      initializeProps()
     })
 
-    onPropChange(async (prop: string, current) => {
-      const c = cursor.value
-      respondTo(prop, current, {
-        maxTooltipDistance: c,
-      })
-    })
+    childReady()
 
     return { Cursor, cursor }
   },
