@@ -1,5 +1,9 @@
 <template>
-  <div ref="chartdiv"><slot /></div>
+  <div ref="chartdiv">
+    <!-- @slot The default slot accepts any _series_ component (e.g. `PlotlyBarSeries`, `PlotlyPieSeries`, etc - which define data), in addition to
+    other components that define chart elements such as a legend and axes. -->
+    <slot />
+  </div>
 </template>
 
 <script lang="ts">
@@ -7,9 +11,17 @@ import { defineComponent, onMounted, onBeforeUnmount, ref, watch } from '@vue/co
 import Plotly, { Root, Layout } from 'plotly.js-dist'
 import { IPlotData } from '@/@types/plotly'
 
+/**
+ * The container component responsible for creating a **plotly** chart and defining layout and other
+ * configuration options on the chart.
+ */
 export default defineComponent({
   props: {
-    layout: Object as () => Partial<Layout>,
+    /**
+     * An object containing any layout options. For a complete reference please refer to **plotly**'s documentation
+     * on [layout](https://plotly.com/javascript/reference/#layout).
+     */
+    layout: { type: Object as () => Partial<Layout> },
   },
   setup(props) {
     const chartdiv = ref<HTMLElement>(null)
