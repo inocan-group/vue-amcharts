@@ -54,8 +54,8 @@ export const columnChart = () => {
       <value-axis 
         name="Price" 
         dimension="y" 
-        :min="fixPriceAxis ? 0 : ''" 
-        :max="fixPriceAxis ? 100 : ''" 
+        :min="fixPriceAxis ? 0 : -1" 
+        :max="fixPriceAxis ? 100 : -1" 
       />
       <column-series 
         xProp="date" 

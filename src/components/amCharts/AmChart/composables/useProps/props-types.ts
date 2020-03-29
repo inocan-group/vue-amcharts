@@ -6,6 +6,8 @@ export interface IChangeDelta<TProp, TPropType> {
   old: TPropType | undefined
 }
 
+export type IPostSetCallback = () => void
+
 /**
  * The action configuration of a given properties type -- `TProp`, (which is a property in the larger set of properties
  * defined in the typing for the _props_ dictionary) -- and the possible signatures it can take
@@ -15,11 +17,18 @@ export type IPropertyChangeAction<TValue, TComponent> =
   | TComponent
   /** reflexive name with function to modify value to be set */
   | [TComponent, IPropertyValueFunction<TValue>]
-  /** */
+  /** reflexive name with function to modify value to be set (with post-set callback) */
+  | [TComponent, IPropertyValueFunction<TValue>, IPostSetCallback]
+  /** set the value to a fixed path off the base component */
   | [TComponent, string]
-  /**  */
+  /** set the value to a fixed path off the base component, value must pass through function to get final value */
   | [TComponent, string, IPropertyValueFunction<TValue>]
-  /**  */
+  /**
+   * set the value to a fixed path off the base component, then run value through a function to get final value,
+   * finally call the callback to do any remaining work
+   */
+  | [TComponent, string, IPropertyValueFunction<TValue>, IPostSetCallback]
+  /** run a bespoke function */
   | IPropertyValueFunction<TValue>
 
 export type IPropertyValueFunction<T> = (v: T) => any

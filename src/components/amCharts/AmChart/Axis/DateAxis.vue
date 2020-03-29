@@ -52,21 +52,14 @@ export default defineComponent({
     onChartConfig(c => {
       addToRegistration('dataSource', axis.value.dataSource.uid)
       addToRegistration('data', axis.value.data)
-      console.log('chart (during date-axis config):', c)
 
       const dimension = props.dimension === 'x' ? c.xAxes : c.yAxes
-      console.log('The dimension of chart', dimension)
-      console.log('the axis is defined as:', axis.value, axis.value.renderer)
-
       axis.value = dimension.push(axis.value)
-      console.log(`post axis being pushed into chart`, axis.value.renderer)
 
       initializeProps()
-      console.log(`post props initialized`)
     })
 
     addToRegistration('dataField', `date${capitalize(props.dimension)}`)
-
     childReady()
 
     return {

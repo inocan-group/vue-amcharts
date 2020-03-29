@@ -25,14 +25,21 @@ export function takeAction<TProps, TChart extends IDictionary, TComponent extend
 
   if (Array.isArray(action)) {
     // ARRAY signatures (first param is always the base chart object to operate on)
-    const [comp, two, three] = action
+    const [comp, two, three, four] = action
 
-    if (typeof two === 'string' && !three) {
+    if (typeof two === 'string') {
       set(comp, two, current)
-    } else if (typeof two === 'function' && !three) {
+    } else if (typeof two === 'function') {
       set(comp, prop, two(current))
+      if (three && typeof three === 'function') {
+        // post-set function
+        three()
+      }
     } else if (typeof two === 'string' && typeof three === 'function') {
       set(comp, two, three(current))
+      if (four && typeof four === 'function') {
+        four()
+      }
     } else {
       throw new AmchartError(
         `Failed to take action on a property action as the signature of the action was not understood: [${typeof comp}, ${typeof two}, ${typeof three}]`,

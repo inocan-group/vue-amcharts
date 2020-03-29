@@ -6,11 +6,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, onMounted } from '@vue/composition-api'
+import { defineComponent, SetupContext } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
 import { WordCloud } from '@amcharts/amcharts4/plugins/wordCloud'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
-import { useChart, useEvents, IActionConfiguration } from '../composables'
+import { useChart, useEvents } from '../composables'
 
 export default defineComponent({
   name: 'WordCloud',
@@ -24,20 +24,20 @@ export default defineComponent({
     },
     minFontSize: {
       type: [String, Number],
-      default: () => '2%',
+      // default: () => '2%',
     },
     maxFontSize: {
       type: [String, Number],
-      default: () => '20%',
+      // default: () => '20%',
     },
     accuracy: {
       type: [String, Number],
-      default: 5,
+      // default: 5,
       validator: v => Number(v) >= 0 && Number(v) <= 5,
     },
     randomness: {
       type: [Number, String],
-      default: 0.2,
+      // default: 0.2,
       validator: v => Number(v) >= 0 && Number(v) <= 1,
     },
   },

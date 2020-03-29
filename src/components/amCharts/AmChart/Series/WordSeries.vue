@@ -76,6 +76,7 @@ export default defineComponent({
     }))
 
     onChartConfig(chart => {
+      console.log('configuring word series')
       initializeProps()
       series.value = chart.series.push(series.value)
     })

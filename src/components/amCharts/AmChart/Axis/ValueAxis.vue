@@ -10,6 +10,7 @@ import { IChart } from '../ChartTypes'
 import { ValueAxis } from '@amcharts/amcharts4/charts'
 import { ChartType } from '../types'
 import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
+import { allowUndefined } from '../helpers'
 
 export default defineComponent({
   name: 'ValueAxis',
@@ -57,7 +58,6 @@ export default defineComponent({
     const { register, addToRegistration, howMany, onChartConfig, getChart, childReady } = useRegistry(props, context)
     const { actionsConfig, initializeProps } = useProps(props, axis, getChart)
     const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
-    const { onPropChange } = useProps(props, axis, getChart)
     const notFirstOnAxis = howMany(dim) > 0
     const dataSource: Ref<string> = ref('')
     const instanceId: Ref<string> = ref('')
@@ -67,29 +67,18 @@ export default defineComponent({
     register(ChartType[dim], props.id, ValueAxis, axis)
     addToRegistration(accessibility)
 
-    actionsConfig((a, chart, deltas) => ({
+    actionsConfig(a => ({
       name: [a, 'title.text'],
       logarithmic: [a, (v: boolean) => Boolean(v)],
-      min: () => {
-        const value = deltas ? deltas.current : props.min
-        a.min = value === undefined ? value : Number(value)
-        a.invalidateRawData()
-      },
-      max: () => {
-        const value = deltas ? deltas.current : props.max
-        a.max = value === undefined ? value : Number(value)
-        a.invalidateRawData()
-      },
+      min: [a, v => allowUndefined(v), () => a.invalidateRawData()],
+      max: [a, v => allowUndefined(v), () => a.invalidateRawData()],
       // numberFormat: [a, 'renderer.axis.numberFormatter.outputFormat'],
     }))
 
     onChartConfig((chart: IChart) => {
-      console.log('value axis entering config', chart)
-
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       axis.value = dimension.push(axis.value)
       initializeProps()
-      console.log(`value axis renderer`, axis.value.renderer)
 
       // When secondary axis are added; we have certain default behavior
       // (assuming there isn't an explicit definition)
