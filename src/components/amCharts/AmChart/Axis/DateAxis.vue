@@ -5,7 +5,6 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { useRegistry, useProps } from '../composables'
-import { IChart } from '../ChartTypes'
 import { DateAxis } from '@amcharts/amcharts4/charts'
 import { ChartType } from '..'
 import { IDictionary } from 'common-types'
@@ -51,15 +50,19 @@ export default defineComponent({
     }))
 
     onChartConfig(c => {
-      initializeProps()
-
       addToRegistration('dataSource', axis.value.dataSource.uid)
       addToRegistration('data', axis.value.data)
+      console.log('chart (during date-axis config):', c)
 
       const dimension = props.dimension === 'x' ? c.xAxes : c.yAxes
-      console.log('The dimension of chart', dimension, c)
+      console.log('The dimension of chart', dimension)
+      console.log('the axis is defined as:', axis.value, axis.value.renderer)
 
-      dimension.push(axis.value)
+      axis.value = dimension.push(axis.value)
+      console.log(`post axis being pushed into chart`, axis.value.renderer)
+
+      initializeProps()
+      console.log(`post props initialized`)
     })
 
     addToRegistration('dataField', `date${capitalize(props.dimension)}`)

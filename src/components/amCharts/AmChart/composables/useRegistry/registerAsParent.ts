@@ -69,6 +69,7 @@ export const registerAsParent = function(context: SetupContext) {
           Object.keys(registrants[type]).forEach(name => {
             registrants[type][name].configured = true
           })
+          console.log('all children are configured', parent)
         }
       } else {
         if (count && count > 5) {

@@ -80,13 +80,16 @@ export default defineComponent({
         a.max = value === undefined ? value : Number(value)
         a.invalidateRawData()
       },
-      numberFormat: [a, 'renderer.axis.numberFormatter.outputFormat'],
+      // numberFormat: [a, 'renderer.axis.numberFormatter.outputFormat'],
     }))
 
     onChartConfig((chart: IChart) => {
-      initializeProps()
+      console.log('value axis entering config', chart)
+
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
-      dimension.push(axis.value)
+      axis.value = dimension.push(axis.value)
+      initializeProps()
+      console.log(`value axis renderer`, axis.value.renderer)
 
       // When secondary axis are added; we have certain default behavior
       // (assuming there isn't an explicit definition)

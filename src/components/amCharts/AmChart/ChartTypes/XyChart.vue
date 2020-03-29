@@ -53,8 +53,6 @@ export default defineComponent({
       dataMeta,
       chartData,
       postDataChange,
-      onPropChange,
-      respondTo,
       actionsConfig,
     } = useChart(XYChart, props, context, parentConfig)
 
@@ -65,10 +63,6 @@ export default defineComponent({
     actionsConfig(c => ({
       responsive: c,
     }))
-
-    onPropChange((prop, value, old) => {
-      // respondTo(prop, value, actionsConfig(prop, value, old))
-    })
 
     onMounted(async () => {
       const c = chart.value as XYChart

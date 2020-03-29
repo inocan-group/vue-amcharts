@@ -33,7 +33,5 @@ export function setupPropertyWatchers<TProps extends IDictionary, TData>(
         onUrlChange(c, p)
       },
     )
-  } else {
-    console.info('not watching URL because the data property is being passed in', props.data)
   }
 }
