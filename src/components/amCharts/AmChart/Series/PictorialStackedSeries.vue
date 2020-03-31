@@ -8,7 +8,6 @@ import { useSeries } from '../composables'
 import { IDictionary } from 'common-types'
 import { ChartType } from '../index'
 import { PictorialStackedSeries, SlicedChart } from '@amcharts/amcharts4/charts'
-import { toNumberOrPercent } from '../helpers'
 
 export default defineComponent({
   name: 'PictorialStackedSeries',
@@ -31,13 +30,8 @@ export default defineComponent({
       validator: v => ['area', 'height'].includes(v),
     },
 
-    topWidth: {
-      type: [String, Number],
-      default: 0,
-    },
-    bottomWidth: {
-      type: [String, Number],
-      default: '100%',
+    path: {
+      type: String,
     },
 
     labelText: {
@@ -79,8 +73,7 @@ export default defineComponent({
     actionsConfig(s => ({
       valueProp: [s, 'dataFields.value'],
       categoryProp: [s, 'dataFields.category'],
-      topWidth: [s, v => toNumberOrPercent(v, 0)],
-      bottomWidth: [s, v => toNumberOrPercent(v, '100%')],
+      path: [s, 'maskSprite.path'],
 
       alignLabels: [s, v => v, () => s.invalidateLabels()],
       alignOpposite: [s, 'labelsOpposite', v => v, () => s.invalidate()],

@@ -81,6 +81,7 @@ export default defineComponent({
       categoryProp: [s, 'dataFields.category'],
       topWidth: [s, v => toNumberOrPercent(v, 0)],
       bottomWidth: [s, v => toNumberOrPercent(v, '100%')],
+      valueIs: s,
 
       alignLabels: [s, v => v, () => s.invalidateLabels()],
       alignOpposite: [s, 'labelsOpposite', v => v, () => s.invalidate()],
