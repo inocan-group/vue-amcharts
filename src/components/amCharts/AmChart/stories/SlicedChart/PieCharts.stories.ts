@@ -1,2 +1,3 @@
 export default { title: 'amCharts/Composable/SliceCharts' }
-export * from './simpleSlice'
+export * from './funnel'
+export * from './pyramid'

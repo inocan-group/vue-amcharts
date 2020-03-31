@@ -1,6 +1,6 @@
 <template>
   <div class="slice-chart" style="width: 100%; min-height: 500px">
-    <div class="chart" ref="chartdiv" />
+    <div class="chart" ref="chartdiv" style="width: 100%; min-height: 500px" />
     <slot />
   </div>
 </template>
@@ -30,10 +30,6 @@ export default defineComponent({
       type: String,
       default: 'animated',
     },
-    responsive: {
-      type: Boolean,
-      default: Boolean(false),
-    },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {
@@ -55,7 +51,8 @@ export default defineComponent({
     } = useChart(SlicedChart, props, context, parentConfig)
 
     actionsConfig(c => ({
-      responsive: c,
+      theme: c,
+      license: c,
     }))
 
     return {
