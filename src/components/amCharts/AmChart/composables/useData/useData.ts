@@ -116,7 +116,7 @@ export function useData<
   const dataReady = (
     source: ILooksLikeChart<TData> | Ref<ILooksLikeChart<TData>>,
     /** provide META about the various properties in the data array <T> */
-    propMeta?: { id: K; dataProps: K[]; labelProps: K[] },
+    propMeta?: IPropertyMeta<TProps>,
   ) => {
     source = unbox(source)
     dataMeta.value.uid = source.uid

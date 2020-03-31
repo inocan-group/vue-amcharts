@@ -37,34 +37,18 @@ export const pieInAPie = () => {
             '25 percent': '25%',
             '50 percent': '50%',
           },
-          0,
+          '25%',
           'Component',
-        ),
-      },
-      width: {
-        default: select(
-          'Width of the container',
-          { '100%': '100%', '500px': '500px', '50%': '50%' },
-          '100%',
-          'Container',
-        ),
-      },
-      height: {
-        default: select(
-          'Width of the container',
-          { '800px': '800px', '500px': '500px', '300px': '300px' },
-          '300px',
-          'Container',
         ),
       },
     },
     components: { PieChart, PieSeries },
     template: `
-    <div class="container" :width="width" :height="height" >
-    <pie-chart :data="pieData" :innerRadius="innerRadius">
-      <pie-series valueProp="count" categoryProp="category" />
-      <pie-series valueProp="max" categoryProp="category" fillProp="subColor" />
-    </pie-chart>
+    <div style="width: 100%; height: 500px">
+      <pie-chart :data="pieData" :innerRadius="innerRadius" >
+        <pie-series valueProp="count" categoryProp="category" />
+        <pie-series valueProp="max" categoryProp="category" fillProp="subColor" />
+      </pie-chart>
     </div>
   `,
     notes: `Shows both candlestick implementation as well as how the "api" property can be used`,

@@ -53,11 +53,7 @@ export const registerAsParent = function(context: SetupContext) {
      * in parallel to other configuration functions of it's _type_
      */
     const configureChildren = async (parent: any, count?: number): Promise<void> => {
-      console.log('parent is ready for children to configure', parent)
-
       if (allChildrenReady()) {
-        console.log('all children are now ready to be configured too')
-
         for await (const type of Object.keys(registrants)) {
           const named = dictionaryToArray(registrants[type])
           const configFns = named
@@ -69,7 +65,6 @@ export const registerAsParent = function(context: SetupContext) {
           Object.keys(registrants[type]).forEach(name => {
             registrants[type][name].configured = true
           })
-          console.log('all children are configured', parent)
         }
       } else {
         if (count && count > 5) {

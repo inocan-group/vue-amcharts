@@ -1,5 +1,7 @@
 <template>
-  <div class="chart" ref="chartdiv"></div>
+  <div class="amChart pie-chart" style="height: 100%; width: 100%">
+    <div class="chart" style="height: 100%; width: 100%" ref="chartdiv"></div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -74,8 +76,8 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.chart {
+.amChart.pie-chart {
+  height: 100%;
   width: 100%;
-  height: 300px;
 }
 </style>

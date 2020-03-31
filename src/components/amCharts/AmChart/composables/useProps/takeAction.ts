@@ -1,10 +1,4 @@
-import {
-  IPropChange,
-  IChangeValues,
-  IPropertyChangeAction,
-  ActionDictionary,
-  isPropertyValueFunction,
-} from './props-types'
+import { ActionDictionary, isPropertyValueFunction } from './props-types'
 import set from 'lodash.set'
 import { IDictionary } from 'common-types'
 import { AmchartError } from '../../errors'
@@ -21,39 +15,48 @@ export function takeAction<TProps, TChart extends IDictionary, TComponent extend
   actions: ActionDictionary<TProps, TComponent, TChart>,
   current: any,
 ) {
-  const action = actions[prop]
+  try {
+    const action = actions[prop]
 
-  if (Array.isArray(action)) {
-    // ARRAY signatures (first param is always the base chart object to operate on)
-    const [comp, two, three, four] = action
+    if (Array.isArray(action)) {
+      // ARRAY signatures (first param is always the base chart object to operate on)
+      const [comp, two, three, four] = action
 
-    if (typeof two === 'string') {
-      set(comp, two, current)
-    } else if (typeof two === 'function') {
-      set(comp, prop, two(current))
-      if (three && typeof three === 'function') {
-        // post-set function
-        three()
-      }
-    } else if (typeof two === 'string' && typeof three === 'function') {
-      set(comp, two, three(current))
-      if (four && typeof four === 'function') {
-        four()
+      if (typeof two === 'string') {
+        set(comp, two, current)
+      } else if (typeof two === 'function') {
+        set(comp, prop, two(current))
+        if (three && typeof three === 'function') {
+          // post-set function
+          three()
+        }
+      } else if (typeof two === 'string' && typeof three === 'function') {
+        set(comp, two, three(current))
+        if (four && typeof four === 'function') {
+          four()
+        }
+      } else {
+        throw new AmchartError(
+          `Failed to take action on a property action as the signature of the action was not understood: [${typeof comp}, ${typeof two}, ${typeof three}]`,
+          `invalid-action`,
+        )
       }
     } else {
-      throw new AmchartError(
-        `Failed to take action on a property action as the signature of the action was not understood: [${typeof comp}, ${typeof two}, ${typeof three}]`,
-        `invalid-action`,
-      )
+      // NON-array signatures
+      if (isPropertyValueFunction(action)) {
+        // action is a function
+        action(current)
+      } else {
+        // action is the chart object
+        set(action, prop, current)
+      }
     }
-  } else {
-    // NON-array signatures
-    if (isPropertyValueFunction(action)) {
-      // action is a function
-      action(current)
-    } else {
-      // action is the chart object
-      set(action, prop, current)
-    }
+  } catch (e) {
+    throw new AmchartError(
+      `There was a problem taking action on the property "${prop}" (where the current value was: ${JSON.stringify(
+        current,
+      )} ): ${e.message}`,
+      `invalid-action`,
+    )
   }
 }

@@ -1,14 +1,14 @@
 <template>
-  <div class="pie-chart">
-    <div class="chart" ref="chartdiv" />
+  <div class="pie-chart" style="width: 100%; height: 100%">
+    <div class="chart" ref="chartdiv" style="width: 100%; height: 100%" />
     <slot />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, onMounted } from '@vue/composition-api'
+import { defineComponent, SetupContext } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
-import { useChart } from '../composables'
+import { useChart, chartProperties } from '../composables'
 import { PieChart } from '@amcharts/amcharts4/charts'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
 import { dataProperties } from '../composables/useData'
@@ -18,6 +18,7 @@ export default defineComponent({
   name: 'PieChart',
   props: {
     ...dataProperties,
+    ...chartProperties,
     innerRadius: {
       type: [String, Number],
     },
@@ -37,20 +38,10 @@ export default defineComponent({
       registrants,
       dataMeta,
       chartData,
-      onPropChange,
-      respondTo,
       actionsConfig,
     } = useChart(PieChart, props, context, parentConfig)
 
-    onMounted(async () => {
-      const c = chart.value as PieChart
-      // c.height = 800
-      // c.contentHeight = 800
-      c.responsive.enabled = props.responsive
-    })
-
     actionsConfig(c => ({
-      responsive: c,
       innerRadius: () => {
         if (typeof props.innerRadius === 'string') {
           c.innerRadius =
@@ -63,10 +54,6 @@ export default defineComponent({
         c.invalidateData()
       },
     }))
-
-    // onPropChange((prop, value, old) => {
-    //   respondTo(prop, value, old)
-    // })
 
     return {
       chart,

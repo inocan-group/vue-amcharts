@@ -7,7 +7,7 @@ import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { ColumnSeries } from '@amcharts/amcharts4/charts'
 import { useSeries, seriesProps } from '../composables'
 import { IDictionary } from 'common-types'
-import { IChart, ChartType } from '../index'
+import { IChart, ChartType, allowUndefined } from '../index'
 import { color } from '@amcharts/amcharts4/core'
 
 export default defineComponent({
@@ -18,16 +18,11 @@ export default defineComponent({
 
   setup(props: IDictionary, context: SetupContext) {
     const series: Ref<ColumnSeries> = ref(new ColumnSeries())
-    const {
-      actionsConfig,
-      register,
-      onChartConfig,
-      onPropChange,
-      initializeProps,
-      childReady,
-      setupAxes,
-      dataReady,
-    } = useSeries(props, context, series)
+    const { actionsConfig, register, onChartConfig, initializeProps, childReady, setupAxes, dataReady } = useSeries(
+      props,
+      context,
+      series,
+    )
     dataReady(series.value)
     const axisConfig: Ref<IDictionary> = ref({})
 
@@ -45,16 +40,8 @@ export default defineComponent({
           s.invalidate()
         }
       },
-      stroke: () => {
-        if (props.stroke !== undefined) {
-          s.stroke = color(props.stroke)
-          s.invalidate()
-        }
-      },
-      fill: () => {
-        s.fill = color(props.fill)
-        s.invalidate()
-      },
+      stroke: [s, v => allowUndefined(color(v)), () => s.invalidate()],
+      fill: [s, v => allowUndefined(color(v)), () => s.invalidate()],
       strokeWidth: s,
     }))
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="xy-chart">
+  <div class="fdt-chart">
     <div class="chart" ref="chartdiv" />
     <slot />
   </div>
@@ -7,9 +7,9 @@
 
 <script lang="ts">
 import * as am4core from '@amcharts/amcharts4/core'
-import { XYChart } from '@amcharts/amcharts4/charts'
+import { ForceDirectedTree } from '@amcharts/amcharts4/plugins/forceDirected'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
-import { defineComponent, onMounted, SetupContext } from '@vue/composition-api'
+import { defineComponent, SetupContext } from '@vue/composition-api'
 import { useChart } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
@@ -18,6 +18,7 @@ import { dataProperties } from '../composables/useData'
 am4core.useTheme(am4themesAnimated)
 
 export default defineComponent({
+  name: 'ForceDirectedTree',
   props: {
     ...dataProperties,
 
@@ -37,10 +38,7 @@ export default defineComponent({
 
   setup(props: IDictionary, context: SetupContext): IDictionary {
     const parentConfig: IChildWithCardinality[] = [
-      [1, null, 'xAxis'],
-      [1, null, 'yAxis'],
       [1, null, 'series'],
-      [0, 1, 'cursor'],
       [0, 1, 'legend'],
       [0, null, 'features'],
     ]
@@ -52,19 +50,18 @@ export default defineComponent({
       registrants,
       dataMeta,
       chartData,
-      actionsConfig,
       onChartMounted,
-    } = useChart(XYChart, props, context, parentConfig)
+      actionsConfig,
+    } = useChart(ForceDirectedTree, props, context, parentConfig)
 
     actionsConfig(c => ({
       responsive: c,
     }))
 
-    onChartMounted(async () => {
-      const c = chart.value as XYChart
+    onChartMounted(c => {
       c.height = 800
       c.contentHeight = 800
-      c.responsive.enabled = props.responsive
+      // c.responsive.enabled = props.responsive
     })
 
     return {
@@ -81,7 +78,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.xy-chart {
+.fdt-chart {
   width: 100%;
   height: 800px;
 }

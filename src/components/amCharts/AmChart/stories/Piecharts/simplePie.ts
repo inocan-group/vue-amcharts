@@ -1,5 +1,6 @@
 import { PieChart, PieSeries, ChartLegend } from '../../index'
 import { select, array, boolean } from '@storybook/addon-knobs'
+import { storyContainer } from '@/shared/withWrapper'
 
 export const simplePie = () => {
   const pieData = [
@@ -16,7 +17,7 @@ export const simplePie = () => {
       category: 'things',
     },
   ]
-  return {
+  return storyContainer({
     data: () => ({
       pieData,
     }),
@@ -54,26 +55,9 @@ export const simplePie = () => {
       disableLabels: {
         default: boolean('Disable labels', false, 'Component'),
       },
-      width: {
-        default: select(
-          'Width of the container',
-          { '100%': '100%', '500px': '500px', '50%': '50%' },
-          '100%',
-          'Container',
-        ),
-      },
-      height: {
-        default: select(
-          'Width of the container',
-          { '800px': '800px', '500px': '500px', '300px': '300px' },
-          '300px',
-          'Container',
-        ),
-      },
     },
     components: { PieChart, PieSeries, ChartLegend },
     template: `
-    <div class="container" :width="width" :height="height" >
     <pie-chart :data="pieData" :innerRadius="innerRadius">
       <pie-series 
         valueProp="count" 
@@ -85,8 +69,7 @@ export const simplePie = () => {
       />
       <chart-legend :show="show" position="right" />
     </pie-chart>
-    </div>
   `,
     notes: `Shows both candlestick implementation as well as how the "api" property can be used`,
-  }
+  })
 }

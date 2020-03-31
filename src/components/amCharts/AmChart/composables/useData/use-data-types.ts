@@ -58,7 +58,7 @@ export interface IUrlInfo<T> {
 export interface IPropertyMeta<T extends IDictionary, K extends keyof T & string = keyof T & string> {
   id: K
   dataProps: Array<K>
-  labelProps: Array<K>
+  labelProps?: Array<K>
 }
 
 export interface IApiConfig<TData = IDictionary[], TOutput = TData> {
@@ -154,7 +154,7 @@ export interface IDataMeta<T> {
   }
 }
 
-export type IDataMetaReady<T> = IDataMeta<T> & { propMeta: IPropertyMeta<T> }
+export type IDataMetaReady<T> = IDataMeta<T> & { propMeta: IPropertyMeta<T> & { labelProps: string[] } }
 export type IDataMetaForUrlDrivenChart<T> = IDataMetaReady<T> & { urlConfig: IUrlInfo<T> }
 
 export type IUrlProperty<T> = string | [string, IApiConfig<T>]

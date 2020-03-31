@@ -17,12 +17,9 @@ export const dataChangeDetected = <TData, K extends keyof TData = keyof TData>(
 ) => (current: TData[], prior: TData[]) => {
   const { dataPostHook, dataPreHook } = dataMeta.value.hooks
   if (typeof current === 'undefined' && typeof prior === 'undefined') return
-  console.log(`dataChangeDetected [ ${dataMeta.value.sourceClass} ]`, { current, prior, chartData: chartData.value })
   // pre hook
   const continueExecution = dataPreHook(current, prior)
   if (!continueExecution) {
-    console.log(`pre hook ends execution`)
-
     return
   }
 
@@ -34,9 +31,7 @@ export const dataChangeDetected = <TData, K extends keyof TData = keyof TData>(
 
   if (hasCurrentValue(current) && (!hasPriorValue(prior) || prior.length === 0)) {
     // All data is new
-    console.log('data is all new', current, dataMeta.value.source.data)
     if (Array.isArray(current)) {
-      console.log('using ADD approach')
       current.forEach(i => dataMeta.value.source.addData(i))
     } else {
       dataMeta.value.source.data = current
@@ -45,7 +40,6 @@ export const dataChangeDetected = <TData, K extends keyof TData = keyof TData>(
     }
   } else if ((!hasCurrentValue(current) || current.length === 0) && hasPriorValue(prior)) {
     // All data has been removed
-    console.log('data is all removed')
     dataMeta.value.source.data = []
     chartData.value = []
     dataMeta.value.source.invalidateData()
@@ -97,19 +91,6 @@ export const dataChangeDetected = <TData, K extends keyof TData = keyof TData>(
       },
       { dataChanged: [], labelsChanged: [] },
     )
-    if (changedData.dataChanged.length > 0) {
-      console.log(`data props [ ${dataMeta.value.propMeta.dataProps.join(',')} ] have changed`, changedData.dataChanged)
-    }
-    if (changedData.labelsChanged.length > 0) {
-      console.log(
-        `label props [ ${dataMeta.value.propMeta.labelProps.join(', ')} ] have changed`,
-        changedData.labelsChanged,
-      )
-    }
-    console.log({
-      changedData,
-      meta: { dataProps: dataMeta.value.propMeta.dataProps, labelProps: dataMeta.value.propMeta.labelProps },
-    })
 
     if (changedData.labelsChanged.length > 0) {
       dataMeta.value.source.data = current
