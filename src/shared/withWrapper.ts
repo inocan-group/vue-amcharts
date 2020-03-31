@@ -3,7 +3,7 @@ import { select } from '@storybook/addon-knobs'
 import { default as StoryContainer } from './StoryContainer.vue'
 
 const CONTAINER_DATA = {
-  containerStyle: (width: any, height: any) => {
+  containerStyle: (width: string, height: string) => {
     return `width: ${width}; height: ${height};`
   },
 }
