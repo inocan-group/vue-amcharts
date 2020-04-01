@@ -8,6 +8,7 @@ import { useSeries } from '../composables'
 import { IDictionary } from 'common-types'
 import { ChartType } from '../index'
 import { PictorialStackedSeries, SlicedChart } from '@amcharts/amcharts4/charts'
+import { toNumber } from '../helpers'
 
 export default defineComponent({
   name: 'PictorialStackedSeries',
@@ -20,18 +21,23 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    /**
-     * By default, the value of the Pyramid slice is represented by the actual area of the slice.
-     * From the data visualization standpoint, this is a correct behavior.
-     */
-    valueIs: {
-      type: String,
-      default: 'area',
-      validator: v => ['area', 'height'].includes(v),
-    },
 
     path: {
       type: String,
+    },
+
+    startLocation: {
+      type: [String, Number],
+      default: 0,
+    },
+    endLocation: {
+      type: [String, Number],
+      default: 1,
+    },
+    orientation: {
+      type: String,
+      default: 'vertical',
+      validator: v => ['vertical', 'horizontal'].includes(v),
     },
 
     labelText: {
@@ -74,6 +80,10 @@ export default defineComponent({
       valueProp: [s, 'dataFields.value'],
       categoryProp: [s, 'dataFields.category'],
       path: [s, 'maskSprite.path'],
+      // TODO: the s.invalidate() call is not having the intended effect; disabling and re-enabling labels does
+      startLocation: [s, v => toNumber(v), () => s.invalidate()],
+      endLocation: [s, v => toNumber(v), () => s.invalidate()],
+      orientation: [s, v => v, () => s.invalidate()],
 
       alignLabels: [s, v => v, () => s.invalidateLabels()],
       alignOpposite: [s, 'labelsOpposite', v => v, () => s.invalidate()],

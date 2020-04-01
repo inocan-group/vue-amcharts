@@ -5,7 +5,6 @@ import { useRegistry } from './useRegistry/useRegistry'
 import { AmchartError } from '../errors'
 import { useData, removeEventClass, ILooksLikeChart } from './useData'
 import { useProps } from '.'
-import { IChildConfigurationCallback } from './useRegistry/registry-types'
 
 export const seriesProps = {
   id: {

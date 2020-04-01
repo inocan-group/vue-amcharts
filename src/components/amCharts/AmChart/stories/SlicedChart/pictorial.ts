@@ -41,11 +41,11 @@ export const pictorialStackedSeries = () => {
       personPath,
     }),
     props: {
-      topWidth: {
-        default: number('Top Width', 0, {}, 'Component'),
+      startLocation: {
+        default: number('Start Location', 0, {}, 'Component'),
       },
-      bottomWidth: {
-        default: text('Bottom Width', '100%', 'Component'),
+      endLocation: {
+        default: number('End Location', 1, {}, 'Component'),
       },
       tooltipText: {
         default: text(
@@ -77,6 +77,8 @@ export const pictorialStackedSeries = () => {
           valueProp="value"
           categoryProp="name"
           :path="personPath"
+          :startLocation="startLocation"
+          :endLocation="endLocation"
 
           :tooltipText="tooltipText"
 
