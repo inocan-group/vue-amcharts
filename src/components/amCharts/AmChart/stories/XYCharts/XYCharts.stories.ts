@@ -1,2 +1,2 @@
-export default { title: 'amCharts/Composable/XYCharts' }
+export default { title: 'amCharts/XYCharts' }
 export * from './index'

@@ -1,2 +1,2 @@
-export default { title: 'amCharts/Composable/WordCloud' }
+export default { title: 'amCharts/WordCloud' }
 export * from './simpleWordCloud'

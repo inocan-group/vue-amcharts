@@ -53,6 +53,21 @@ export const seriesProps = {
     type: Number,
     default: undefined,
   },
+  /**
+   * Hook into the chart object prior to being added to the
+   * DOM. Function will receive a reactive object of the
+   * form `(chart: Ref<SeriesObject>): void`.
+   *
+   * The function will effect change by changing the reactive object and
+   * this will automatically update the object which will be used. You _could_
+   * keep a reference to this object and manage state after the initialization
+   * but this is strongly discouraged; instead users should leverage the
+   * `addProperty` functionality
+   */
+  initialize: {
+    type: Function,
+    default: undefined,
+  },
 }
 
 /**

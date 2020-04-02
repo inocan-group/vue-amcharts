@@ -1,1 +1,1 @@
-export default { title: 'amCharts/Composable' }
+export default { title: 'amCharts/' }

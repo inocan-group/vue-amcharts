@@ -1,4 +1,4 @@
-export default { title: 'amCharts/Composable/ForceDirectedTrees' }
+export default { title: 'amCharts/ForceDirectedTrees' }
 export * from './simpleTree'
 export * from './treeWithChildren'
 export * from './linkedNodes'

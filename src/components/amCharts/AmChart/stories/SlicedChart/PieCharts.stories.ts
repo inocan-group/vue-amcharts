@@ -1,4 +1,4 @@
-export default { title: 'amCharts/Composable/SliceCharts' }
+export default { title: 'amCharts/SliceCharts' }
 export * from './funnel'
 export * from './pyramid'
 export * from './pictorial'
