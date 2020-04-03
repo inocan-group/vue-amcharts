@@ -22,7 +22,7 @@ export function takeAction<TProps, TChart extends IDictionary, TComponent extend
       // ARRAY signatures (first param is always the base chart object to operate on)
       const [comp, two, three, four] = action
 
-      if (typeof two === 'string') {
+      if (typeof two === 'string' && !three) {
         set(comp, two, current)
       } else if (typeof two === 'function') {
         set(comp, prop, two(current))
@@ -32,6 +32,7 @@ export function takeAction<TProps, TChart extends IDictionary, TComponent extend
         }
       } else if (typeof two === 'string' && typeof three === 'function') {
         set(comp, two, three(current))
+
         if (four && typeof four === 'function') {
           four()
         }

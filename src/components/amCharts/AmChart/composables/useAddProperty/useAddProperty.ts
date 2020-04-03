@@ -8,4 +8,6 @@ import { IPropertyChangeAction } from '..'
  * This allows an external user to add their own behavior by adding a "first class
  * property" along with any behavior they want to associate to this new parameter.
  */
-export function useAddProperty(property: string, actionConfig: IPropertyChangeAction<any, any>) {}
+export function useAddProperty(property: string, actionConfig: IPropertyChangeAction<any, any>) {
+  //
+}
