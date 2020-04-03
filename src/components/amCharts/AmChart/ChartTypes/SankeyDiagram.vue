@@ -16,6 +16,9 @@ import { Percent, color } from '@amcharts/amcharts4/core'
 import { toNumberOrPercent, toNumber } from '../helpers'
 import { removeProperties } from '../shared'
 
+/**
+ * So sankey!
+ */
 export default defineComponent({
   name: 'SankeyDiagram',
   props: {
