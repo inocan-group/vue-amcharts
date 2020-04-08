@@ -1,0 +1,55 @@
+
+import PlotlyChart from '../PlotlyChart.vue'
+import PlotlyLineSeries from '../Series/PlotlyLineSeries.vue'
+import { Meta, Description, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta title="plotly/DocsAddon/PlotlyChart" component={PlotlyChart} />
+
+# PlotlyChart
+
+<Description of={PlotlyChart} />
+
+<Preview>
+  <Story name="PlotlyChart" inline={true}>
+    {{
+      components: { PlotlyChart, PlotlyLineSeries },
+      data() {
+        return {
+          layout: {
+            xaxis: {
+              range: [0.75, 5.25],
+            },
+            yaxis: {
+              range: [0, 8],
+            },
+            showlegend: true,
+            legend: {
+              y: 0.5,
+              yref: 'paper',
+              font: {
+                family: 'Arial, sans-serif',
+                size: 20,
+                color: 'grey',
+              },
+            },
+            title: 'Data Labels on the Plot',
+          },
+          series: {
+            x: [1.5, 2.5, 3.5, 4.5, 5.5],
+            y: [4, 1, 7, 1, 4],
+          },
+          name: 'SF ZOO',
+        }
+      },
+      template: `
+        <plotly-chart :layout="layout">
+            <plotly-line-series :series-data="series" :name="name" />
+        </plotly-chart>
+    `,
+    }}
+  </Story>
+</Preview>
+
+## Params
+
+<Props of={PlotlyChart} />
