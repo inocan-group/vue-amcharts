@@ -1,12 +1,16 @@
-import { VennDiagram, VennSeries } from '../../index'
+import { VennDiagram, VennSeries, ChartLegend } from '../../index'
 import { select, number, text } from '@storybook/addon-knobs'
 
-export const simpleVenn = () => ({
+export const moreComplexVenn = () => ({
   data: () => ({
     dataset: [
-      { name: 'A', value: 10, color: '#8F3985' },
-      { name: 'B', value: 10, color: '#07BEB8' },
-      { name: 'C', value: 3, color: '#EFD9CE', sets: ['A', 'B'] },
+      { name: 'A', value: 10 },
+      { name: 'B', value: 10 },
+      { name: 'C', value: 10 },
+      { name: 'X', value: 2, sets: ['A', 'B'] },
+      { name: 'Y', value: 2, sets: ['A', 'C'] },
+      { name: 'Z', value: 2, sets: ['B', 'C'] },
+      { name: 'Q', value: 1, sets: ['A', 'B', 'C'] },
     ],
   }),
   props: {
@@ -34,7 +38,7 @@ export const simpleVenn = () => ({
       ),
     },
     labelText: {
-      default: text('labelText', '{category}: [bold]{value}[/]', 'Component'),
+      default: text('labelText', '{value}', 'Component'),
     },
     labelFontSize: {
       default: number('labelFontSize', 16, { min: 0 }, 'Component'),
@@ -43,10 +47,10 @@ export const simpleVenn = () => ({
       default: text('labelFill', '#000000', 'Component'),
     },
     tooltipText: {
-      default: text('toolTipText', '{category}: [bold]{value}[/]', 'Component'),
+      default: text('toolTipText', '{value}', 'Component'),
     },
   },
-  components: { VennDiagram, VennSeries },
+  components: { VennDiagram, VennSeries, ChartLegend },
   template: `
     <div style="width: 100%; height: 500px">
       <venn-diagram>
@@ -62,6 +66,7 @@ export const simpleVenn = () => ({
         :label-fill="labelFill"
         :tooltip-text="tooltipText"
         />
+        <chart-legend position="bottom" />
       </venn-diagram>
     </div>
   `,

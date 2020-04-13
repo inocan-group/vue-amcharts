@@ -6,9 +6,9 @@
 import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
 import { VennSeries } from '@amcharts/amcharts4/plugins/venn'
+import { color } from '@amcharts/amcharts4/core'
 import { useSeries } from '../composables'
 import { ChartType } from '../types'
-import { color } from '@amcharts/amcharts4/core'
 
 export default defineComponent({
   name: 'VennSeries',
@@ -19,6 +19,12 @@ export default defineComponent({
     intersections: { type: String },
     hidden: { type: String },
     hiddenInLegend: { type: String },
+    fill: { type: String },
+    fillOpacity: { type: Number, validator: (v: number) => v >= 0 && v <= 1 },
+    labelText: { type: String, default: '{category}' },
+    labelFontSize: { type: Number, default: 16 },
+    labelFill: { type: String, default: '#000' },
+    tooltipText: { type: String, default: '{value}' },
   },
 
   setup(props: IDictionary, context: SetupContext) {
@@ -35,8 +41,9 @@ export default defineComponent({
 
     actionsConfig(s => ({
       data: v => v,
-      value: [s, 'dataFields.value', v => v],
-      category: [s, 'dataFields.category', v => v],
+      value: [s, 'dataFields.value'],
+      category: [s, 'dataFields.category'],
+      // TODO: Find out what to invalidate to make this reactive
       intersections: [
         s,
         'dataFields.intersections',
@@ -46,8 +53,14 @@ export default defineComponent({
           return v
         },
       ],
-      hidden: [s, 'dataFields.hidden', v => v],
-      hiddenInLegend: [s, 'dataFields.hiddenInLegend', v => v],
+      hidden: [s, 'dataFields.hidden'],
+      hiddenInLegend: [s, 'dataFields.hiddenInLegend'],
+      fill: [s, 'slices.template.propertyFields.fill'],
+      fillOpacity: [s, 'slices.template.fillOpacity'],
+      labelText: [s, 'labels.template.text'],
+      labelFontSize: [s, 'labels.template.fontSize'],
+      labelFill: [s, 'labels.template.fill', v => color(v)],
+      tooltipText: [s, 'slices.template.tooltipText'],
     }))
 
     onChartConfig(chart => {
