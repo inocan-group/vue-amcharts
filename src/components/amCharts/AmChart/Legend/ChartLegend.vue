@@ -37,8 +37,9 @@ export default defineComponent({
 
     register(ChartType.legend, 'legend', Legend, legend)
 
-    onChartConfig(() => {
+    onChartConfig((chart: IChart) => {
       initializeProps()
+      chart.legend = legend.value
     })
 
     actionsConfig((l, c, deltas) => ({
