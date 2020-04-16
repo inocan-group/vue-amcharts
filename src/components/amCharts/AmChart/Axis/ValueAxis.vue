@@ -46,7 +46,16 @@ export default defineComponent({
       type: [Function, Object],
       default: undefined,
     },
-
+    radius: {
+      type: Number,
+    },
+    innerRadius: {
+      type: Number,
+    },
+    disableGrid: {
+      type: Boolean,
+      default: true,
+    },
     options: {
       type: Object,
       default: () => {},
@@ -72,6 +81,9 @@ export default defineComponent({
       logarithmic: [a, (v: boolean) => Boolean(v)],
       min: [a, v => allowUndefined(v), () => a.invalidateRawData()],
       max: [a, v => allowUndefined(v), () => a.invalidateRawData()],
+      radius: [a, 'renderer.radius', v => allowUndefined(v), () => a.invalidate()],
+      innerRadius: [a, 'renderer.innerRadius', v => allowUndefined(v), () => a.invalidate()],
+      disableGrid: [a, 'renderer.grid.template.disabled'],
       // numberFormat: [a, 'renderer.axis.numberFormatter.outputFormat'],
     }))
 

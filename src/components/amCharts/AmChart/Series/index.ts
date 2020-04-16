@@ -8,5 +8,6 @@ export { default as FunnelSeries } from './FunnelSeries.vue'
 export { default as PyramidSeries } from './PyramidSeries.vue'
 export { default as PictorialStackedSeries } from './PictorialStackedSeries.vue'
 export { default as VennSeries } from './VennSeries.vue'
+export { default as CurveColumnSeries } from './CurveColumnSeries.vue'
 
 export * from './series-types'

@@ -3,13 +3,113 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
+import { useRegistry, useProps } from '../composables'
+import { IDictionary } from 'common-types'
+import { IChart } from '../ChartTypes'
+import { CategoryAxis } from '@amcharts/amcharts4/charts'
+import { ChartType } from '../types'
+import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
 
 export default defineComponent({
   name: 'CategoryAxis',
+  props: {
+    id: {
+      type: String,
+      default: 'primary',
+    },
+    name: {
+      type: String,
+      default: undefined,
+    },
+    dimension: {
+      validator: v => ['y', 'x', 'z'].includes(v),
+    },
+    category: {
+      type: String,
+    },
+    secondaryAxes: {
+      type: [Function, Object],
+      default: undefined,
+    },
+    tensionX: {
+      type: Number,
+      default: 1,
+    },
+    tensionY: {
+      type: Number,
+      default: 1,
+    },
+    minGridDistance: {
+      type: Number,
+    },
+    disableGrid: {
+      type: Boolean,
+      default: true,
+    },
+    controlPoints: {
+      type: Array,
+    },
 
-  setup() {
-    return {}
+    options: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+
+  setup(props: IDictionary, context: SetupContext) {
+    const axis: Ref<CategoryAxis> = ref(new CategoryAxis())
+    const { register, addToRegistration, howMany, onChartConfig, getChart, childReady } = useRegistry(props, context)
+    const { actionsConfig, initializeProps } = useProps(props, axis, getChart)
+    const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
+    const notFirstOnAxis = howMany(dim) > 0
+    const dataSource: Ref<string> = ref('')
+    const instanceId: Ref<string> = ref('')
+
+    const accessibility = { axis: `${props.dimension}Axis`, dataField: `category${capitalize(props.dimension)}` }
+
+    register(ChartType[dim], props.id, CategoryAxis, axis)
+    addToRegistration(accessibility)
+
+    actionsConfig(a => ({
+      name: [a, 'title.text'],
+      category: [a, 'dataFields.category'],
+      disableGrid: [a, 'renderer.grid.template.disabled'],
+      tensionX: [a, 'renderer.polyspline.tensionX', v => v, () => a.invalidateData()],
+      tensionY: [a, 'renderer.polyspline.tensionY', v => v, () => a.invalidateData()],
+      controlPoints: [a, 'renderer.points', v => v, () => a.invalidateData()],
+    }))
+
+    onChartConfig((chart: IChart) => {
+      const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
+      axis.value = dimension.push(axis.value)
+      initializeProps()
+
+      // When secondary axis are added; we have certain default behavior
+      // (assuming there isn't an explicit definition)
+      if (notFirstOnAxis && !props.secondaryAxes) {
+        axis.value.renderer.opposite = true
+        axis.value.renderer.grid.template.strokeOpacity = 0
+      } else if (props.secondaryAxes !== undefined) {
+        // TODO: implement this
+      }
+
+      addToRegistration('id', axis.value.uid)
+      addToRegistration('dataSource', axis.value.dataSource.uid)
+      addToRegistration('data', axis.value.data)
+      addToRegistration('category', axis.value.dataFields.category)
+      dataSource.value = axis.value.dataSource.uid
+      instanceId.value = axis.value.uid
+    })
+
+    childReady()
+
+    return {
+      instance: axis,
+      dataSource,
+      instanceId,
+      ...accessibility,
+    }
   },
 })
 </script>

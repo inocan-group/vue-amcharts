@@ -49,6 +49,10 @@ export const seriesProps = {
     type: String,
     default: undefined,
   },
+  fillOpacity: {
+    type: Number,
+    default: 1,
+  },
   strokeWidth: {
     type: Number,
     default: undefined,

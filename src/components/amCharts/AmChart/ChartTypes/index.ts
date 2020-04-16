@@ -7,5 +7,6 @@ export { default as SliceChart } from './SliceChart.vue'
 export { default as SankeyDiagram } from './SankeyDiagram.vue'
 export { default as GaugeChart } from './GaugeChart.vue'
 export { default as VennDiagram } from './VennDiagram.vue'
+export { default as CurveChart } from './CurveChart.vue'
 
 export * from './chart-types'
