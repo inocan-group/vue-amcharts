@@ -31,6 +31,17 @@ export default defineComponent({
       type: String,
       default: 'MMM YYYY',
     },
+    disableAxisLine: {
+      type: Boolean,
+    },
+    cursorToolTipEnabled: {
+      type: Boolean,
+      default: true,
+    },
+    minZoomCount: {
+      type: Number,
+      default: 1,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext) {
@@ -47,6 +58,9 @@ export default defineComponent({
     actionsConfig(a => ({
       dateFormat: [a, 'tooltipDateFormat', v => (v === undefined ? 'MMM YYYY' : v)],
       opposite: [a, 'renderer.opposite', v => (v === undefined ? (notFirstOnAxis ? true : false) : v)],
+      disableAxisLine: [a, 'renderer.line.disabled'],
+      cursorToolTipEnabled: a,
+      minZoomCount: a, // find out if this property could be made reactive
     }))
 
     onChartConfig(c => {

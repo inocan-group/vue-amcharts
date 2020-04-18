@@ -10,6 +10,7 @@ import { IChart } from '../ChartTypes'
 import { ValueAxis } from '@amcharts/amcharts4/charts'
 import { ChartType } from '../types'
 import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
+import { percent } from '@amcharts/amcharts4/core'
 import { allowUndefined } from '../helpers'
 
 export default defineComponent({
@@ -47,14 +48,15 @@ export default defineComponent({
       default: undefined,
     },
     radius: {
-      type: Number,
+      type: [Number, Object],
+      default: () => percent(100),
     },
     innerRadius: {
       type: Number,
     },
     disableGrid: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     options: {
       type: Object,
