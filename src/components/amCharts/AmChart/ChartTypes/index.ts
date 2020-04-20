@@ -9,5 +9,6 @@ export { default as GaugeChart } from './GaugeChart.vue'
 export { default as VennDiagram } from './VennDiagram.vue'
 export { default as CurveChart } from './CurveChart.vue'
 export { default as SerpentineChart } from './SerpentineChart.vue'
+export { default as SpiralChart } from './SpiralChart.vue'
 
 export * from './chart-types'

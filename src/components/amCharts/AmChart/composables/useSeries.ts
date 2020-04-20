@@ -57,6 +57,10 @@ export const seriesProps = {
     type: Number,
     default: undefined,
   },
+  strokeOpacity: {
+    type: Number,
+    default: 1,
+  },
   /**
    * Hook into the chart object prior to being added to the
    * DOM. Function will receive a reactive object of the

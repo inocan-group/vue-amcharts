@@ -54,9 +54,24 @@ export default defineComponent({
     innerRadius: {
       type: Number,
     },
+    minGridDistance: {
+      type: Number,
+      default: 30,
+    },
     disableGrid: {
       type: Boolean,
       default: false,
+    },
+    disableLabels: {
+      type: Boolean,
+      default: false,
+    },
+    strokeOpacity: {
+      type: Number,
+      default: 0,
+    },
+    strokeDasharray: {
+      type: String,
     },
     options: {
       type: Object,
@@ -85,7 +100,11 @@ export default defineComponent({
       max: [a, v => allowUndefined(v), () => a.invalidateRawData()],
       radius: [a, 'renderer.radius', v => allowUndefined(v), () => a.invalidate()],
       innerRadius: [a, 'renderer.innerRadius', v => allowUndefined(v), () => a.invalidate()],
+      minGridDistance: [a, 'renderer.minGridDistance', v => allowUndefined(v), () => a.invalidateData()],
       disableGrid: [a, 'renderer.grid.template.disabled'],
+      disableLabels: [a, 'renderer.labels.template.disabled'],
+      strokeOpacity: [a, 'renderer.line.strokeOpacity'],
+      strokeDasharray: [a, 'renderer.line.strokeDasharray'],
       // numberFormat: [a, 'renderer.axis.numberFormatter.outputFormat'],
     }))
 

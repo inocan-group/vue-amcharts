@@ -8,8 +8,10 @@ import { useRegistry, useProps } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChart } from '../ChartTypes'
 import { CategoryAxis } from '@amcharts/amcharts4/charts'
+import { percent } from '@amcharts/amcharts4/core'
 import { ChartType } from '../types'
 import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
+import { allowUndefined } from '../helpers'
 
 export default defineComponent({
   name: 'CategoryAxis',
@@ -50,6 +52,13 @@ export default defineComponent({
     controlPoints: {
       type: Array,
     },
+    radius: {
+      type: [Number, Object],
+      default: () => percent(100),
+    },
+    innerRadius: {
+      type: Number,
+    },
 
     options: {
       type: Object,
@@ -78,6 +87,8 @@ export default defineComponent({
       tensionX: [a, 'renderer.polyspline.tensionX', v => v, () => a.invalidateData()],
       tensionY: [a, 'renderer.polyspline.tensionY', v => v, () => a.invalidateData()],
       controlPoints: [a, 'renderer.points', v => v, () => a.invalidateData()],
+      radius: [a, 'renderer.radius', v => allowUndefined(v), () => a.invalidate()],
+      innerRadius: [a, 'renderer.innerRadius', v => allowUndefined(v), () => a.invalidate()],
     }))
 
     onChartConfig((chart: IChart) => {

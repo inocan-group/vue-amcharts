@@ -44,6 +44,7 @@ export default defineComponent({
       fill: [s, v => color(v ?? 'rgb(103,183,220)'), () => s.invalidate()],
       fillOpacity: [s, 'columns.template.fillOpacity', v => v],
       strokeWidth: [s, 'columns.template.strokeWidth', v => v],
+      strokeOpacity: [s, 'columns.template.strokeOpacity', v => v],
     }))
 
     onChartConfig((chart: IChart) => {
