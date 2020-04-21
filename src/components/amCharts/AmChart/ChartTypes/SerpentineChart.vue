@@ -64,7 +64,10 @@ export default defineComponent({
       onChartMounted,
     } = useChart(SerpentineChart, props, context, parentConfig)
 
-    actionsConfig(c => ({ responsive: c, orientation: c, levelCount: c }))
+    actionsConfig(c => ({
+      orientation: [c, v => v, () => c.invalidateData()],
+      levelCount: [c, v => v, () => c.invalidateData()],
+    }))
 
     onChartMounted(() => {
       const c = chart.value as SerpentineChart
