@@ -54,6 +54,10 @@ export default defineComponent({
     innerRadius: {
       type: Number,
     },
+    gridType: {
+      type: String,
+      default: 'circles',
+    },
     minGridDistance: {
       type: Number,
       default: 30,
@@ -100,6 +104,7 @@ export default defineComponent({
       max: [a, v => allowUndefined(v), () => a.invalidateRawData()],
       radius: [a, 'renderer.radius', v => allowUndefined(v), () => a.invalidate()],
       innerRadius: [a, 'renderer.innerRadius', v => allowUndefined(v), () => a.invalidate()],
+      gridType: [a, 'renderer.gridType', v => v, () => a.invalidate()],
       minGridDistance: [a, 'renderer.minGridDistance', v => allowUndefined(v), () => a.invalidateData()],
       disableGrid: [a, 'renderer.grid.template.disabled'],
       disableLabels: [a, 'renderer.labels.template.disabled'],

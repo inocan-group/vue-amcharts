@@ -47,7 +47,7 @@ export default defineComponent({
     },
     disableGrid: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     controlPoints: {
       type: Array,

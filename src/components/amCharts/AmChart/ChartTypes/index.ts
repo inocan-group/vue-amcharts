@@ -10,5 +10,6 @@ export { default as VennDiagram } from './VennDiagram.vue'
 export { default as CurveChart } from './CurveChart.vue'
 export { default as SerpentineChart } from './SerpentineChart.vue'
 export { default as SpiralChart } from './SpiralChart.vue'
+export { default as RadarChart } from './RadarChart.vue'
 
 export * from './chart-types'
