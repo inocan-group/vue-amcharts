@@ -1,2 +1,2 @@
-export default { title: 'amCharts/SerpentineCharts' }
+export default { title: 'amCharts/TimelineCharts/SerpentineCharts' }
 export * from './simpleSerpentine'

@@ -1,2 +1,2 @@
-export default { title: 'amCharts/CurveCharts' }
+export default { title: 'amCharts/TimelineCharts/CurveCharts' }
 export * from './simpleCurve'
