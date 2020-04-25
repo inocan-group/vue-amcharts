@@ -1,5 +1,5 @@
 import { SunburstDiagram } from '../../index'
-import { select, number, text } from '@storybook/addon-knobs'
+import { number } from '@storybook/addon-knobs'
 
 export const simpleSunburst = () => ({
   data: () => ({
@@ -67,11 +67,21 @@ export const simpleSunburst = () => ({
       },
     ],
   }),
-  props: {},
+  props: {
+    colorsStep: {
+      default: number('colors step (skip every x-th color)', 1, { min: 0 }, 'Component'),
+    },
+    radius: {
+      default: number('radius', 100, { min: 0, max: 100, step: 10 }, 'Component'),
+    },
+    innerRadius: {
+      default: number('inner radius', 0, { min: 0, max: 100, step: 10 }, 'Component'),
+    },
+  },
   components: { SunburstDiagram },
   template: `
     <div style="width: 100%; height: 500px">
-      <sunburst-diagram :data="dataset" name="name" value="value" children="children">
+      <sunburst-diagram :data="dataset" name="name" value="value" children="children" :colors-step="colorsStep" :radius="radius" :inner-radius="innerRadius">
       </sunburst-diagram>
     </div>
   `,

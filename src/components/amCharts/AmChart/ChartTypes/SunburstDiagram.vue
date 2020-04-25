@@ -6,16 +6,16 @@
 </template>
 
 <script lang="ts">
-import * as am4core from '@amcharts/amcharts4/core'
 import { Sunburst } from '@amcharts/amcharts4/plugins/sunburst'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
+import { percent, useTheme } from '@amcharts/amcharts4/core'
 import { defineComponent, SetupContext } from '@vue/composition-api'
 import { useChart } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
 import { dataProperties } from '../composables/useData'
 
-am4core.useTheme(am4themesAnimated)
+useTheme(am4themesAnimated)
 
 export default defineComponent({
   props: {
@@ -23,6 +23,15 @@ export default defineComponent({
     name: { type: String, required: true },
     value: { type: String, required: true },
     children: { type: String, required: true },
+    colorsStep: { type: Number, default: 1 },
+    radius: {
+      type: [Number, Object],
+      default: () => percent(100),
+    },
+    innerRadius: {
+      type: Number,
+      default: () => percent(0),
+    },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {
@@ -47,6 +56,9 @@ export default defineComponent({
       name: [sb, 'dataFields.name'],
       value: [sb, 'dataFields.value'],
       children: [sb, 'dataFields.children'],
+      radius: [sb, v => percent(v)],
+      innerRadius: [sb, v => percent(v)],
+      colorsStep: [sb, 'colors.step', v => v, () => sb.invalidateData()],
     }))
 
     return {
