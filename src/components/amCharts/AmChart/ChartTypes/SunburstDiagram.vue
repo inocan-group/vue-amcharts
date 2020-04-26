@@ -22,7 +22,8 @@ export default defineComponent({
     ...dataProperties,
     name: { type: String, required: true },
     value: { type: String, required: true },
-    children: { type: String, required: true },
+    children: { type: String },
+    color: { type: String },
     colorsStep: { type: Number, default: 1 },
     radius: {
       type: [Number, Object],
@@ -56,6 +57,7 @@ export default defineComponent({
       name: [sb, 'dataFields.name'],
       value: [sb, 'dataFields.value'],
       children: [sb, 'dataFields.children'],
+      color: [sb, 'dataFields.color'],
       radius: [sb, v => percent(v)],
       innerRadius: [sb, v => percent(v)],
       colorsStep: [sb, 'colors.step', v => v, () => sb.invalidateData()],
