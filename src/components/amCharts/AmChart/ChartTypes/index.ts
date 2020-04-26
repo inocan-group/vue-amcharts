@@ -12,5 +12,6 @@ export { default as SerpentineChart } from './SerpentineChart.vue'
 export { default as SpiralChart } from './SpiralChart.vue'
 export { default as RadarChart } from './RadarChart.vue'
 export { default as SunburstDiagram } from './SunburstDiagram.vue'
+export { default as TreemapChart } from './TreemapChart.vue'
 
 export * from './chart-types'
