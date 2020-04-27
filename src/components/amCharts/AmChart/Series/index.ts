@@ -12,5 +12,6 @@ export { default as CurveColumnSeries } from './CurveColumnSeries.vue'
 export { default as CurveStepLineSeries } from './CurveStepLineSeries.vue'
 export { default as RadarSeries } from './RadarSeries.vue'
 export { default as RadarColumnSeries } from './RadarColumnSeries.vue'
+export { default as MapPolygonSeries } from './MapPolygonSeries.vue'
 
 export * from './series-types'

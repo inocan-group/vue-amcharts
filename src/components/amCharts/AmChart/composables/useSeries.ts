@@ -26,7 +26,6 @@ export const seriesProps = {
   yProp: {
     type: String,
     default: undefined,
-    required: true,
   },
   yAxis: {
     type: String,

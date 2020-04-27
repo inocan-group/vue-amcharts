@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@amcharts/amcharts4": "^4.9.10",
+    "@amcharts/amcharts4-geodata": "^4.1.14",
     "@vue/composition-api": "^0.5.0",
     "common-types": "^1.13.1",
     "core-js": "^3.6.4",
