@@ -1,5 +1,5 @@
 import { MapChart, MapPolygonSeries } from '../../index'
-import { text, select } from '@storybook/addon-knobs'
+import { text, select, number } from '@storybook/addon-knobs'
 
 export const worldMap = () => ({
   data: () => ({
@@ -22,6 +22,12 @@ export const worldMap = () => ({
         'Projection',
         'Component',
       ),
+    },
+    deltaLongitude: {
+      default: number('delta longitude', 0, { step: 10 }, 'Component'),
+    },
+    deltaLatitude: {
+      default: number('delta latitude', 0, { step: 10 }, 'Component'),
     },
     tooltipText: {
       default: text('tooltip text', '{name}', 'Component'),
@@ -46,7 +52,7 @@ export const worldMap = () => ({
   components: { MapChart, MapPolygonSeries },
   template: `
     <div style="width: 100%; height: 500px">
-      <map-chart :projection="projection">
+      <map-chart :projection="projection" :delta-longitude="deltaLongitude" :delta-latitude="deltaLatitude">
         <map-polygon-series :tooltip-text="tooltipText" :fill="fillColor" :hover-fill="hoverFill" />
       </map-chart>
     </div>

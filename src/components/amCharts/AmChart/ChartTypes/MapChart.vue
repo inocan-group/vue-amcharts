@@ -34,6 +34,8 @@ type IProjection =
 export default defineComponent({
   props: {
     projection: { type: String, default: 'Projection' },
+    deltaLongitude: { type: Number, default: 0 },
+    deltaLatitude: { type: Number, default: 0 },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {
@@ -54,7 +56,11 @@ export default defineComponent({
       onChartMounted,
     } = useChart(MapChart, props, context, parentConfig)
 
-    actionsConfig(mc => ({ projection: [mc, v => new projections[v as IProjection]()] }))
+    actionsConfig(mc => ({
+      projection: [mc, v => new projections[v as IProjection]()],
+      deltaLongitude: mc,
+      deltaLatitude: mc,
+    }))
 
     onChartMounted(chart => {
       // eslint-disable-next-line @typescript-eslint/camelcase
