@@ -6,6 +6,7 @@
 import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
 import { WordCloudSeries, WordCloud } from '@amcharts/amcharts4/plugins/wordCloud'
+import { percent } from '@amcharts/amcharts4/core'
 import { useSeries, useEvents } from '../composables'
 import { ChartType } from '..'
 
@@ -26,6 +27,14 @@ export default defineComponent({
     minValue: {
       type: Number,
       default: 1,
+    },
+    minFontSize: {
+      type: [Number, String],
+      default: '2%',
+    },
+    maxFontSize: {
+      type: [Number, String],
+      default: '20%',
     },
     minWordLength: {
       type: Number,
@@ -60,7 +69,13 @@ export default defineComponent({
     })
 
     const fontSize = (value: string | number) => {
-      return value ? (typeof value === 'number' ? value : value.slice(-1) === '%' ? value : Number(value)) : undefined
+      return value
+        ? typeof value === 'number'
+          ? value
+          : value.slice(-1) === '%'
+            ? percent(parseInt(value))
+            : undefined
+        : undefined
     }
 
     actionsConfig(s => ({
@@ -76,7 +91,6 @@ export default defineComponent({
     }))
 
     onChartConfig(chart => {
-      console.log('configuring word series')
       initializeProps()
       series.value = chart.series.push(series.value)
     })

@@ -79,4 +79,13 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.word-cloud {
+  width: 100%;
+  height: 800px;
+}
+.chart {
+  width: 100%;
+  height: 100%;
+}
+</style>
