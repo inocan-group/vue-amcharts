@@ -9,6 +9,7 @@ import { WordCloudSeries, WordCloud } from '@amcharts/amcharts4/plugins/wordClou
 import { percent } from '@amcharts/amcharts4/core'
 import { useSeries, useEvents } from '../composables'
 import { ChartType } from '..'
+import { toNumberOrPercent } from '../helpers'
 
 export default defineComponent({
   name: 'WordCloudSeries',
@@ -68,16 +69,6 @@ export default defineComponent({
       arrangeprogress: 'onArrangeProgress',
     })
 
-    const fontSize = (value: string | number) => {
-      return value
-        ? typeof value === 'number'
-          ? value
-          : value.slice(-1) === '%'
-            ? percent(parseInt(value))
-            : undefined
-        : undefined
-    }
-
     actionsConfig(s => ({
       text: s,
       excludeWords: s,
@@ -86,8 +77,8 @@ export default defineComponent({
       minWordLength: [s, v => Number(v)],
       wordProp: [s, 'dataFields.word'],
       weightProp: [s, 'dataFields.value'],
-      minFontSize: [s, fontSize],
-      maxFontSize: [s, fontSize],
+      minFontSize: [s, v => toNumberOrPercent(v)],
+      maxFontSize: [s, v => toNumberOrPercent(v)],
     }))
 
     onChartConfig(chart => {
