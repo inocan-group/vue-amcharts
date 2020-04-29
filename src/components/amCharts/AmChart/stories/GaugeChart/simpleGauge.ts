@@ -35,3 +35,5 @@ export const simpleGauge = () => ({
     </div>
   `,
 })
+
+simpleGauge.story = { parameters: { docs: { disable: true } } }

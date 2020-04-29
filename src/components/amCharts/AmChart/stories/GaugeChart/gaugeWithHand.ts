@@ -114,3 +114,5 @@ export const gaugeWithHand = () => ({
     </div>
   `,
 })
+
+gaugeWithHand.story = { parameters: { docs: { disable: true } } }

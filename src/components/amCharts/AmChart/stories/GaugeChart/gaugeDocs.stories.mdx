@@ -1,0 +1,56 @@
+import { GaugeChart, ClockHand, ValueAxis } from '../../index'
+import { Meta, Description, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta title="amCharts/GaugeCharts" component={GaugeChart} />
+
+# Gauge Charts
+
+<Description of={GaugeChart} />
+
+"[A] Gauge chart is used to display all kinds of one-dimensional progressive values. It can use colored bands, hands, and combinations of to display multiple values and their relation to a numeric scale/range."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/gauge-chart/) on gauge charts for more details.
+
+## How to compose a Gauge Chart
+
+Unlike most charts/diagrams, a `GaugeChart` is unique in that it doesn't use any data at all. In it's simplest form it just requires one axis specifying the range of the chart:
+
+```html
+<gauge-chart>
+  <value-axis dimension="x" :min="0" :max="100" />
+</gauge-chart>
+```
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { GaugeChart, ValueAxis },
+      template: `
+        <gauge-chart>
+            <value-axis dimension="x" :min="0" :max="100"/>
+        </gauge-chart>
+  `,
+    }}
+  </Story>
+</Preview>
+
+### Adding hands
+
+To add hands to your gauge chart you need to use the `ClockHand` component in `GaugeChart`'s default slot.
+
+```html
+<gauge-chart>
+  <value-axis dimension="x" :min="0" :max="100" />
+  <clock-hand :value="60" />
+</gauge-chart>
+```
+
+## Params
+
+### GaugeChart
+
+<Props of={GaugeChart} />
+
+### ClockHand
+
+<Props of={ClockHand} />

@@ -14,13 +14,43 @@ import { IDictionary } from 'common-types'
 export default defineComponent({
   name: 'XyScrollbar',
   props: {
-    value: { type: Number, required: true },
+    /**
+     * The current value clock hand is pointing to.
+     */
+    value: {
+      type: Number,
+      required: true,
+    },
     fill: { type: String },
     stroke: { type: String },
-    innerRadius: { type: Number, default: 0 },
-    radius: { type: Number, default: 100 },
-    startWidth: { type: Number, default: 5 },
-    endWidth: { type: Number, default: 1 },
+    /**
+     * Radius of the hand's inner end.
+     */
+    innerRadius: {
+      type: Number,
+      default: 0,
+    },
+    /**
+     * Radius of the hand's outer end.
+     */
+    radius: {
+      type: Number,
+      default: 100,
+    },
+    /**
+     * Width, in pixels, of the clock hand's base.
+     */
+    startWidth: {
+      type: Number,
+      default: 5,
+    },
+    /**
+     * Width, in pixels, of the clock hand's outer end. (tip)
+     */
+    endWidth: {
+      type: Number,
+      default: 1,
+    },
     disablePin: { type: Boolean, default: false },
     disableHand: { type: Boolean, default: false },
   },

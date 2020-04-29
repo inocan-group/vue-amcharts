@@ -19,9 +19,29 @@ am4core.useTheme(am4themesAnimated)
 
 export default defineComponent({
   props: {
-    innerRadius: { type: [String, Number], default: 0 },
-    startAngle: { type: Number, default: 180 },
-    endAngle: { type: Number, default: 360 },
+    /**
+     * Inner radius of the radar face.
+     * This can either be in absolute pixel value, or relative percent.
+     * If set in percent, it will be relative to radius. (outer radius)
+     */
+    innerRadius: {
+      type: [String, Number],
+      default: 0,
+    },
+    /**
+     * Starting angle of the Radar face.
+     */
+    startAngle: {
+      type: Number,
+      default: 180,
+    },
+    /**
+     * Ending angle of the Radar face.
+     */
+    endAngle: {
+      type: Number,
+      default: 360,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {
@@ -39,7 +59,6 @@ export default defineComponent({
       dataMeta,
       chartData,
       actionsConfig,
-      onChartMounted,
     } = useChart(GaugeChart, props, context, parentConfig)
 
     actionsConfig(gc => ({
