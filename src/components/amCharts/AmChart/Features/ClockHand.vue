@@ -12,7 +12,7 @@ import { ChartType } from '../types'
 import { IDictionary } from 'common-types'
 
 export default defineComponent({
-  name: 'XyScrollbar',
+  name: 'ClockHand',
   props: {
     /**
      * The current value clock hand is pointing to.
