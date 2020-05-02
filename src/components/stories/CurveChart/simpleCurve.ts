@@ -1,4 +1,4 @@
-import { CurveChart, CurveColumnSeries, ValueAxis, CategoryAxis, DateAxis } from '../../index'
+import { CurveChart, CurveColumnSeries, ValueAxis, CategoryAxis } from '../../index'
 import { number, boolean, object } from '@storybook/addon-knobs'
 
 export const simpleCurve = () => ({

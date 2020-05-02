@@ -5,9 +5,9 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { CandlestickSeries } from '@amcharts/amcharts4/charts'
-import { useSeries, seriesProps, useProps } from '../composables'
+import { useSeries, seriesProps } from '../composables'
 import { IDictionary } from 'common-types'
-import { IChart, ChartType } from '..'
+import { ChartType } from '..'
 import { color } from '@amcharts/amcharts4/core'
 import { removeProperties } from '../shared'
 import { dataProperties } from '../composables/useData'

@@ -6,18 +6,17 @@
 </template>
 
 <script lang="ts">
-import * as am4core from '@amcharts/amcharts4/core'
+import { useTheme } from '@amcharts/amcharts4/core'
 import { VennDiagram } from '@amcharts/amcharts4/plugins/venn'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
 import { defineComponent, SetupContext } from '@vue/composition-api'
 import { useChart } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
-import { toNumberOrPercent, toNumber } from '../helpers'
 import { removeProperties } from '../shared'
 import { dataProperties } from '../composables/useData'
 
-am4core.useTheme(am4themesAnimated)
+useTheme(am4themesAnimated)
 
 export default defineComponent({
   props: {

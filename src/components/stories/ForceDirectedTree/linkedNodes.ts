@@ -1,5 +1,5 @@
 import { ForceDirectedTree, ForceDirectedSeries } from '../../index'
-import { select, boolean } from '@storybook/addon-knobs'
+import { select } from '@storybook/addon-knobs'
 
 export const linkedNodes = () => {
   return {

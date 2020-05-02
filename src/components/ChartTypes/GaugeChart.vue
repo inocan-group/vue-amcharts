@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import * as am4core from '@amcharts/amcharts4/core'
+import { useTheme } from '@amcharts/amcharts4/core'
 import { GaugeChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
 import { defineComponent, SetupContext } from '@vue/composition-api'
@@ -14,7 +14,7 @@ import { useChart, IRegistryOptions } from '../composables'
 import { IDictionary } from 'common-types'
 import { toNumberOrPercent, toNumber } from '../helpers'
 
-am4core.useTheme(am4themesAnimated)
+useTheme(am4themesAnimated)
 
 export default defineComponent({
   props: {

@@ -6,14 +6,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, ref, PropType } from '@vue/composition-api'
-import { IDictionary, wait } from 'common-types'
+import { defineComponent, SetupContext, PropType } from '@vue/composition-api'
+import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
 import { useChart, chartProperties } from '../composables'
 import { SankeyDiagram } from '@amcharts/amcharts4/charts'
 import { dataProperties } from '../composables/useData'
-import { Percent, color } from '@amcharts/amcharts4/core'
-import { toNumberOrPercent, toNumber } from '../helpers'
+import { toNumber } from '../helpers'
 import { removeProperties } from '../shared'
 
 /**

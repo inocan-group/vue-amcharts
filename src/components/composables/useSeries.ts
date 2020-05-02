@@ -1,5 +1,5 @@
 import { Ref, SetupContext, onBeforeUnmount } from '@vue/composition-api'
-import { Axis, LineSeries, ColumnSeries, Series } from '@amcharts/amcharts4/charts'
+import { Axis, LineSeries, ColumnSeries } from '@amcharts/amcharts4/charts'
 import { IDictionary } from 'common-types'
 import { useRegistry } from './useRegistry/useRegistry'
 import { AmchartError } from '../errors'

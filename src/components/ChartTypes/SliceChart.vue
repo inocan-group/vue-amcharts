@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import * as am4core from '@amcharts/amcharts4/core'
+import { useTheme } from '@amcharts/amcharts4/core'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
 import { defineComponent, SetupContext } from '@vue/composition-api'
 import { useChart } from '../composables'
@@ -15,7 +15,7 @@ import { IChildWithCardinality } from '../composables/useRegistry/registry-types
 import { dataProperties } from '../composables/useData'
 import { SlicedChart } from '@amcharts/amcharts4/charts'
 
-am4core.useTheme(am4themesAnimated)
+useTheme(am4themesAnimated)
 
 export default defineComponent({
   name: 'SliceChart',

@@ -1,5 +1,4 @@
 import { ref, Ref, onBeforeUnmount, onMounted, SetupContext } from '@vue/composition-api'
-import * as am4core from '@amcharts/amcharts4/core'
 import { IDictionary } from 'common-types'
 import { useRegistry, useProps } from '../index'
 import { ConstructorFor } from '../useRegistry/registry-types'
@@ -7,6 +6,7 @@ import { useData, removeEventClass, IPropertyMeta } from '../useData'
 import { unbox } from '../../shared'
 import { toNumberOrPercent } from '@amcharts/amcharts4/.internal/core/utils/Type'
 import { IRegistryOptions, noRegistrationOptions } from './chart-types'
+import { create, Percent } from '@amcharts/amcharts4/core'
 
 type Chart = import('@amcharts/amcharts4/charts').Chart
 
@@ -43,10 +43,10 @@ export function useChart<TChart extends Chart, TProps extends IDictionary>(
   let chartMountedCallback: (chart: TChart) => void | Promise<void>
 
   onMounted(async () => {
-    chart.value = am4core.create(chartdiv.value as HTMLElement, chartType)
+    chart.value = create(chartdiv.value as HTMLElement, chartType)
     dataReady(chart.value as TChart, propMeta)
-    chart.value.width = props.width ? toNumberOrPercent(props.width) : new am4core.Percent(100)
-    chart.value.height = props.height ? toNumberOrPercent(props.height) : new am4core.Percent(100)
+    chart.value.width = props.width ? toNumberOrPercent(props.width) : new Percent(100)
+    chart.value.height = props.height ? toNumberOrPercent(props.height) : new Percent(100)
     initializeProps()
     await configureChildren(chart.value)
     if (chartMountedCallback) {

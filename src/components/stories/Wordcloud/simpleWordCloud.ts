@@ -1,5 +1,5 @@
 import { WordCloud, WordSeries } from '../../index'
-import { select, boolean, text, array, number } from '@storybook/addon-knobs'
+import { select, text, array, number } from '@storybook/addon-knobs'
 
 export const simpleWordCloud = () => {
   return {

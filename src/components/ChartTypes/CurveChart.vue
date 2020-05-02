@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import * as am4core from '@amcharts/amcharts4/core'
+import { useTheme } from '@amcharts/amcharts4/core'
 import { CurveChart } from '@amcharts/amcharts4/plugins/timeline'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
 import { defineComponent, SetupContext } from '@vue/composition-api'
@@ -15,7 +15,7 @@ import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
 import { dataProperties } from '../composables/useData'
 
-am4core.useTheme(am4themesAnimated)
+useTheme(am4themesAnimated)
 
 export default defineComponent({
   props: {

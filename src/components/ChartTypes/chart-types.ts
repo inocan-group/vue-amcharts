@@ -1,6 +1,4 @@
-import type { Ref } from '@vue/composition-api'
-import type { Axis, XYChart, PieChart } from '@amcharts/amcharts4/charts'
-import type { IDictionary } from 'common-types'
+import type { XYChart, PieChart } from '@amcharts/amcharts4/charts'
 
 export type IChart = XYChart | PieChart
 

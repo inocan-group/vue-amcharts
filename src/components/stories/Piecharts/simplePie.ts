@@ -1,5 +1,5 @@
 import { PieChart, PieSeries, ChartLegend } from '../../index'
-import { select, array, boolean } from '@storybook/addon-knobs'
+import { select, boolean } from '@storybook/addon-knobs'
 import { storyContainer } from '@/shared/withWrapper'
 
 export const simplePie = () => {

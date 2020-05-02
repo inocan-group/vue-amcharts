@@ -6,7 +6,6 @@
 import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
 import { WordCloudSeries, WordCloud } from '@amcharts/amcharts4/plugins/wordCloud'
-import { percent } from '@amcharts/amcharts4/core'
 import { useSeries, useEvents } from '../composables'
 import { ChartType } from '..'
 import { toNumberOrPercent } from '../helpers'
