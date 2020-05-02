@@ -9,6 +9,7 @@ import { DateAxis } from '@amcharts/amcharts4/charts'
 import { ChartType } from '..'
 import { IDictionary } from 'common-types'
 import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
+import { IRegistrationInfo } from '../composables/useRegistry/registry-types'
 
 export type XYChart = import('@amcharts/amcharts4/charts').XYChart
 export type XYChart3D = import('@amcharts/amcharts4/charts').XYChart3D
@@ -49,11 +50,19 @@ export default defineComponent({
       XYChart | XYChart3D
     >(props, context)
     const axis: Ref<DateAxis> = ref(new DateAxis())
-    const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
-    const notFirstOnAxis = howMany(dim) > 0
     const { actionsConfig, initializeProps } = useProps<XYChart | XYChart3D>(props, axis, getChart)
 
-    register(ChartType[dim], props.id, DateAxis, axis)
+    const registeredAxis = (opt: IRegistrationInfo['parentOptions']) =>
+      opt.fixedValues?.dimension ? `${opt.fixedValues.dimension}Axis` : props.dimension === 'x' ? 'xAxis' : 'yAxis'
+
+    const response = register(registeredAxis, props.id, DateAxis, axis)
+    const notFirstOnAxis = howMany(response.type) > 1
+
+    if (response.type !== `${props.dimension}Axis` && props.dimension) {
+      console.warn(
+        `Attempted to set dimension as '${props.dimension}' but this component always uses the 'x' dimension.`,
+      )
+    }
 
     actionsConfig(a => ({
       dateFormat: [a, 'tooltipDateFormat', v => (v === undefined ? 'MMM YYYY' : v)],
@@ -73,7 +82,8 @@ export default defineComponent({
       initializeProps()
     })
 
-    addToRegistration('dataField', `date${capitalize(props.dimension)}`)
+    const registeredType = response.type
+    addToRegistration('dataField', `date${capitalize(capitalize(registeredType[0]))}`)
     childReady()
 
     return {
