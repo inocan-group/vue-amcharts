@@ -2,15 +2,33 @@ import { ref, Ref, onBeforeUnmount, onMounted, SetupContext } from '@vue/composi
 import * as am4core from '@amcharts/amcharts4/core'
 import { IDictionary } from 'common-types'
 import { useRegistry, useProps } from '../index'
-import type { Chart } from '@amcharts/amcharts4/charts'
-import { IChildWithCardinality, ConstructorFor } from '../useRegistry/registry-types'
+import { ConstructorFor } from '../useRegistry/registry-types'
 import { useData, removeEventClass, IPropertyMeta } from '../useData'
 import { unbox } from '../../shared'
 import { toNumberOrPercent } from '@amcharts/amcharts4/.internal/core/utils/Type'
+import { IRegistryOptions, noRegistrationOptions } from './chart-types'
 
-export function useChart<TChart extends Chart, TProps extends IDictionary>(chartType: ConstructorFor<TChart>, props: TProps, context: SetupContext, parentConfig: IChildWithCardinality[], propMeta?: IPropertyMeta<TProps>) {
+type Chart = import('@amcharts/amcharts4/charts').Chart
+
+export function useChart<TChart extends Chart, TProps extends IDictionary>(
+  chartType: ConstructorFor<TChart>,
+  props: TProps,
+  context: SetupContext,
+  parentConfig: IRegistryOptions,
+  propMeta?: IPropertyMeta<TProps>,
+) {
   const { registerAsParent } = useRegistry<TChart>(props, context)
-  const { configureChildren, acceptChildRegistration, acceptChildMessage, registrants, cardinality, depSequence } = registerAsParent( parentConfig )
+  const {
+    configureChildren,
+    acceptChildRegistration,
+    acceptChildMessage,
+    registrants,
+    cardinality,
+    depSequence,
+  } = registerAsParent(
+    noRegistrationOptions(parentConfig) ? parentConfig : parentConfig.cardinality,
+    noRegistrationOptions(parentConfig) ? {} : parentConfig.options,
+  )
 
   const chartdiv: Ref<HTMLElement | null> = ref(null)
   const chart: Ref<TChart | null> = ref(null) // fake value; to be replaced onMounted
@@ -29,7 +47,7 @@ export function useChart<TChart extends Chart, TProps extends IDictionary>(chart
     chart.value.height = props.height ? toNumberOrPercent(props.height) : new am4core.Percent(100)
     initializeProps()
     await configureChildren(chart.value)
-    if(chartMountedCallback) {
+    if (chartMountedCallback) {
       chartMountedCallback(chart.value as TChart)
     }
   })
@@ -39,9 +57,9 @@ export function useChart<TChart extends Chart, TProps extends IDictionary>(chart
    * that the chart object now resides in the DOM and all children
    * are configured
    */
-  const onChartMounted = ((fn: (chart: TChart) => void | Promise<void>) => {
+  const onChartMounted = (fn: (chart: TChart) => void | Promise<void>) => {
     chartMountedCallback = fn
-  })
+  }
 
   onBeforeUnmount(() => {
     chart.value?.dispose()
@@ -58,7 +76,7 @@ export function useChart<TChart extends Chart, TProps extends IDictionary>(chart
     chartdiv,
     dataMeta,
     chartData,
-    acceptChildRegistration, 
+    acceptChildRegistration,
     acceptChildMessage,
     registrants,
     cardinality,
@@ -68,6 +86,6 @@ export function useChart<TChart extends Chart, TProps extends IDictionary>(chart
     onChartMounted,
     onPropChange,
     actionsConfig,
-    respondTo
+    respondTo,
   }
 }
