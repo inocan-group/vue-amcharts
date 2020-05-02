@@ -5,8 +5,8 @@
 <script lang="ts">
 import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
-import { useRegistry, useProps } from '@/components/amCharts/AmChart/composables'
-import { ChartType, IChart } from '@/components/amCharts/AmChart'
+import { useRegistry, useProps } from '@/components/composables'
+import { ChartType, IChart } from '@/components'
 import { Cursor } from '@amcharts/amcharts4/charts'
 import { color } from '@amcharts/amcharts4/core'
 
