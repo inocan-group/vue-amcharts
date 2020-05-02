@@ -27,7 +27,9 @@ export function useChart<TChart extends Chart, TProps extends IDictionary>(
     depSequence,
   } = registerAsParent(
     noRegistrationOptions(parentConfig) ? parentConfig : parentConfig.cardinality,
-    noRegistrationOptions(parentConfig) ? {} : parentConfig.options,
+    noRegistrationOptions(parentConfig)
+      ? { fixedValues: {}, defaultValues: {}, parentContext: {} }
+      : parentConfig.options,
   )
 
   const chartdiv: Ref<HTMLElement | null> = ref(null)

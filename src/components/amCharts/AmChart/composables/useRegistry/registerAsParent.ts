@@ -8,6 +8,8 @@ import {
   hasParent,
   hasChart as parentHasChart,
   IChildConfigurationCallback,
+  IRegistrationType,
+  IRegistrationInfo,
 } from './registry-types'
 import { IDictionary, wait } from 'common-types'
 import { dictionaryToArray } from './dictionaryToArray'
@@ -17,7 +19,7 @@ import set from 'lodash.set'
 import { AmchartError } from '../../errors'
 
 export const registerAsParent = function(context: SetupContext) {
-  return (childrenAndCardinality: IChildWithCardinality[]) => {
+  return (childrenAndCardinality: IChildWithCardinality[], parentOptions: IRegistrationInfo['parentOptions']) => {
     const depSequence = childrenAndCardinality.map(i => i[2])
     const registrants: IDictionary<IDictionary<IRegistrationStatus<any>>> = reactive(
       depSequence.reduce((agg: IDictionary, curr) => {
@@ -89,33 +91,36 @@ export const registerAsParent = function(context: SetupContext) {
 
       /** accept registration requests from children */
       acceptChildRegistration: <TComponent>(
-        type: string,
+        type: IRegistrationType,
         name: string,
         constructor: ConstructorFor<any>,
         instance: Ref<any>,
       ) => {
         let useName = name
-        let index = 2
-        const { max } = cardinality[type]
-        const quantity = Object.keys(registrants[type]).length
+
+        const correctedType = typeof type === 'function' ? type(parentOptions) : type
+
+        const { max } = cardinality[correctedType]
+        const quantity = Object.keys(registrants[correctedType]).length
         if (max && quantity >= max) {
           throw new Error(
-            `Attempt to register too many ${type} children! The parent has limited the cardinality to a max of ${max}`,
+            `Attempt to register too many ${correctedType} children! The parent has limited the cardinality to a max of ${max}`,
           )
         }
 
-        while (registrants[type][useName]) {
+        let index = 2
+        while (registrants[correctedType][useName]) {
           useName = `${name}${index}`
           index++
         }
 
-        registrants[type][useName] = {
+        registrants[correctedType][useName] = {
           constructor,
           instance,
           configured: false,
         }
 
-        return useName
+        return { name: useName, type: correctedType, ...(parentOptions ? { parentOptions } : {}) }
       },
 
       /** accept a message from a child component */

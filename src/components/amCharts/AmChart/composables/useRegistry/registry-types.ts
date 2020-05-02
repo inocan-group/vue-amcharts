@@ -80,14 +80,43 @@ export interface IParentRegistry {
   configureChildren(data: ILooksLikeChart<any>): Promise<void>
   /** accept registration from child components */
   acceptChildRegistration<TComponent extends IDictionary = IDictionary>(
-    type: string,
+    type: IRegistrationType,
     name: string,
     constructor: ConstructorFor<TComponent>,
     instance: Ref<TComponent>,
-  ): string
+  ): IRegistrationInfo
   /** accept messages from child components */
   acceptChildMessage: IChildMessage
 }
+
+export interface IRegistrationInfo {
+  /**
+   * The registered type; which is a category set up by the parent
+   * (e.g., xAxis, yAxis, etc.)
+   */
+  type: string
+  /**
+   * A unique identifier for the client. The client will specify the identifier
+   * but the server has the right to override this so it can insure uniqueness.
+   */
+  name: string
+  parentOptions: {
+    /**
+     * A parent's assertion of fixed values the child needs to observe
+     */
+    fixedValues: IDictionary
+    /**
+     * A parent's assertion of some defaults/preferences the child should be aware of
+     */
+    defaultValues: IDictionary
+    /**
+     * An dictionary of key/values provided by the parent to the child
+     */
+    parentContext: IDictionary
+  }
+}
+
+export type IRegistrationType = ((options: IRegistrationInfo['parentOptions']) => string) | string
 
 /** provide the min, max of cardinality and then the name of the child */
 export type IChildWithCardinality = [number, number | null, string]

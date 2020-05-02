@@ -6,6 +6,8 @@ import {
   IChildConfigurationCallback,
   ConstructorFor,
   IRegistrationStatus,
+  IRegistrationInfo,
+  IRegistrationType,
 } from './registry-types'
 import { AmchartError } from '../../errors'
 import { IGetChild as IChildDefinition } from './useRegistry'
@@ -66,7 +68,7 @@ export function childApi<C, P>(
      * with a reference to the `chart` object.
      */
     register: <TComponent>(
-      type: string,
+      type: IRegistrationType,
       id: string,
       constructor: ConstructorFor<TComponent>,
       instance: Ref<TComponent>,
@@ -77,11 +79,13 @@ export function childApi<C, P>(
         )
       }
 
-      const assignedName = parent.acceptChildRegistration(type, id, constructor, instance)
-      setChild(type, assignedName)
-      if (id !== assignedName) {
-        console.info(`Attempt to register a ${type} with the name "${id}" twice; will use ${assignedName} instead`)
+      const response = parent.acceptChildRegistration(type, id, constructor, instance)
+      setChild(response.type, response.name)
+      if (id !== response.name) {
+        console.info(`Attempt to register a ${type} with the name "${id}" twice; will use ${response.name} instead`)
       }
+
+      return response
     },
 
     /**
