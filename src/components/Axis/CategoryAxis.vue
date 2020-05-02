@@ -12,6 +12,7 @@ import { percent } from '@amcharts/amcharts4/core'
 import { ChartType } from '../types'
 import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
 import { allowUndefined } from '../helpers'
+import { IRegistrationInfo } from '../composables/useRegistry/registry-types'
 
 export default defineComponent({
   name: 'CategoryAxis',
@@ -70,15 +71,19 @@ export default defineComponent({
     const axis: Ref<CategoryAxis> = ref(new CategoryAxis())
     const { register, addToRegistration, howMany, onChartConfig, getChart, childReady } = useRegistry(props, context)
     const { actionsConfig, initializeProps } = useProps(props, axis, getChart)
-    const dim = props.dimension === 'x' ? 'xAxis' : 'yAxis'
-    const notFirstOnAxis = howMany(dim) > 0
     const dataSource: Ref<string> = ref('')
     const instanceId: Ref<string> = ref('')
+    const registeredAxis = (opt: IRegistrationInfo['parentOptions']) =>
+      opt.fixedValues?.dimension ? `${opt.fixedValues.dimension}Axis` : props.dimension === 'x' ? 'xAxis' : 'yAxis'
 
-    const accessibility = { axis: `${props.dimension}Axis`, dataField: `category${capitalize(props.dimension)}` }
+    const response = register(registeredAxis, props.id, CategoryAxis, axis)
+    const notFirstOnAxis = howMany(response.type) > 1
 
-    register(ChartType[dim], props.id, CategoryAxis, axis)
-    addToRegistration(accessibility)
+    if (response.type !== `${props.dimension}Axis` && props.dimension) {
+      console.warn(
+        `Attempted to set dimension as '${props.dimension}' but this component always uses the 'x' dimension.`,
+      )
+    }
 
     actionsConfig(a => ({
       name: [a, 'title.text'],
@@ -92,6 +97,7 @@ export default defineComponent({
     }))
 
     onChartConfig((chart: IChart) => {
+      const registeredType = response.type
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       axis.value = dimension.push(axis.value)
       initializeProps()
@@ -105,6 +111,8 @@ export default defineComponent({
         // TODO: implement this
       }
 
+      const accessibility = { axis: `${props.dimension}Axis`, dataField: `category${capitalize(registeredType[0])}` }
+      addToRegistration(accessibility)
       addToRegistration('id', axis.value.uid)
       addToRegistration('dataSource', axis.value.dataSource.uid)
       addToRegistration('data', axis.value.data)
@@ -119,7 +127,6 @@ export default defineComponent({
       instance: axis,
       dataSource,
       instanceId,
-      ...accessibility,
     }
   },
 })
