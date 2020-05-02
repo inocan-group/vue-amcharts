@@ -10,9 +10,8 @@ import * as am4core from '@amcharts/amcharts4/core'
 import { GaugeChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
 import { defineComponent, SetupContext } from '@vue/composition-api'
-import { useChart } from '../composables'
+import { useChart, IRegistryOptions } from '../composables'
 import { IDictionary } from 'common-types'
-import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
 import { toNumberOrPercent, toNumber } from '../helpers'
 
 am4core.useTheme(am4themesAnimated)
@@ -45,11 +44,21 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {
-    const parentConfig: IChildWithCardinality[] = [
-      [1, null, 'xAxis'],
-      [0, 1, 'legend'],
-      [0, null, 'features'],
-    ]
+    const parentConfig: IRegistryOptions = {
+      cardinality: [
+        [1, null, 'xAxis'],
+        [0, 1, 'legend'],
+        [0, null, 'features'],
+      ],
+      options: {
+        fixedValues: {
+          dimension: 'x',
+        },
+        defaultValues: {},
+        parentContext: {},
+      },
+    }
+
     const {
       chart,
       chartdiv,
