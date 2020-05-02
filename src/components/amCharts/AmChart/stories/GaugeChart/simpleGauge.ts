@@ -30,7 +30,7 @@ export const simpleGauge = () => ({
   template: `
     <div style="width: 70%; height: 300px">
         <gauge-chart :inner-radius="innerRadius" :start-angle="startAngle" :end-angle="endAngle" >
-            <value-axis dimension="x" :min="0" :max="100" :strictMinMax="true" />
+            <value-axis :min="0" :max="100" :strictMinMax="true" />
         </gauge-chart>
     </div>
   `,
