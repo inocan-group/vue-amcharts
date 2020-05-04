@@ -1,0 +1,27 @@
+import { ValueAxis } from '@/components'
+import { Meta, Description, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta title="amCharts/CommonComponents/Axes/ValueAxis" component={ValueAxis} />
+
+# ValueAxis
+
+<Description of={ValueAxis} />
+
+"[A] Value axis is used to depict a simple numeric value.
+
+In the most common serial chart scenario, you would have a vertical Value axis, and either a Category or Date axis, for horizontal dimension. In such chart each point (an elbow on a line series, or a column in a column series) is represented by a numeric value, and some other value, either category or a date.
+
+Some chart types, like Scatter/Bubble, will have data points represented by two numeric values: X (horizontal) and Y (vertical) value. In such charts we will have two Value axes: horizontal and vertical."
+
+A value axis offers the following conveniences:
+
+- It will automatically choose its scale (minimum and maximum value, as well as intermediate grid/value positions) based on the actual range of numeric values in currently displayed data.
+- It will automatically try to intelligently adjust its scale so that its scale is represented by "pretty" numbers, while maintaining the best possible appearance of related series.
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/concepts/axes/value-axis/) on value axes for more details.
+
+## Params
+
+Below are some useful parameters for creating and configuring a value axis.
+
+<Props of={ValueAxis} />

@@ -24,20 +24,33 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+    /**
+     * 'x', 'y' or 'z'.
+     */
     dimension: {
+      type: String,
       validator: v => ['y', 'x', 'z'].includes(v),
     },
+    /**
+     * A minimum value for the axis scale.
+     */
     min: {
       type: [String, Number],
       default: undefined,
     },
+    /**
+     * A maximum value for the axis scale.
+     */
     max: {
       type: [String, Number],
       default: undefined,
     },
+    /**
+     * Whether the scale is logarithmic.
+     */
     logarithmic: {
       type: [String, Boolean],
-      default: () => Boolean(false),
+      default: false,
     },
     numberFormat: {
       type: String,
@@ -54,10 +67,16 @@ export default defineComponent({
     innerRadius: {
       type: Number,
     },
+    /**
+     * A grid type to display: “circles” or “polygons”.
+     */
     gridType: {
       type: String,
       default: 'circles',
     },
+    /**
+     * Minimum distance in pixels between grid elements.
+     */
     minGridDistance: {
       type: Number,
       default: 30,
@@ -66,14 +85,23 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    /**
+     * Disable (hide) the axis labels.
+     */
     disableLabels: {
       type: Boolean,
       default: false,
     },
+    /**
+     * The axis line's stroke opacity.
+     */
     strokeOpacity: {
       type: Number,
       default: 0,
     },
+    /**
+     * A stroke-dasharray for the stroke (outline). “Dasharray” allows setting rules to make lines dashed, dotted, etc.
+     */
     strokeDasharray: {
       type: String,
     },
