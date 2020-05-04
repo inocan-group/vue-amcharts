@@ -25,9 +25,15 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+    /**
+     * 'x', 'y' or 'z'.
+     */
     dimension: {
       validator: v => ['y', 'x', 'z'].includes(v),
     },
+    /**
+     * The field in a dataset that holds category names.
+     */
     category: {
       type: String,
     },
@@ -35,14 +41,23 @@ export default defineComponent({
       type: [Function, Object],
       default: undefined,
     },
+    /**
+     * Horizontal tension for the spline. Used by the line smoothing algorithm.
+     */
     tensionX: {
       type: Number,
       default: 1,
     },
+    /**
+     *  Vertical tension for the spline. Used by the line smoothing algorithm.
+     */
     tensionY: {
       type: Number,
       default: 1,
     },
+    /**
+     * Minimum distance in pixels between grid elements.
+     */
     minGridDistance: {
       type: Number,
     },

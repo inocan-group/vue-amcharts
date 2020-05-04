@@ -1,0 +1,45 @@
+import { CategoryAxis } from '@/components'
+import { Meta, Description, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta title="amCharts/CommonComponents/Axes/CategoryAxis" component={CategoryAxis} />
+
+# CategoryAxis
+
+<Description of={CategoryAxis} />
+
+"[The] Category axis is the simplest of the axes. It does not do any calculations, or scales. All it does is list text-based items, or as charting community calls them - categories."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/concepts/axes/category-axis/) on category axes for more details.
+
+## Binding categories to data
+
+An important setting which is needed and only used by category axes is the `category` setting. It indicates to the axis which particular field in the dataset
+holds category names.
+
+So given the following dataset, you'll need to assign the string 'category' to the `category` prop of the axis.
+
+```json
+[
+  {
+    "category": "Research & Development",
+    "value": 3.5
+  },
+  {
+    "category": "Marketing",
+    "value": 6
+  },
+  {
+    "category": "Distribution",
+    "value": 6.5
+  }
+]
+```
+
+While it may be obvious to the user that the `category` field holds the category, it isn't as obvious to the chart. Moreover, that field could have any other name
+depending on the dataset so you'll need to explicitly indicate it to the category axis.
+
+## Params
+
+Below are some useful parameters for creating and configuring a category axis.
+
+<Props of={CategoryAxis} />
