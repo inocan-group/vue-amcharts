@@ -1,0 +1,25 @@
+import { DateAxis } from '@/components'
+import { Meta, Description, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta title="amCharts/CommonComponents/Axes/DateAxis" component={DateAxis} />
+
+# DateAxis
+
+<Description of={DateAxis} />
+
+"[A] Date axis is quite similar to the Value axis, except instead of numeric scale, it uses date and time scale."
+
+Whenever you have a series that is bound to date/time values in a dataset, you will need a Date axis to plot it on.
+
+A date axis offers the following conveniences:
+
+- It will automatically select its scale based on the actual scope of date/time values in data.
+- It will also ensure that each data point is placed at exactly the position it has its date/time set on.
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/concepts/axes/date-axis/) on date axes for more details.
+
+## Params
+
+Below are some useful parameters for creating and configuring a date axis.
+
+<Props of={DateAxis} />

@@ -25,20 +25,35 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+    /**
+     * 'x', 'y' or 'z'.
+     */
     dimension: {
       validator: v => ['y', 'x', 'z'].includes(v),
     },
+    /**
+     * A special date format to apply to axis tooltips.
+     */
     dateFormat: {
       type: String,
       default: 'MMM YYYY',
     },
+    /**
+     * Disable (hide) the axis line.
+     */
     disableAxisLine: {
       type: Boolean,
     },
+    /**
+     * Indicates if cusor's tooltip should be shown on this Axis.
+     */
     cursorToolTipEnabled: {
       type: Boolean,
       default: true,
     },
+    /**
+     * Allows restricting zoom in beyond a certain number of base intervals.
+     */
     minZoomCount: {
       type: Number,
       default: 1,
