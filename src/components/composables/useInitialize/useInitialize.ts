@@ -29,6 +29,6 @@ export function useInitialize<TProps extends IDictionary, TChart>(props: TProps,
       )
     }
 
-    props.initialize(object)
+    props.initialize(object.value)
   }
 }
