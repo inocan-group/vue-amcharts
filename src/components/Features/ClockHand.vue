@@ -4,12 +4,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
-import { IChart } from '..'
 import { ClockHand } from '@amcharts/amcharts4/charts'
 import { percent, color } from '@amcharts/amcharts4/core'
 import { useRegistry, useProps } from '../composables'
 import { ChartType } from '../types'
 import { IDictionary } from 'common-types'
+
+type GaugeChart = import('@amcharts/amcharts4/charts').GaugeChart
 
 export default defineComponent({
   name: 'ClockHand',
@@ -56,18 +57,18 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, getComponent, onChartConfig, childReady, getChart } = useRegistry(props, context)
+    const { register, getComponent, onChartConfig, childReady, getChart } = useRegistry<GaugeChart>(props, context)
     const clockHand: Ref<ClockHand> = ref(new ClockHand())
-    const { actionsConfig, initializeProps } = useProps(props, clockHand, getChart)
+    const { actionsConfig, initializeProps } = useProps<GaugeChart>(props, clockHand, getChart)
 
     register(ChartType.features, 'clockhand', ClockHand, clockHand)
 
     actionsConfig(ch => ({
       value: [ch, 'value', v => v],
-      fill: [ch, 'fill', v => color(v)],
-      stroke: [ch, 'stroke', v => color(v)],
-      innerRadius: [ch, 'innerRadius', v => percent(v)],
-      radius: [ch, 'radius', v => percent(v)],
+      fill: [ch, 'fill', (v: string) => color(v)],
+      stroke: [ch, 'stroke', (v: string) => color(v)],
+      innerRadius: [ch, 'innerRadius', (v: number) => percent(v)],
+      radius: [ch, 'radius', (v: number) => percent(v)],
       startWidth: [ch, 'startWidth', v => v],
       endWidth: [ch, 'endWidth', v => v],
       // TODO: Find out why `disablePin` and `disableHand` don't work!
@@ -75,7 +76,7 @@ export default defineComponent({
       // disableHand: [ch, 'hand.disabled', v => v],
     }))
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       initializeProps()
       chart.hands.push(clockHand.value)
       clockHand.value.value = props.value

@@ -7,7 +7,7 @@ import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { ColumnSeries } from '@amcharts/amcharts4/charts'
 import { useSeries, seriesProps } from '../composables'
 import { IDictionary } from 'common-types'
-import { IChart, ChartType, allowUndefined } from '../index'
+import { ChartType, allowUndefined } from '../index'
 import { color } from '@amcharts/amcharts4/core'
 
 export default defineComponent({
@@ -45,7 +45,7 @@ export default defineComponent({
       strokeWidth: s,
     }))
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       axisConfig.value = setupAxes(series)
       series.value = chart.series.push(series.value)
       initializeProps()

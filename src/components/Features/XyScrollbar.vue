@@ -4,11 +4,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
-import { IChart } from '..'
 import { XYChartScrollbar, LineSeries, ColumnSeries } from '@amcharts/amcharts4/charts'
 import { useRegistry, useProps } from '../composables'
 import { ChartType } from '../types'
 import { IDictionary } from 'common-types'
+
+type XYChart = import('@amcharts/amcharts4/charts').XYChart
 
 export default defineComponent({
   name: 'XyScrollbar',
@@ -28,9 +29,9 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, getComponent, onChartConfig, childReady, getChart } = useRegistry(props, context)
+    const { register, getComponent, onChartConfig, childReady, getChart } = useRegistry<XYChart>(props, context)
     const scrollbar: Ref<XYChartScrollbar> = ref(new XYChartScrollbar())
-    const { actionsConfig, initializeProps } = useProps(props, scrollbar, getChart)
+    const { actionsConfig, initializeProps } = useProps<XYChart>(props, scrollbar, getChart)
 
     register(ChartType.features, 'scrollbar', XYChartScrollbar, scrollbar)
 
@@ -38,7 +39,7 @@ export default defineComponent({
       tooltipText: tt,
     }))
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       initializeProps()
       if (props.axis === 'x' || props.axis === undefined) {
         const series = getComponent<LineSeries | ColumnSeries>('series', props.series)

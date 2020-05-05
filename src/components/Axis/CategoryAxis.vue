@@ -6,13 +6,13 @@
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { useRegistry, useProps } from '../composables'
 import { IDictionary } from 'common-types'
-import { IChart } from '../ChartTypes'
 import { CategoryAxis } from '@amcharts/amcharts4/charts'
 import { percent } from '@amcharts/amcharts4/core'
-import { ChartType } from '../types'
 import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
 import { allowUndefined } from '../helpers'
 import { IRegistrationInfo } from '../composables/useRegistry/registry-types'
+
+type XYChart = import('@amcharts/amcharts4/charts').XYChart
 
 export default defineComponent({
   name: 'CategoryAxis',
@@ -84,8 +84,11 @@ export default defineComponent({
 
   setup(props: IDictionary, context: SetupContext) {
     const axis: Ref<CategoryAxis> = ref(new CategoryAxis())
-    const { register, addToRegistration, howMany, onChartConfig, getChart, childReady } = useRegistry(props, context)
-    const { actionsConfig, initializeProps } = useProps(props, axis, getChart)
+    const { register, addToRegistration, howMany, onChartConfig, getChart, childReady } = useRegistry<XYChart>(
+      props,
+      context,
+    )
+    const { actionsConfig, initializeProps } = useProps<XYChart>(props, axis, getChart)
     const dataSource: Ref<string> = ref('')
     const instanceId: Ref<string> = ref('')
     const registeredAxis = (opt: IRegistrationInfo['parentOptions']) =>
@@ -111,7 +114,7 @@ export default defineComponent({
       innerRadius: [a, 'renderer.innerRadius', v => allowUndefined(v), () => a.invalidate()],
     }))
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       const registeredType = response.type
       const dimension = props.dimension === 'x' ? chart.xAxes : chart.yAxes
       axis.value = dimension.push(axis.value)

@@ -1,6 +1,8 @@
 import { SerpentineChart, CurveStepLineSeries, ValueAxis, DateAxis } from '../../index'
 import { select, number, boolean } from '@storybook/addon-knobs'
 
+type ISerpentineChart = import('@amcharts/amcharts4/plugins/timeline').SerpentineChart
+
 const dataset: { date: Date; value: number }[] = []
 let visits = 100
 
@@ -29,16 +31,18 @@ export const simpleSerpentine = () => ({
     },
   },
   components: { SerpentineChart, CurveStepLineSeries, ValueAxis, DateAxis },
+  methods: {
+    initChart(chart: ISerpentineChart) {
+      chart.padding(20, 20, 20, 20)
+    },
+  },
   template: `
     <div style="width: 100%; height: 300px">
-        <serpentine-chart :data="dataset" :orientation="orientation" :level-count="levelCount" ref="serpentineChart">
+        <serpentine-chart :data="dataset" :orientation="orientation" :level-count="levelCount" :initialize="initChart" >
             <curve-step-line-series x-prop="date" y-prop="value" :fill-opacity="0.3" :stroke-width="2" />
             <value-axis dimension="y" :inner-radius="innerRadius" :radius="radius" :disable-tooltip="true" />
             <date-axis dimension="x" :disable-axis-line="disableAxisLine" :min-zoom-count="5" />
         </serpentine-chart>
     </div>
   `,
-  mounted() {
-    this.$refs.serpentineChart.chart.padding(20, 20, 20, 20)
-  },
 })

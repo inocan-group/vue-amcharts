@@ -1,6 +1,8 @@
 import { CurveChart, CurveColumnSeries, ValueAxis, CategoryAxis } from '../../index'
 import { number, boolean, object } from '@storybook/addon-knobs'
 
+type ICurveChart = import('@amcharts/amcharts4/plugins/timeline').CurveChart
+
 export const simpleCurve = () => ({
   data: () => ({
     dataset: [
@@ -79,16 +81,18 @@ export const simpleCurve = () => ({
     },
   },
   components: { CurveChart, CurveColumnSeries, CategoryAxis, ValueAxis },
+  methods: {
+    initChart(chart: ICurveChart) {
+      chart.padding(40, 40, 40, 40)
+    },
+  },
   template: `
     <div style="width: 100%; height: 300px">
-        <curve-chart :data="dataset" ref="curveChart">
+        <curve-chart :data="dataset" :initialize="initChart" >
             <value-axis dimension="y" :radius="radius" :inner-radius="innerRadius" :disable-grid="disableGridY" />
             <category-axis dimension="x" category="country" :tension-x="tensionX" :control-points="controlPoints" :disable-grid="disableGridX" />
             <curve-column-series x-prop="country" y-prop="value" :fill-opacity="fillOpacity" :stroke-width="strokeWidth" />
         </curve-chart>
     </div>
   `,
-  mounted() {
-    this.$refs.curveChart.chart.padding(40, 40, 40, 40)
-  },
 })

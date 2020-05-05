@@ -6,8 +6,10 @@
 import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
 import { useRegistry, useProps } from '@/components/composables'
-import { ChartType, IChart } from '@/components'
+import { ChartType } from '@/components'
 import { Legend } from '@amcharts/amcharts4/charts'
+
+type Chart = import('@amcharts/amcharts4/charts').Chart
 
 export default defineComponent({
   name: 'ChartLegend',
@@ -31,13 +33,13 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, onChartConfig, childReady, getChart } = useRegistry(props, context)
+    const { register, onChartConfig, childReady, getChart } = useRegistry<Chart>(props, context)
     const legend: Ref<Legend> = ref(new Legend())
-    const { actionsConfig, initializeProps } = useProps(props, legend, getChart)
+    const { actionsConfig, initializeProps } = useProps<Chart>(props, legend, getChart)
 
     register(ChartType.legend, 'legend', Legend, legend)
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       initializeProps()
       chart.legend = legend.value
     })

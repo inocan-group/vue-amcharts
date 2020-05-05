@@ -6,7 +6,6 @@
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { useRegistry, useProps } from '../composables'
 import { DateAxis } from '@amcharts/amcharts4/charts'
-import { ChartType } from '..'
 import { IDictionary } from 'common-types'
 import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
 import { IRegistrationInfo } from '../composables/useRegistry/registry-types'

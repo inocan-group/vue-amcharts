@@ -8,7 +8,6 @@ import { IDictionary } from 'common-types'
 import { RadarColumnSeries } from '@amcharts/amcharts4/charts'
 import { useSeries, seriesProps } from '../composables'
 import { ChartType } from '../types'
-import { IChart } from '../ChartTypes'
 import { color } from '@amcharts/amcharts4/core'
 
 export default defineComponent({
@@ -48,7 +47,7 @@ export default defineComponent({
       strokeOpacity: [s, 'columns.template.strokeOpacity', v => v],
     }))
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       initializeProps()
       series.value = chart.series.push(series.value)
       axisConfig.value = setupAxes(series)

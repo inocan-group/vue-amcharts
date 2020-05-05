@@ -5,6 +5,7 @@ import { useRegistry } from './useRegistry/useRegistry'
 import { AmchartError } from '../errors'
 import { useData, removeEventClass, ILooksLikeChart } from './useData'
 import { useProps } from '.'
+import { IRegistrationStatus } from './useRegistry/registry-types'
 
 export const seriesProps = {
   id: {
@@ -122,8 +123,8 @@ export function useSeries<
     }
 
     // get axis, even if just the default axis
-    const y = getRegistration('yAxis', props.yAxis)
-    const x = getRegistration('xAxis', props.xAxis)
+    const y = getRegistration('yAxis', props.yAxis) as { dataField?: 'valueY' | 'dateY' | 'categoryY' }
+    const x = getRegistration('xAxis', props.xAxis) as { dataField?: 'valueX' | 'dateX' | 'categoryX' }
 
     // assign the axis to the series
     const xAxis: Axis = getComponent<Axis>('xAxis', props.xAxis)

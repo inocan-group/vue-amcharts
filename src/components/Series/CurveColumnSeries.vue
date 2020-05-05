@@ -7,7 +7,7 @@ import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { CurveColumnSeries } from '@amcharts/amcharts4/plugins/timeline'
 import { useSeries, seriesProps } from '../composables'
 import { IDictionary } from 'common-types'
-import { IChart, ChartType } from '../index'
+import { ChartType } from '../index'
 import { color } from '@amcharts/amcharts4/core'
 
 export default defineComponent({
@@ -47,7 +47,7 @@ export default defineComponent({
       strokeOpacity: [s, 'columns.template.strokeOpacity', v => v],
     }))
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       initializeProps()
       series.value = chart.series.push(series.value)
       axisConfig.value = setupAxes(series)

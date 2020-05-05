@@ -7,7 +7,7 @@ import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { useSeries } from '../composables'
 import { ForceDirectedSeries } from '@amcharts/amcharts4/plugins/forceDirected'
 import { IDictionary } from 'common-types'
-import { IChart, ChartType } from '../index'
+import { ChartType } from '../index'
 import { toNumber, toNumberOrPercent } from '../helpers'
 import { color, Image, Sprite } from '@amcharts/amcharts4/core'
 import { AmchartError } from '../errors'
@@ -250,7 +250,7 @@ export default defineComponent({
       disableOuterCircle: [s, 'nodes.template.outerCircle.disabled'],
     }))
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       initializeProps()
       series.value = chart.series.push(series.value)
     })

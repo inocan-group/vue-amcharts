@@ -7,7 +7,7 @@ import { defineComponent, ref, Ref, SetupContext, watch } from '@vue/composition
 import { MapPolygonSeries } from '@amcharts/amcharts4/maps'
 import { useSeries, seriesProps } from '../composables'
 import { IDictionary } from 'common-types'
-import { IChart, ChartType } from '../index'
+import { ChartType } from '../index'
 import { color } from '@amcharts/amcharts4/core'
 
 const DEFAULT_COLOR = 'rgb(217,217,217)'
@@ -52,7 +52,7 @@ export default defineComponent({
       fill: [s, 'mapPolygons.template.fill', v => color(v ?? DEFAULT_COLOR), () => s.invalidateData()],
     }))
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       initializeProps()
       series.value.useGeodata = true
       const hs = series.value.mapPolygons.template.states.create('hover')
