@@ -1,4 +1,4 @@
-import { XyChart, CandlestickSeries, ValueAxis, DateAxis, XyScrollbar, ChartCursor } from '../../index'
+import { XyChart, CandlestickSeries, ValueAxis, DateAxis, XyScrollbar, XyCursor } from '../../index'
 import { select } from '@storybook/addon-knobs'
 import { IApiConfig } from '../../composables/useData'
 
@@ -34,7 +34,7 @@ export const candlestickChart = () => {
         default: select('Ticker Symbol', { Microsoft: 'MSFT', Apple: 'AAPL', AmericanAirlines: 'AAL' }, 'MSFT'),
       },
     },
-    components: { XyChart, ValueAxis, CandlestickSeries, DateAxis, XyScrollbar, ChartCursor },
+    components: { XyChart, ValueAxis, CandlestickSeries, DateAxis, XyScrollbar, XyCursor },
     template: `
     <xy-chart>
       <date-axis dimension="x"/>
@@ -49,7 +49,7 @@ export const candlestickChart = () => {
         dateProp="date"
       />
       <!-- 
-      <chart-cursor />
+      <xy-cursor />
       <xy-scrollbar axis="x" />
       -->
     </xy-chart>

@@ -1,4 +1,4 @@
-import { SpiralChart, CurveColumnSeries, ValueAxis, CategoryAxis, ChartCursor } from '../../index'
+import { SpiralChart, CurveColumnSeries, ValueAxis, CategoryAxis } from '../../index'
 import { text, number, boolean } from '@storybook/addon-knobs'
 
 export const simpleSpiral = () => ({
@@ -48,14 +48,13 @@ export const simpleSpiral = () => ({
       default: number('column stroke opacity', 0.5, { min: 0, max: 1, step: 0.1 }, 'Component'),
     },
   },
-  components: { SpiralChart, CurveColumnSeries, ValueAxis, CategoryAxis, ChartCursor },
+  components: { SpiralChart, CurveColumnSeries, ValueAxis, CategoryAxis },
   template: `
     <div style="width: 100%; height: 300px">
         <spiral-chart :data="dataset" :inversed="inversed" :level-count="levelCount" :end-angle="endAngle" ref="spiralChart" >
           <curve-column-series :data="dataset" x-prop="value" y-prop="category" ref="curveColumnSeries" :stroke-opacity="seriesStrokeOpacity" />
           <value-axis dimension="x" :min="min" :disable-grid="true" :disable-labels="disableLabels" :min-grid-distance="minGridDistance" :stroke-opacity="axisStrokeOpacity" :stroke-dasharray="strokeDasharray" />
           <category-axis dimension="y" category="category" :disable-grid="true" :radius="radius" :inner-radius="innerRadius" />
-          <chart-cursor />
         </spiral-chart>
     </div>
   `,

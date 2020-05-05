@@ -1,17 +1,19 @@
 <template>
-  <div class="chart-cursor"></div>
+  <div class="xy-cursor"></div>
 </template>
 
 <script lang="ts">
 import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
 import { IDictionary } from 'common-types'
 import { useRegistry, useProps } from '@/components/composables'
-import { ChartType, IChart } from '@/components'
-import { Cursor } from '@amcharts/amcharts4/charts'
+import { ChartType } from '@/components'
+import { XYCursor } from '@amcharts/amcharts4/charts'
 import { color } from '@amcharts/amcharts4/core'
 
+type XYChart = import('@amcharts/amcharts4/charts').XYChart
+
 export default defineComponent({
-  name: 'ChartCursor',
+  name: 'XyCursor',
   props: {
     fullWidthX: {
       type: [String, Boolean],
@@ -28,11 +30,11 @@ export default defineComponent({
   },
 
   setup(props: IDictionary, context: SetupContext) {
-    const { register, onChartConfig, childReady, getChart, getComponent } = useRegistry(props, context)
-    const cursor: Ref<Cursor> = ref(new Cursor())
-    const { actionsConfig, initializeProps } = useProps(props, cursor, getChart)
+    const { register, onChartConfig, childReady, getChart, getComponent } = useRegistry<XYChart>(props, context)
+    const cursor: Ref<XYCursor> = ref(new XYCursor())
+    const { actionsConfig, initializeProps } = useProps<XYChart>(props, cursor, getChart)
 
-    register(ChartType.cursor, 'cursor', Cursor, cursor)
+    register(ChartType.cursor, 'cursor', XYCursor, cursor)
 
     actionsConfig((c, chart) => ({
       maxTooltipDistance: [c, v => (undefined ? undefined : Number(v))],
@@ -47,20 +49,20 @@ export default defineComponent({
       },
     }))
 
-    onChartConfig((chart: IChart) => {
+    onChartConfig(chart => {
       chart.cursor = cursor.value
       initializeProps()
     })
 
     childReady()
 
-    return { Cursor, cursor }
+    return { cursor }
   },
 })
 </script>
 
 <style scoped>
-.chart-cursor {
+.xy-cursor {
   opacity: 1;
 }
 </style>

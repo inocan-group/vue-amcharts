@@ -1,17 +1,8 @@
-import {
-  XyChart,
-  DateAxis,
-  ValueAxis,
-  LineSeries,
-  XyScrollbar,
-  ChartCursor,
-  ChartLegend,
-  ColumnSeries,
-} from '../../index'
+import { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, XyCursor, ChartLegend, ColumnSeries } from '../../index'
 import { text, select, boolean } from '@storybook/addon-knobs'
 
 export const lineChart = () => ({
-  components: { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, ChartCursor, ChartLegend, ColumnSeries },
+  components: { XyChart, DateAxis, ValueAxis, LineSeries, XyScrollbar, XyCursor, ChartLegend, ColumnSeries },
   props: {
     series1Name: { default: text('Series 1 Name (cpi)', 'CPI') },
     cpiWidth: { default: select('CPI series line width', { 1: 1, 2: 2, 3: 3, 5: 5 }, 3) },
@@ -72,7 +63,7 @@ export const lineChart = () => ({
       tooltipText="Inflation change [bold]{Inflation}[/]"
     /> 
 
-    <chart-cursor :maxTooltipDistance="maxTooltipDistance" />
+    <xy-cursor :maxTooltipDistance="maxTooltipDistance" />
     <chart-legend :show="Boolean(true)"/>
   </xy-chart>
   `,

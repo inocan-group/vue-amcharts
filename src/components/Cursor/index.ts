@@ -1,1 +1,1 @@
-export { default as ChartCursor } from './ChartCursor.vue'
+export { default as XyCursor } from './XyCursor.vue'
