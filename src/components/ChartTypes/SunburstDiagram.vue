@@ -33,6 +33,9 @@ export default defineComponent({
       type: Number,
       default: () => percent(0),
     },
+    initialize: {
+      type: Function,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {

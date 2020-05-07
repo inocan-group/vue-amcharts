@@ -3,6 +3,7 @@ import { IDictionary } from 'common-types'
 import { useRegistry, useProps } from '../index'
 import { ConstructorFor } from '../useRegistry/registry-types'
 import { useData, removeEventClass, IPropertyMeta } from '../useData'
+import { useInitialize } from '../useInitialize'
 import { unbox } from '../../shared'
 import { toNumberOrPercent } from '@amcharts/amcharts4/.internal/core/utils/Type'
 import { IRegistryOptions, noRegistrationOptions } from './chart-types'
@@ -48,6 +49,9 @@ export function useChart<TChart extends Chart, TProps extends IDictionary>(
     chart.value.width = props.width ? toNumberOrPercent(props.width) : new Percent(100)
     chart.value.height = props.height ? toNumberOrPercent(props.height) : new Percent(100)
     initializeProps()
+    if (props.initialize) {
+      useInitialize(props, chart)
+    }
     await configureChildren(chart.value)
     if (chartMountedCallback) {
       chartMountedCallback(chart.value as TChart)

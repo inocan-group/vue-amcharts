@@ -34,6 +34,9 @@ export default defineComponent({
       type: Boolean,
       default: Boolean(false),
     },
+    initialize: {
+      type: Function,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {

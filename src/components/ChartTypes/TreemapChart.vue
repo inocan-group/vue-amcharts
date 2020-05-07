@@ -29,6 +29,9 @@ export default defineComponent({
     colorsStep: { type: Number, default: 1 },
     maxLevels: { type: Number, default: 2 },
     layoutAlgorithm: { type: String, default: 'squarify' },
+    initialize: {
+      type: Function,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {

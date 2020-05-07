@@ -36,6 +36,9 @@ export default defineComponent({
     projection: { type: String, default: 'Projection' },
     deltaLongitude: { type: Number, default: 0 },
     deltaLatitude: { type: Number, default: 0 },
+    initialize: {
+      type: Function,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {

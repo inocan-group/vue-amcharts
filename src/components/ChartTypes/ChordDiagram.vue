@@ -101,6 +101,9 @@ export default defineComponent({
       type: [String, Number],
       default: undefined,
     },
+    initialize: {
+      type: Function,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext) {
