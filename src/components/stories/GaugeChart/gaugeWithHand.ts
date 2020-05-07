@@ -115,4 +115,11 @@ export const gaugeWithHand = () => ({
   `,
 })
 
-gaugeWithHand.story = { parameters: { docs: { disable: true } } }
+gaugeWithHand.story = {
+  parameters: {
+    viewMode: 'story',
+    previewTabs: {
+      'storybook/docs/panel': { hidden: true },
+    },
+  },
+}

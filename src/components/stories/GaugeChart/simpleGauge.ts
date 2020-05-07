@@ -36,4 +36,11 @@ export const simpleGauge = () => ({
   `,
 })
 
-simpleGauge.story = { parameters: { docs: { disable: true } } }
+simpleGauge.story = {
+  parameters: {
+    viewMode: 'story',
+    previewTabs: {
+      'storybook/docs/panel': { hidden: true },
+    },
+  },
+}
