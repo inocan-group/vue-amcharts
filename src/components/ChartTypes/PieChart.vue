@@ -22,6 +22,9 @@ export default defineComponent({
     innerRadius: {
       type: [String, Number],
     },
+    initialize: {
+      type: Function,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext) {

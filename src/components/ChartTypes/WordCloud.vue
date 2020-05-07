@@ -40,6 +40,9 @@ export default defineComponent({
       // default: 0.2,
       validator: v => Number(v) >= 0 && Number(v) <= 1,
     },
+    initialize: {
+      type: Function,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext) {

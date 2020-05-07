@@ -30,6 +30,9 @@ export default defineComponent({
       type: String,
       default: 'animated',
     },
+    initialize: {
+      type: Function,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {

@@ -10,7 +10,7 @@ import { useTheme } from '@amcharts/amcharts4/core'
 import { SerpentineChart } from '@amcharts/amcharts4/plugins/timeline'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
 import { defineComponent, SetupContext } from '@vue/composition-api'
-import { useChart, useInitialize } from '../composables'
+import { useChart } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
 import { dataProperties } from '../composables/useData'
@@ -77,7 +77,6 @@ export default defineComponent({
       c.height = 800
       c.contentHeight = 800
       c.responsive.enabled = props.responsive
-      useInitialize(props, chart)
     })
 
     return {

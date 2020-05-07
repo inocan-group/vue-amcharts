@@ -41,6 +41,9 @@ export default defineComponent({
       type: Number,
       default: 360,
     },
+    initialize: {
+      type: Function,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {

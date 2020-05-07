@@ -21,6 +21,9 @@ useTheme(am4themesAnimated)
 export default defineComponent({
   props: {
     ...removeProperties(dataProperties, 'dataIdProp', 'dataProperties'),
+    initialize: {
+      type: Function,
+    },
   },
 
   setup(props: IDictionary, context: SetupContext): IDictionary {
