@@ -27,7 +27,7 @@ export const lineChart = () => ({
     },
   },
   template: `
-  <xy-chart url="http://localhost:6006/cpi.json">
+  <xy-chart url="cpi.json">
     <date-axis dimension="x" />
     <value-axis 
       id="cpi" 
