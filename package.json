@@ -22,8 +22,6 @@
     "hyperdiff": "^2.0.5",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
-    "plotly.js-dist": "^1.52.3",
-    "rough-viz": "^1.0.5",
     "vue": "^2.6.11"
   },
   "devDependencies": {
@@ -40,7 +38,6 @@
     "@types/lodash.get": "^4.4.6",
     "@types/lodash.set": "^4.3.6",
     "@types/node": "^10.6.0",
-    "@types/plotly.js": "^1.44.29",
     "@typescript-eslint/eslint-plugin": "^2.22.0",
     "@typescript-eslint/parser": "^2.22.0",
     "@vue/cli-plugin-babel": "~4.2.0",
