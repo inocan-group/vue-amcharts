@@ -31,6 +31,9 @@ jobs:
           git pull
           git checkout gh-pages
           git add storybook-static
+          git stash
+          rm -rf ./**
+          git stash pop
           git commit -m 'automated: new storybook deployment'
           git mv storybook-static/* ./
           git commit --amend --no-edit
