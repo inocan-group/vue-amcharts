@@ -1,0 +1,78 @@
+import { GaugeChart, ClockHand, ValueAxis } from '@/components'
+import { Meta, Description, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="amCharts/GaugeCharts"
+  component={GaugeChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Gauge Charts
+
+<Description of={GaugeChart} />
+
+"[A] Gauge chart is used to display all kinds of one-dimensional progressive values. It can use colored bands, hands, and combinations of to display multiple values and their relation to a numeric scale/range."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/gauge-chart/) on gauge charts for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { GaugeChart, ClockHand, ValueAxis },
+      template: `
+        <gauge-chart :inner-radius="'90%'" >
+            <value-axis :min="0" :max="100" />
+            <clock-hand
+            :value="60"
+            :fill="'red'"
+            :stroke="'red'"
+            />
+        </gauge-chart>
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Gauge Chart
+
+A gauge chart consists of the following elements:
+
+- At least one axis component
+- Optionally one or more `ClockHand` components
+
+Unlike most charts/diagrams, a `GaugeChart` is unique in that it doesn't use any data at all. In it's simplest form it just requires one axis specifying the range of the chart.
+
+Technically any axis type can be used, but since you would usually want to display a value relative to some range of values a `ValueAxis` is the most common axis type to be used with gauge charts.
+
+```html
+<gauge-chart>
+  <value-axis :min="0" :max="100" />
+</gauge-chart>
+```
+
+You don't have to specify a dimension on the axis. It'll assume the `x` dimension by default. Think of the gauge chart as a one dimensional type of chart. Only in this case the axis forms an arc instead of being a straight line.
+
+This of course doesn't convery any information by itself so you'll need to add at least one `ClockHand` component, which can be used to indicate a particular value on the radar face:
+
+```html
+<gauge-chart>
+  <value-axis :min="0" :max="100" />
+  <clock-hand :value="60" />
+</gauge-chart>
+```
+
+## Params
+
+Below are some useful parameters for creating and configuring a gauge chart.
+
+### GaugeChart component
+
+<Props of={GaugeChart} />
+
+### ClockHand component
+
+<Props of={ClockHand} />
+
+### Axes
+
+Please refer to the [ValueAxis](?path=/docs/amcharts-commoncomponents-axes-valueaxis--page) and [CategoryAxis](?path=/docs/amcharts-commoncomponents-axes-categoryaxis--page) pages for more information on how to configure axes.

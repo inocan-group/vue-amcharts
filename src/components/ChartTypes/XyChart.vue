@@ -60,7 +60,7 @@ export default defineComponent({
     } = useChart(XYChart, props, context, parentConfig)
 
     actionsConfig(c => ({
-      responsive: c,
+      // responsive: c,
     }))
 
     onChartMounted(async () => {
@@ -68,6 +68,7 @@ export default defineComponent({
       c.height = 800
       c.contentHeight = 800
       c.responsive.enabled = props.responsive
+      // setTimeout(() => console.log('CHART DATA', chart.value.data), 5000)
     })
 
     return {

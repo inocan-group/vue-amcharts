@@ -140,6 +140,16 @@ export default defineComponent({
       console.log('candlestick config started')
       initializeProps()
       chart.series.push(series.value)
+      // series.value.dataFields.dateX = 'date'
+      // series.value.dataFields.valueY = 'close'
+      // series.value.dataFields.openValueY = 'open'
+      // series.value.dataFields.lowValueY = 'low'
+      // series.value.dataFields.highValueY = 'high'
+      // series.value.dataFields.dateX = 'date'
+      // series.value.dataFields.valueY = '4. close'
+      // series.value.dataFields.openValueY = '1. open'
+      // series.value.dataFields.lowValueY = '3. low'
+      // series.value.dataFields.highValueY = '2. high'
       axisConfig.value = setupAxes(series)
 
       if (props.tooltipText) {
