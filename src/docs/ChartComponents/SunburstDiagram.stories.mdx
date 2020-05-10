@@ -1,0 +1,20 @@
+import { SunburstDiagram } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Chart Components/SunburstDiagram"
+  component={SunburstDiagram}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# SunburstDiagram
+
+"Sunburst Diagram is a circular chart that is used to indicate hierarchical relational data. It resembles nested donut charts, with an exception that Sunburst does that in a hierarchical fashion, e.g. children slices comprise whole value of their parent slice."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/sunburst/) on sunburst diagrams for more details.
+
+## Params
+
+Below are some useful parameters for configuring a `SunburstDiagram` component.
+
+<Props of={SunburstDiagram} />
