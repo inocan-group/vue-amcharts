@@ -33,8 +33,9 @@ jobs:
           git add storybook-static
           git stash
           rm -rf ./**
-          git stash pop
+          git add .
           git commit -m 'automated: new storybook deployment'
+          git stash pop
           git mv storybook-static/* ./
           git commit --amend --no-edit
           git push
