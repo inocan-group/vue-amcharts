@@ -1,0 +1,53 @@
+import { TreemapChart } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/TreemapCharts"
+  component={TreemapChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Treemap Charts
+
+"TreeMap is a great way to represent distribution of values among hierarchical categories in a clear and compact format."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/treemap/) on treemap charts for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { TreemapChart },
+      data: () => ({
+        data: [
+          {
+            name: 'First',
+            value: 190,
+          },
+          {
+            name: 'Second',
+            value: 289,
+          },
+          {
+            name: 'Third',
+            value: 635,
+          },
+          {
+            name: 'Fourth',
+            value: 732,
+          },
+          {
+            name: 'Fifth',
+            value: 835,
+          },
+        ],
+      }),
+      template: `
+      <treemap-chart :data="data" name="name" value="value"/>
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Treemap Chart
+
+A Treemap chart consists only of a [TreemapChart](?path=/docs/documentation-chart-components-treemapchart--page) component, used to define data and data fields for the chart.
