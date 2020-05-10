@@ -1,0 +1,45 @@
+import { VennDiagram, VennSeries, ChartLegend } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/VennDiagrams"
+  component={VennDiagram}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Venn Diagrams
+
+"Venn Diagrams are used to display scale of relationship between different items by showing a series of overlapping bubbles. The bigger overlapping area, the closer relation."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/venn/) on Venn diagrams for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { VennDiagram, VennSeries, ChartLegend },
+      data: () => ({
+        data: [
+          { name: 'A', value: 10 },
+          { name: 'B', value: 10 },
+          { name: 'C', value: 10 },
+          { name: 'X', value: 2, sets: ['A', 'B'] },
+          { name: 'Y', value: 2, sets: ['A', 'C'] },
+          { name: 'Z', value: 2, sets: ['B', 'C'] },
+          { name: 'Q', value: 1, sets: ['A', 'B', 'C'] },
+        ],
+      }),
+      template: `
+        <venn-diagram>
+          <venn-series :data="data" category="name" value="value" intersections="sets" /> 
+          <chart-legend />
+        </venn-diagram>
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Venn Diagram
+
+A Venn diagram consists of a [VennDiagram](?path=/docs/documentation-chart-components-venndiagram--page) component, containing the following in its default slot:
+
+- A [VennSeries](?path=/docs/documentation-chart-components-subcomponents-series-vennseries--page) component, used to define data and data fields for the diagram.
