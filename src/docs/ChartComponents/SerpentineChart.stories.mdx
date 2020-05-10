@@ -1,0 +1,20 @@
+import { SerpentineChart } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Chart Components/SerpentineChart"
+  component={SerpentineChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# SerpentineChart
+
+"SerpentineChart is a wrapper for CurveChart which automatically generates horizontal or vertical waved curves, based on certain parameters. It sort of looks like a mountain road, hence the name."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/timeline/#Serpentine) on serpentine charts for more details.
+
+## Params
+
+Below are some useful parameters for configuring a `SerpentineChart` component.
+
+<Props of={SerpentineChart} />
