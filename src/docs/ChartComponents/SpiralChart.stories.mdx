@@ -1,0 +1,20 @@
+import { SpiralChart } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Chart Components/SpiralChart"
+  component={SpiralChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# SpiralChart
+
+"SpiralChart is another helpful wrapper for CurveChart. Based on parameters it automatically wraps the chart into a spiral, without the need to define control points for that shape."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/timeline/#Spiral) on spiral charts for more details.
+
+## Params
+
+Below are some useful parameters for configuring a `SpiralChart` component.
+
+<Props of={SpiralChart} />
