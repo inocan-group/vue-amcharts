@@ -1,0 +1,66 @@
+import { SliceChart, FunnelSeries } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/SliceCharts"
+  component={SliceChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Sliced Charts
+
+"Sliced charts are used to illustrate some stepped process. With each steps the total initial value is gradually reduced or increased to make the impact of the step more prominent, than it would be possible with other relational types, like, say, Pie chart."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/sliced-chart/) on sliced charts for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { SliceChart, FunnelSeries },
+      data: () => ({
+        data: [
+          {
+            name: 'Stage #1',
+            value: 600,
+          },
+          {
+            name: 'Stage #2',
+            value: 300,
+          },
+          {
+            name: 'Stage #3',
+            value: 200,
+          },
+          {
+            name: 'Stage #4',
+            value: 180,
+          },
+          {
+            name: 'Stage #5',
+            value: 50,
+          },
+          {
+            name: 'Stage #6',
+            value: 20,
+          },
+          {
+            name: 'Stage #7',
+            value: 10,
+          },
+        ],
+      }),
+      template: `
+      <slice-chart :data="data" >
+        <funnel-series value-prop="value" category-prop="name" />
+      </slice-chart>
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Sliced Chart
+
+A Sliced chart consists of the following elements:
+
+- A parent [SliceChart](?path=/docs/documentation-chart-components-slicechart--page) component (used to define the chart data) containing the following in its default slot:
+  - At least one series component ([FunnelSeries](?path=/docs/documentation-chart-components-subcomponents-series-funnelseries--page), [PyramidSeries](?path=/docs/documentation-chart-components-subcomponents-series-pyramidseries--page), or [PictorialStackedSeries](?path=/docs/documentation-chart-components-subcomponents-series-pictorialstackedseries--page))
