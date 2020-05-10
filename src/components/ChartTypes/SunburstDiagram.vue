@@ -26,12 +26,12 @@ export default defineComponent({
     color: { type: String },
     colorsStep: { type: Number, default: 1 },
     radius: {
-      type: [Number, Object],
-      default: () => percent(100),
+      type: Number,
+      default: 100,
     },
     innerRadius: {
       type: Number,
-      default: () => percent(0),
+      default: 0,
     },
     initialize: {
       type: Function,
