@@ -29,10 +29,6 @@ export default defineComponent({
       type: String,
       default: 'animated',
     },
-    responsive: {
-      type: Boolean,
-      default: Boolean(false),
-    },
     initialize: {
       type: Function,
     },
@@ -59,9 +55,7 @@ export default defineComponent({
       onChartMounted,
     } = useChart(CurveChart, props, context, parentConfig)
 
-    actionsConfig(c => ({
-      responsive: c,
-    }))
+    actionsConfig(c => ({}))
 
     onChartMounted(async () => {
       const c = chart.value as CurveChart
