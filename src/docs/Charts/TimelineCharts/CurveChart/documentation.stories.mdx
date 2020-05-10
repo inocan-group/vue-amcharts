@@ -1,0 +1,93 @@
+import { CurveChart, CurveColumnSeries, ValueAxis, CategoryAxis } from '@/components'
+import { Meta, Description, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/TimelineCharts/CurveCharts"
+  component={CurveChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Curve Charts
+
+"[CurveChart can be thought of as] an XYChart that can be bent and twisted into any shape."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/timeline/#Creating_a_CurveChart) on curve charts for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { CurveChart, CurveColumnSeries, ValueAxis, CategoryAxis },
+      data: () => ({
+        data: [
+          {
+            country: 'Lithuania',
+            value: 501,
+          },
+          {
+            country: 'Czechia',
+            value: 301,
+          },
+          {
+            country: 'Ireland',
+            value: 201,
+          },
+          {
+            country: 'Germany',
+            value: 165,
+          },
+          {
+            country: 'Australia',
+            value: 139,
+          },
+          {
+            country: 'Austria',
+            value: 128,
+          },
+          {
+            country: 'UK',
+            value: 99,
+          },
+          {
+            country: 'Belgium',
+            value: 60,
+          },
+          {
+            country: 'The Netherlands',
+            value: 50,
+          },
+        ],
+        controlPoints: [
+          { x: -400, y: 0 },
+          { x: -250, y: 0 },
+          { x: 0, y: 60 },
+          { x: 250, y: 0 },
+          { x: 400, y: 0 },
+        ],
+      }),
+      methods: {
+        initChart(chart) {
+          chart.padding(40, 40, 40, 40)
+        },
+      },
+      template: `
+        <curve-chart :data="data" :initialize="initChart" >
+          <value-axis dimension="y" :radius="100" :inner-radius="0" :disable-grid="true" />
+          <category-axis dimension="x" category="country" :tension-x="0.8" :control-points="controlPoints" :disable-grid="true" />
+          <curve-column-series x-prop="country" y-prop="value" :fill-opacity="0.5" />
+        </curve-chart>  
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Curve Chart
+
+A Curve chart consists of the following elements:
+
+- A parent [CurveChart](?path=/docs/documentation-chart-components-curvechart--page) component containing the following in its default slot:
+  - At least two axes - vertical and horizontal
+  - At least one series component ([CurveColumnSeries](?path=/docs/documentation-chart-components-subcomponents-series-curvecolumnseries--page) for a column chart, [CurveLineSeries](?path=/docs/documentation-chart-components-subcomponents-series-curvelineseries--page) for a line chart, or a [CurveStepLineSeries](?path=/docs/documentation-chart-components-subcomponents-series-curvesteplineseries--page) for a stepped line chart).
+
+### Axes
+
+Please refer to the [ValueAxis](?path=/docs/documentation-chart-components-subcomponents-axes-valueaxis--page), [DateAxis](?path=/docs/documentation-chart-components-subcomponents-axes-dateaxis--page) and [CategoryAxis](?path=/docs/documentation-chart-components-subcomponents-axes-categoryaxis--page) pages for more information on how to configure axes.
