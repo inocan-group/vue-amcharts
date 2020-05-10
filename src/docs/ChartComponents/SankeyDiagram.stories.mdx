@@ -1,0 +1,20 @@
+import { SankeyDiagram } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Chart Components/SankeyDiagram"
+  component={SankeyDiagram}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# SankeyDiagram
+
+"Sankey diagram is a special kind of chart type, used to depict branched, multi-level flows of values."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/sankey-diagram/) on sankey diagrams for more details.
+
+## Params
+
+Below are some useful parameters for configuring a `SankeyDiagram` component.
+
+<Props of={SankeyDiagram} />
