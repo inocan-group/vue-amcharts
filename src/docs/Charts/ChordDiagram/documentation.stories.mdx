@@ -1,0 +1,45 @@
+import { ChordDiagram, ChartLegend } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/ChordDiagrams"
+  component={ChordDiagram}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Chord Diagrams
+
+"Chord diagram is a special chart type, used to indicate one-level quantitative relations between multiple items, organized in a circular diagram."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/chord-diagram/) on chord diagrams for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { ChordDiagram, ChartLegend },
+      data: () => ({
+        data: [
+          { from: 'A', to: 'D', value: 10 },
+          { from: 'B', to: 'D', value: 8 },
+          { from: 'B', to: 'E', value: 4 },
+          { from: 'B', to: 'C', value: 2 },
+          { from: 'C', to: 'E', value: 14 },
+          { from: 'E', to: 'D', value: 8 },
+          { from: 'C', to: 'A', value: 4 },
+          { from: 'G', to: 'A', value: 7 },
+          { from: 'D', to: 'B', value: 1 },
+        ],
+      }),
+      template: `
+        <chord-diagram :data="data">
+          <chart-legend />
+        </chord-diagram>
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Chord Diagram
+
+A Chord diagram consists of only a [ChordDiagram](?path=/docs/documentation-chart-components-chorddiagram--page) component, used to define data for the chart.
+.
