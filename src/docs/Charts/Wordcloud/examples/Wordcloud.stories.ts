@@ -1,4 +1,4 @@
 import { withKnobs } from '@storybook/addon-knobs'
 
-export default { title: 'amCharts/WordCloud' }
+export default { title: 'Documentation/Charts/WordCloud/Examples', decorators: [withKnobs] }
 export * from './simpleWordCloud'

@@ -1,4 +1,4 @@
 import { withKnobs } from '@storybook/addon-knobs'
 
-export default { title: 'amCharts/TimelineCharts/SpiralCharts', decorators: [withKnobs] }
+export default { title: 'Documentation/Charts/TimelineCharts/SpiralCharts/Examples', decorators: [withKnobs] }
 export * from './simpleSpiral'

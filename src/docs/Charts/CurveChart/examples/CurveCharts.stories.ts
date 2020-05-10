@@ -1,4 +1,4 @@
 import { withKnobs } from '@storybook/addon-knobs'
 
-export default { title: 'amCharts/TimelineCharts/CurveCharts', decorators: [withKnobs] }
+export default { title: 'Documentation/Charts/TimelineCharts/CurveCharts/Examples', decorators: [withKnobs] }
 export * from './simpleCurve'
