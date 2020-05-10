@@ -1,0 +1,22 @@
+import { CandlestickSeries } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Chart Components/Subcomponents/Series/CandlestickSeries"
+  component={CandlestickSeries}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# CandlestickSeries
+
+"Candlesticks are a good way to depict data dynamics using variety of metrics. Instead of single value - used on most series - candlesticks use four: open, high, low, and close."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/tutorials/taming-candlestick-series/) on candlestick series for more details.
+
+A `CandlestickSeries` component is used in the default slot of an `XyChart` component to create a candlestick chart.
+
+## Params
+
+Below are some useful parameters for configuring a `CandlestickSeries` component.
+
+<Props of={CandlestickSeries} />
