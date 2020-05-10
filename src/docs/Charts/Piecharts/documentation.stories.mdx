@@ -1,0 +1,74 @@
+import { PieChart, PieSeries } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/PieCharts"
+  component={PieChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Pie Charts
+
+"A Pie chart is a circular chart which is divided into slices to show relative sizes of data."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/pie-chart/) on pie charts for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { PieChart, PieSeries },
+      data: () => ({
+        data: [
+          {
+            country: 'Lithuania',
+            liters: 501,
+          },
+          {
+            country: 'Czechia',
+            liters: 301,
+          },
+          {
+            country: 'Ireland',
+            liters: 201,
+          },
+          {
+            country: 'Germany',
+            liters: 165,
+          },
+          {
+            country: 'Australia',
+            liters: 139,
+          },
+          {
+            country: 'Austria',
+            liters: 128,
+          },
+          {
+            country: 'UK',
+            liters: 99,
+          },
+          {
+            country: 'Belgium',
+            liters: 60,
+          },
+          {
+            country: 'The Netherlands',
+            liters: 50,
+          },
+        ],
+      }),
+      template: `
+        <pie-chart :data="data" :inner-radius="0" >
+            <pie-series category-prop="country" value-prop="liters" />
+        </pie-chart>
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Pie Chart
+
+A Pie chart consists of the following elements:
+
+- A parent [PieChart](?path=/docs/documentation-chart-components-piechart--page) component containing the following in its default slot:
+  - At least one [PieSeries](?path=/docs/documentation-chart-components-subcomponents-series-pieseries--page) component.
