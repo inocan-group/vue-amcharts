@@ -1,0 +1,81 @@
+import { SunburstDiagram } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/SunburstDiagrams"
+  component={SunburstDiagram}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Sunburst Diagrams
+
+"Sunburst Diagram is a circular chart that is used to indicate hierarchical relational data. It resembles nested donut charts, with an exception that Sunburst does that in a hierarchical fashion, e.g. children slices comprise whole value of their parent slice."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/sunburst/) on sunburst diagrams for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { SunburstDiagram },
+      data: () => ({
+        data: [
+          {
+            name: 'First',
+            children: [
+              { name: 'A1', value: 100 },
+              { name: 'A2', value: 60 },
+              { name: 'A3', value: 30 },
+            ],
+          },
+          {
+            name: 'Second',
+            children: [
+              { name: 'B1', value: 135 },
+              { name: 'B2', value: 98 },
+              { name: 'B3', value: 56 },
+            ],
+          },
+          {
+            name: 'Third',
+            children: [
+              { name: 'C1', value: 335 },
+              { name: 'C2', value: 148 },
+              { name: 'C3', value: 126 },
+              { name: 'C4', value: 26 },
+            ],
+          },
+          {
+            name: 'Fourth',
+            children: [
+              { name: 'D1', value: 415 },
+              { name: 'D2', value: 148 },
+              { name: 'D3', value: 89 },
+              { name: 'D4', value: 64 },
+              { name: 'D5', value: 16 },
+            ],
+          },
+          {
+            name: 'Fifth',
+            children: [
+              { name: 'E1', value: 687 },
+              { name: 'E2', value: 148 },
+            ],
+          },
+        ],
+      }),
+      template: `
+        <sunburst-diagram
+        :data="data"
+        name="name"
+        value="value"
+        children="children"
+        />
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Sunburst Diagram
+
+A Sunburst diagram consists of a [SunburstDiagram](?path=/docs/documentation-chart-components-sunburstdiagram--page) component, used to define data and data fields for the chart.
+.
