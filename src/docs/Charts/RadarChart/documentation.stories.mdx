@@ -1,0 +1,82 @@
+import { RadarChart, RadarSeries, ValueAxis, CategoryAxis } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/RadarCharts"
+  component={RadarChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Radar Charts
+
+"Radar chart is used to display directional or circular visual representation of a 2-dimensional data.
+Think of it as a "circular XY chart", because the two charts are not that different."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/radar-chart/) on radar charts for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { RadarChart, RadarSeries, ValueAxis, CategoryAxis },
+      data: () => ({
+        data: [
+          {
+            country: 'Lithuania',
+            liters: 501,
+          },
+          {
+            country: 'Czech Republic',
+            liters: 301,
+          },
+          {
+            country: 'Ireland',
+            liters: 266,
+          },
+          {
+            country: 'Germany',
+            liters: 165,
+          },
+          {
+            country: 'Australia',
+            liters: 139,
+          },
+          {
+            country: 'Austria',
+            liters: 336,
+          },
+          {
+            country: 'UK',
+            liters: 290,
+          },
+          {
+            country: 'Belgium',
+            liters: 325,
+          },
+          {
+            country: 'The Netherlands',
+            liters: 40,
+          },
+        ],
+      }),
+      template: `
+        <radar-chart :data="data">
+            <value-axis dimension="y" />
+            <category-axis dimension="x" category="country"/>
+            <radar-series x-prop="country" y-prop="liters" />
+        </radar-chart>
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Radar Chart
+
+A Radar chart consists of the following elements:
+
+- A parent [RadarChart](?path=/docs/documentation-chart-components-radarchart--page) component containing the following in its default slot:
+  - At least two axes - radial (that spans from the center of the radar circle) and circular (that goes around the outer perimeter of the radar circle)
+  - At least one [RadarSeries](?path=/docs/documentation-chart-components-subcomponents-series-radarseries--page) component.
+
+### Axes
+
+Please refer to the [ValueAxis](?path=/docs/documentation-chart-components-subcomponents-axes-valueaxis--page), [DateAxis](?path=/docs/documentation-chart-components-subcomponents-axes-dateaxis--page) and [CategoryAxis](?path=/docs/documentation-chart-components-subcomponents-axes-categoryaxis--page) pages for more information on how to configure axes.
