@@ -1,0 +1,131 @@
+import { ForceDirectedTree, ForceDirectedSeries } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/ForceDirectedTrees"
+  component={ForceDirectedTree}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Force Directed Trees
+
+"Force Directed Tree is a special kind of chart used to display multi-item data related in hierarchical, linear or mixed way, as a series of linked bubbles."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/force-directed/) on force directed trees for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { ForceDirectedTree, ForceDirectedSeries },
+      data: () => ({
+        data: [
+          {
+            name: 'First',
+            children: [
+              {
+                name: 'A1',
+                value: 100,
+              },
+              {
+                name: 'A2',
+                value: 60,
+              },
+              {
+                name: 'A3',
+                value: 30,
+              },
+            ],
+          },
+          {
+            name: 'Second',
+            children: [
+              {
+                name: 'B1',
+                value: 135,
+              },
+              {
+                name: 'B2',
+                value: 98,
+              },
+              {
+                name: 'B3',
+                value: 56,
+              },
+            ],
+          },
+          {
+            name: 'Third',
+            children: [
+              {
+                name: 'C1',
+                value: 335,
+              },
+              {
+                name: 'C2',
+                value: 148,
+              },
+              {
+                name: 'C3',
+                value: 126,
+              },
+              {
+                name: 'C4',
+                value: 26,
+              },
+            ],
+          },
+          {
+            name: 'Fourth',
+            children: [
+              {
+                name: 'D1',
+                value: 415,
+              },
+              {
+                name: 'D2',
+                value: 148,
+              },
+              {
+                name: 'D3',
+                value: 89,
+              },
+              {
+                name: 'D4',
+                value: 64,
+              },
+              {
+                name: 'D5',
+                value: 16,
+              },
+            ],
+          },
+          {
+            name: 'Fifth',
+            children: [
+              {
+                name: 'E1',
+                value: 687,
+              },
+              {
+                name: 'E2',
+                value: 148,
+              },
+            ],
+          },
+        ],
+      }),
+      template: `
+        <force-directed-tree :data="data">
+          <force-directed-series name-prop="name" value-prop="value" children-prop="children" />
+        </force-directed-tree>
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Force Directed Tree
+
+A Force Directed Tree consists of a parent [ForceDirectedTree](?path=/docs/documentation-chart-components-forcedirectedtree--page) component (used to define data for the tree) containing the following in its default slot:
+.
+
+- A [ForceDirectedSeries](?path=/docs/documentation-chart-components-subcomponents-series-forcedirectedseries--page) component, used to define data fields for the tree.
