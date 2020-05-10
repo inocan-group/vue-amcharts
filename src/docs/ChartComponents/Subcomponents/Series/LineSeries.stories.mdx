@@ -1,0 +1,22 @@
+import { LineSeries } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Chart Components/Subcomponents/Series/LineSeries"
+  component={LineSeries}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# LineSeries
+
+Defines _Series_ for a line chart (Displays a line graph. Can also be used to create an area graph).
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/reference/lineseries/) on column series for more details.
+
+A `LineSeries` component is used in the default slot of an `XyChart` component to create a line chart.
+
+## Params
+
+Below are some useful parameters for configuring a `LineSeries` component.
+
+<Props of={LineSeries} />
