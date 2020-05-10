@@ -15,9 +15,6 @@ import { dataProperties } from '../composables/useData'
 import { toNumber } from '../helpers'
 import { removeProperties } from '../shared'
 
-/**
- * So sankey!
- */
 export default defineComponent({
   name: 'SankeyDiagram',
   props: {
