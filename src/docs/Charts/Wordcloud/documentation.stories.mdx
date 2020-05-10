@@ -1,0 +1,41 @@
+import { WordCloud, WordSeries } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/WordCloud"
+  component={WordCloud}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Word Clouds
+
+"Word clouds help visualize weight or importance of individual words from a keyword list or text."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/wordcloud/) on word clouds for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { WordCloud, WordSeries },
+      data: () => ({
+        text: `Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
+      }),
+      template: `
+        <word-cloud>
+          <word-series :text="text" />
+        </word-cloud>
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Word Cloud
+
+A Word Cloud consists of a parent [WordCloud](?path=/docs/documentation-chart-components-wordcloud--page) component containing the following in its default slot:
+.
+
+- A [WordSeries](?path=/docs/documentation-chart-components-subcomponents-series-wordseries--page), used to define a list of keywords or text for the word cloud.
