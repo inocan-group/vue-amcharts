@@ -1,0 +1,24 @@
+import { XyChart } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Chart Components/XyChart"
+  component={XyChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# XyChart
+
+"Basically this is a chart type, that is used to display any chart information in a square plot area.
+
+The horizontal and vertical scale is determined by the type of Axis.
+
+The plot types are determined by type of Series."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/xy-chart) on XY charts for more details.
+
+## Params
+
+Below are some useful parameters for configuring an `XyChart` component.
+
+<Props of={XyChart} />
