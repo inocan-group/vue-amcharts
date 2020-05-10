@@ -1,0 +1,81 @@
+import { XyChart, ColumnSeries, ValueAxis, CategoryAxis } from '@/components'
+import { Meta, Description, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/XyCharts"
+  component={XyChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Xy Charts
+
+"We use XY chart to plot any kind of serial 2/3-dimensional data, including line, area, column, bar, candlestick, ohlc, stepline, even heatmaps. Basically, any data, that requires 2 dimensions can be depicted using XY chart"
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/xy-chart/) on XY charts for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { XyChart, ColumnSeries, ValueAxis, CategoryAxis },
+      data: () => ({
+        data: [
+          {
+            country: 'Lithuania',
+            liters: 501,
+          },
+          {
+            country: 'Czechia',
+            liters: 301,
+          },
+          {
+            country: 'Ireland',
+            liters: 201,
+          },
+          {
+            country: 'Germany',
+            liters: 165,
+          },
+          {
+            country: 'Australia',
+            liters: 139,
+          },
+          {
+            country: 'Austria',
+            liters: 128,
+          },
+          {
+            country: 'UK',
+            liters: 99,
+          },
+          {
+            country: 'Belgium',
+            liters: 60,
+          },
+          {
+            country: 'The Netherlands',
+            liters: 50,
+          },
+        ],
+      }),
+      template: `
+        <xy-chart :data="data">
+            <column-series x-prop="country" y-prop="liters" fill="#69B7DC" />
+            <category-axis dimension="x" category="country" />
+            <value-axis dimension="y" />
+        </xy-chart>
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose an Xy Chart
+
+An XY chart consists of the following elements:
+
+- A parent [XyChart](?path=/docs/documentation-chart-components-xychart--page) component containing the following in its default slot:
+  - At least two axes - vertical and horizontal
+  - At least one series component ([ColumnSeries](?path=/docs/documentation-chart-components-subcomponents-series-columnseries--page) for a column chart, [LineSeries](?path=/docs/documentation-chart-components-subcomponents-series-lineseries--page) for a line chart, [CandlestickSeries](?path=/docs/documentation-chart-components-subcomponents-series-candlestickseries--page) for a candlestick chart, etc)
+
+### Axes
+
+Please refer to the [ValueAxis](?path=/docs/documentation-chart-components-subcomponents-axes-valueaxis--page), [DateAxis](?path=/docs/documentation-chart-components-subcomponents-axes-dateaxis--page) and [CategoryAxis](?path=/docs/documentation-chart-components-subcomponents-axes-categoryaxis--page) pages for more information on how to configure axes.
