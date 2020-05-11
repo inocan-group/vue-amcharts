@@ -1,0 +1,52 @@
+import { SpiralChart, CurveColumnSeries, ValueAxis, CategoryAxis } from '@/components'
+import { Meta, Description, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Charts/TimelineCharts/SpiralCharts"
+  component={SpiralChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Spiral Charts
+
+"SpiralChart is another helpful wrapper for CurveChart. Based on parameters it automatically wraps the chart into a spiral, without the need to define control points for that shape."
+
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/timeline/#Spiral) on spiral charts for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { SpiralChart, CurveColumnSeries, ValueAxis, CategoryAxis },
+      data: () => ({
+        data: [
+          { category: '' },
+          { category: 'Chandler', value: 47 },
+          { category: 'Joey', value: 45 },
+          { category: 'Monica', value: 204 },
+          { category: 'Phoebe', value: 62 },
+          { category: 'Rachel', value: 154 },
+          { category: 'Ross', value: 120 },
+        ],
+      }),
+      template: `
+        <spiral-chart :data="data" :inversed="true" :end-angle="-135" >
+          <curve-column-series x-prop="value" y-prop="category" />
+          <value-axis dimension="x" :min="0" :disable-grid="true" :disable-labels="true" :min-grid-distance="70" :stroke-opacity="0.5" :stroke-dasharray="'1,4'" />
+          <category-axis dimension="y" category="category" :disable-grid="true" :radius="80" :inner-radius="0" />
+        </spiral-chart>  
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Spiral Chart
+
+A Spiral chart consists of the following elements:
+
+- A parent [SpiralChart](?path=/docs/documentation-chart-components-spiralchart--page) component containing the following in its default slot:
+  - At least two axes - vertical and horizontal
+  - At least one series component ([CurveColumnSeries](?path=/docs/documentation-chart-components-subcomponents-series-curvecolumnseries--page) for a column chart, [CurveLineSeries](?path=/docs/documentation-chart-components-subcomponents-series-curvelineseries--page) for a line chart, or a [CurveStepLineSeries](?path=/docs/documentation-chart-components-subcomponents-series-curvesteplineseries--page) for a stepped line chart).
+
+### Axes
+
+Please refer to the [ValueAxis](?path=/docs/documentation-chart-components-subcomponents-axes-valueaxis--page), [DateAxis](?path=/docs/documentation-chart-components-subcomponents-axes-dateaxis--page) and [CategoryAxis](?path=/docs/documentation-chart-components-subcomponents-axes-categoryaxis--page) pages for more information on how to configure axes.
