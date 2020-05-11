@@ -1,0 +1,49 @@
+import { SerpentineChart, CurveStepLineSeries, ValueAxis, DateAxis } from '@/components'
+import { Meta, Description, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+import { serpentineDataset } from './dataset'
+
+<Meta
+  title="Documentation/Charts/TimelineCharts/SerpentineCharts"
+  component={SerpentineChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Serpentine Charts
+
+"SerpentineChart is a wrapper for SerpentineChart which automatically generates horizontal or vertical waved curves, based on certain parameters. It sort of looks like a mountain road, hence the name."
+Please refer to [amChart's documentation](https://www.amcharts.com/docs/v4/chart-types/timeline/#Serpentine) on serpentine charts for more details.
+
+<Preview>
+  <Story name="Documentation" inline={true}>
+    {{
+      components: { SerpentineChart, CurveStepLineSeries, ValueAxis, DateAxis },
+      data: () => ({
+        data: serpentineDataset,
+      }),
+      methods: {
+        initChart(chart) {
+          chart.padding(40, 40, 40, 40)
+        },
+      },
+      template: `
+        <serpentine-chart :data="data" :initialize="initChart" >
+          <curve-step-line-series x-prop="date" y-prop="value" :fill-opacity="0.3" :stroke-width="2" />
+          <value-axis dimension="y" :disable-tooltip="true" />
+          <date-axis dimension="x" :disable-axis-line="true" :min-zoom-count="5" />
+        </serpentine-chart>  
+  `,
+    }}
+  </Story>
+</Preview>
+
+## How to compose a Serpentine Chart
+
+A Serpentine chart consists of the following elements:
+
+- A parent [SerpentineChart](?path=/docs/documentation-chart-components-serpentinechart--page) component containing the following in its default slot:
+  - At least two axes - vertical and horizontal
+  - At least one series component ([CurveColumnSeries](?path=/docs/documentation-chart-components-subcomponents-series-curvecolumnseries--page) for a column chart, [CurveLineSeries](?path=/docs/documentation-chart-components-subcomponents-series-curvelineseries--page) for a line chart, or a [CurveStepLineSeries](?path=/docs/documentation-chart-components-subcomponents-series-curvesteplineseries--page) for a stepped line chart).
+
+### Axes
+
+Please refer to the [ValueAxis](?path=/docs/documentation-chart-components-subcomponents-axes-valueaxis--page), [DateAxis](?path=/docs/documentation-chart-components-subcomponents-axes-dateaxis--page) and [CategoryAxis](?path=/docs/documentation-chart-components-subcomponents-axes-categoryaxis--page) pages for more information on how to configure axes.
