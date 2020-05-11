@@ -1,0 +1,138 @@
+import { PieChart, PieSeries } from '@/components'
+import { Meta, Preview, Story, Props } from '@storybook/addon-docs/blocks'
+
+<Meta
+  title="Documentation/Getting Started"
+  component={PieChart}
+  parameters={{ viewMode: 'docs', previewTabs: { canvas: { hidden: true } } }}
+/>
+
+# Your First Chart
+
+Let's start by creating a simple pie chart to whet your appetite. Charts in `vue-amcharts` are created through the use of a parent component representing the type of chart, with some child components in its default slot that represent axes, series, legends, etc.
+
+So to create a pie chart we will need to use the `PieChart` component. So let's import that:
+
+```typescript
+import { PieChart } from 'vue-amcharts'
+```
+
+Then we can use it in the `template` section of any Vue component like so:
+
+```html
+<pie-chart></pie-chart>
+```
+
+We will also need some data for our chart to display. A pie chart can take a list of objects representing the slices of a pie chart. Each object containing a label and a value (proportion) of the slice it represents. Here's a sample data set:
+
+```json
+[
+  {
+    "country": "Lithuania",
+    "liters": 501
+  },
+  {
+    "country": "Czechia",
+    "liters": 301
+  },
+  {
+    "country": "Ireland",
+    "liters": 201
+  },
+  {
+    "country": "Germany",
+    "liters": 165
+  },
+  {
+    "country": "Australia",
+    "liters": 139
+  },
+  {
+    "country": "Austria",
+    "liters": 128
+  },
+  {
+    "country": "UK",
+    "liters": 99
+  },
+  {
+    "country": "Belgium",
+    "liters": 60
+  },
+  {
+    "country": "The Netherlands",
+    "liters": 50
+  }
+]
+```
+
+Now we need a way to bind our data to the chart. We can do that using a `PieSeries` component. It allows us to tell the chart which field in our data set represents labels (or category) and which one represents values. So let's import `PieSeries`:
+
+```typescript
+import { PieChart, PieSeries } from 'vue-amcharts'
+```
+
+Now we can bind our data set to our chart like this:
+
+```html
+<pie-chart :data="dataset">
+  <pie-series category-prop="country" value-prop="liters" />
+</pie-chart>
+```
+
+`category-prop` allows us to specify the field representing labels and `value-prop` the field representing values (proportions) in our data set.
+
+Our chart is now complete. Here's the result:
+
+<Preview>
+  <Story name="Your First Chart" inline={true}>
+    {{
+      components: { PieChart, PieSeries },
+      data: () => ({
+        dataset: [
+          {
+            country: 'Lithuania',
+            liters: 501,
+          },
+          {
+            country: 'Czechia',
+            liters: 301,
+          },
+          {
+            country: 'Ireland',
+            liters: 201,
+          },
+          {
+            country: 'Germany',
+            liters: 165,
+          },
+          {
+            country: 'Australia',
+            liters: 139,
+          },
+          {
+            country: 'Austria',
+            liters: 128,
+          },
+          {
+            country: 'UK',
+            liters: 99,
+          },
+          {
+            country: 'Belgium',
+            liters: 60,
+          },
+          {
+            country: 'The Netherlands',
+            liters: 50,
+          },
+        ],
+      }),
+      template: `
+        <pie-chart :data="dataset" style="width: 100%; height: 500px">
+            <pie-series category-prop="country" value-prop="liters" />
+        </pie-chart>
+  `,
+    }}
+  </Story>
+</Preview>
