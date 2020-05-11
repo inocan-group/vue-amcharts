@@ -21,6 +21,7 @@ export default defineComponent({
     ...chartProperties,
     innerRadius: {
       type: [String, Number],
+      default: 0,
     },
     initialize: {
       type: Function,
