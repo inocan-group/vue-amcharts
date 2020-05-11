@@ -58,3 +58,12 @@ export const worldMap = () => ({
     </div>
   `,
 })
+
+worldMap.story = {
+  parameters: {
+    viewMode: 'story',
+    previewTabs: {
+      'storybook/docs/panel': { hidden: true },
+    },
+  },
+}

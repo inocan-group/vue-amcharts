@@ -92,3 +92,12 @@ export const pyramidSeries = () => {
     notes: `Shows both candlestick implementation as well as how the "api" property can be used`,
   }
 }
+
+pyramidSeries.story = {
+  parameters: {
+    viewMode: 'story',
+    previewTabs: {
+      'storybook/docs/panel': { hidden: true },
+    },
+  },
+}

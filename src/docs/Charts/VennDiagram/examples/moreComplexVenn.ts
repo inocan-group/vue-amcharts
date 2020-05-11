@@ -71,3 +71,12 @@ export const moreComplexVenn = () => ({
     </div>
   `,
 })
+
+moreComplexVenn.story = {
+  parameters: {
+    viewMode: 'story',
+    previewTabs: {
+      'storybook/docs/panel': { hidden: true },
+    },
+  },
+}

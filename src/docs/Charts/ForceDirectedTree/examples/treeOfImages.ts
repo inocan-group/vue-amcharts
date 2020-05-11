@@ -63,3 +63,12 @@ export const treeOfImages = () => {
     notes: `Shows animation of data in a very simple container; highlighting add, update, and remove`,
   }
 }
+
+treeOfImages.story = {
+  parameters: {
+    viewMode: 'story',
+    previewTabs: {
+      'storybook/docs/panel': { hidden: true },
+    },
+  },
+}

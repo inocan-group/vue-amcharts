@@ -54,3 +54,12 @@ export const simpleTreemap = () => ({
     </div>
   `,
 })
+
+simpleTreemap.story = {
+  parameters: {
+    viewMode: 'story',
+    previewTabs: {
+      'storybook/docs/panel': { hidden: true },
+    },
+  },
+}

@@ -39,3 +39,12 @@ export const simpleSerpentine = () => ({
     </div>
   `,
 })
+
+simpleSerpentine.story = {
+  parameters: {
+    viewMode: 'story',
+    previewTabs: {
+      'storybook/docs/panel': { hidden: true },
+    },
+  },
+}

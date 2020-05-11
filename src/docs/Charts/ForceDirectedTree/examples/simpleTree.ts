@@ -37,3 +37,12 @@ export const simpleTree = () => {
     notes: `Shows animation of data in a very simple container; highlighting add, update, and remove`,
   }
 }
+
+simpleTree.story = {
+  parameters: {
+    viewMode: 'story',
+    previewTabs: {
+      'storybook/docs/panel': { hidden: true },
+    },
+  },
+}

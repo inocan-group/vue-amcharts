@@ -69,3 +69,12 @@ export const withMixedSeries = () => ({
     </div>
   `,
 })
+
+withMixedSeries.story = {
+  parameters: {
+    viewMode: 'story',
+    previewTabs: {
+      'storybook/docs/panel': { hidden: true },
+    },
+  },
+}
