@@ -1,24 +1,16 @@
-# vue-visualization
+# vue-amcharts
+![Storybook build & deploy](https://github.com/inocan-group/vue-amcharts/workflows/Storybook%20build%20&%20deploy/badge.svg)
 
-## Project setup
-```
-yarn install
-```
+> Vue.js wrapper for the [amcharts4](https://github.com/amcharts/amcharts4) charting library 
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+## Installation
+```bash
+npm i https://github.com/inocan-group/vue-amcharts
 
-### Compiles and minifies for production
-```
-yarn build
+# or
+
+yarn add https://github.com/inocan-group/vue-amcharts
 ```
 
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Usage
+Please refer to our [documentation](https://vue-amcharts.netlify.app/) for detailed examples and usage instructions.
