@@ -1,18 +1,11 @@
 import { SerpentineChart, CurveStepLineSeries, ValueAxis, DateAxis } from '@/components'
 import { select, number, boolean } from '@storybook/addon-knobs'
+import { serpentineDataset } from '../dataset'
 
 type ISerpentineChart = import('@amcharts/amcharts4/plugins/timeline').SerpentineChart
 
-const dataset: { date: Date; value: number }[] = []
-let visits = 100
-
-for (let i = 0; i < 24; i++) {
-  visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10)
-  dataset.push({ date: new Date(2018, 0, 1, i), value: visits })
-}
-
 export const simpleSerpentine = () => ({
-  data: () => ({ dataset }),
+  data: () => ({ dataset: serpentineDataset }),
   props: {
     orientation: {
       default: select('chart orientation', { vertical: 'vertical', horizontal: 'horizontal' }, 'vertical', 'Component'),
