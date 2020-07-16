@@ -1,5 +1,5 @@
 import { create } from '@storybook/theming/create'
-import logo from '../../src/assets/vue-amcharts-logo.png'
+import logo from '../src/assets/vue-amcharts-logo.png'
 
 export default create({
   base: 'light',
