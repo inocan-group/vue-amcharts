@@ -13,8 +13,6 @@ import { defineComponent, SetupContext } from '@vue/composition-api'
 import { useChart } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
-// eslint-disable-next-line @typescript-eslint/camelcase
-import am4geodata_worldLow from '@amcharts/amcharts4-geodata/worldLow'
 import { projections } from '@amcharts/amcharts4/maps'
 
 useTheme(am4themesAnimated)
@@ -59,15 +57,28 @@ export default defineComponent({
       onChartMounted,
     } = useChart(MapChart, props, context, parentConfig)
 
+    let _geoData: IDictionary = {}
+
+    /**
+     * **loadGeoData**
+     *
+     * The size of geo data can be large and therefore vue-amcharts does not load
+     * data by default. You can use this method to provide data and typically this
+     * should be either the low or high resolution data provided by [amCharts](https://www.amcharts.com/docs/v4/chart-types/map/)
+     */
+    function loadGeoData(data: IDictionary) {
+      _geoData = data
+    }
+
     actionsConfig(mc => ({
       projection: [mc, v => new projections[v as IProjection]()],
       deltaLongitude: mc,
       deltaLatitude: mc,
     }))
 
-    onChartMounted(chart => {
+    onChartMounted(async chart => {
       // eslint-disable-next-line @typescript-eslint/camelcase
-      chart.geodata = am4geodata_worldLow
+      chart.geodata = _geoData
     })
 
     return {
@@ -78,6 +89,7 @@ export default defineComponent({
       registrants,
       acceptChildRegistration,
       acceptChildMessage,
+      loadGeoData,
     }
   },
 })

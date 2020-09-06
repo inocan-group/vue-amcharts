@@ -6,11 +6,11 @@
 import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { useRegistry, useProps } from '../composables'
 import { IDictionary } from 'common-types'
-import { ValueAxis } from '@amcharts/amcharts4/charts'
-import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
-import { percent } from '@amcharts/amcharts4/core'
+import { ValueAxis } from '@amcharts/amcharts4/.internal/charts/axes/ValueAxis'
+import { percent } from '@amcharts/amcharts4/.internal/core/utils/Percent'
 import { allowUndefined } from '../helpers'
 import { IRegistrationInfo } from '../composables/useRegistry/registry-types'
+import { capitalize } from '../shared'
 
 type XYChart = import('@amcharts/amcharts4/charts').XYChart
 
