@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, PropType } from '@vue/composition-api'
+import { defineComponent, SetupContext, PropType } from 'vue'
 import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
 import { useChart, chartProperties } from '../composables'

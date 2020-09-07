@@ -1,4 +1,4 @@
-import { Ref } from '@vue/composition-api'
+import { Ref } from 'vue'
 import { IDictionary } from 'common-types'
 import { AmchartError } from '../../errors'
 

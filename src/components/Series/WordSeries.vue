@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
+import { defineComponent, SetupContext, Ref, ref } from 'vue'
 import { IDictionary } from 'common-types'
 import { WordCloudSeries, WordCloud } from '@amcharts/amcharts4/plugins/wordCloud'
 import { useSeries, useEvents } from '../composables'

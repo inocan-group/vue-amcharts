@@ -1,6 +1,6 @@
 import { CSVParser, JSONParser } from '@amcharts/amcharts4/core'
 import { IDataMetaForUrlDrivenChart } from './use-data-types'
-import { Ref } from '@vue/composition-api'
+import { Ref } from 'vue'
 
 /**
  * leverages amCharts to call the API using their internal framework for requested URL

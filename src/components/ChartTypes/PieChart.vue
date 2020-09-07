@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext } from '@vue/composition-api'
+import { defineComponent, SetupContext } from 'vue'
 import { IDictionary } from 'common-types'
 import { useChart, chartProperties } from '../composables'
 import { PieChart } from '@amcharts/amcharts4/charts'

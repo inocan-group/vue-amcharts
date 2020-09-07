@@ -1,5 +1,5 @@
 import { IDictionary } from 'common-types'
-import { watch, ref, Ref } from '@vue/composition-api'
+import { watch, ref, Ref } from 'vue'
 import { IActionConfiguration, IPropChange } from './props-types'
 import { unbox } from '../../shared'
 import { takeAction } from '.'

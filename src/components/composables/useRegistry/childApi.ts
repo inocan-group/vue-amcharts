@@ -1,5 +1,5 @@
 import { IDictionary } from 'common-types'
-import { SetupContext, Ref } from '@vue/composition-api'
+import { SetupContext, Ref } from 'vue'
 import {
   IParentRegistry,
   EventMessages,

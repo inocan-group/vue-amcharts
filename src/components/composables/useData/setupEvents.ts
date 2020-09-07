@@ -1,6 +1,6 @@
 import type { DataSource } from '@amcharts/amcharts4/core'
 import {  IDataMetaReady } from './use-data-types'
-import { Ref } from '@vue/composition-api'
+import { Ref } from 'vue'
 import get from 'lodash.get'
 
 let classesSetup: string[] = []

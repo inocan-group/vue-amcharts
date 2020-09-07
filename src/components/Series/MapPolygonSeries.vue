@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, SetupContext, watch } from '@vue/composition-api'
+import { defineComponent, ref, Ref, SetupContext, watch } from 'vue'
 import { MapPolygonSeries } from '@amcharts/amcharts4/maps'
 import { useSeries, seriesProps } from '../composables'
 import { IDictionary } from 'common-types'

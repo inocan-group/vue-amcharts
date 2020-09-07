@@ -1,4 +1,4 @@
-import { ref, Ref, onBeforeUnmount, onMounted, SetupContext } from '@vue/composition-api'
+import { ref, Ref, onBeforeUnmount, onMounted, SetupContext } from 'vue'
 import { IDictionary } from 'common-types'
 import { useRegistry, useProps } from '../index'
 import { ConstructorFor } from '../useRegistry/registry-types'

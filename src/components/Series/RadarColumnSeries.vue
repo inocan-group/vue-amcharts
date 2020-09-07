@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
+import { defineComponent, SetupContext, Ref, ref } from 'vue'
 import { IDictionary } from 'common-types'
 import { RadarColumnSeries } from '@amcharts/amcharts4/charts'
 import { useSeries, seriesProps } from '../composables'

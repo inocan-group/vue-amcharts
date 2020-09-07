@@ -9,7 +9,7 @@
 import { useTheme } from '@amcharts/amcharts4/core'
 import { RadarChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
-import { defineComponent, SetupContext } from '@vue/composition-api'
+import { defineComponent, SetupContext } from 'vue'
 import { useChart, chartProperties } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'

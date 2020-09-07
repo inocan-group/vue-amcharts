@@ -1,4 +1,4 @@
-import { Ref, SetupContext, onBeforeUnmount } from '@vue/composition-api'
+import { Ref, SetupContext, onBeforeUnmount } from 'vue'
 import { Axis, LineSeries, ColumnSeries } from '@amcharts/amcharts4/charts'
 import { IDictionary } from 'common-types'
 import { useRegistry } from './useRegistry/useRegistry'

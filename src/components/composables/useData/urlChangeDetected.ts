@@ -1,6 +1,6 @@
 import { IUrlInfo, IDataMetaForUrlDrivenChart } from './use-data-types'
 import { api } from './api'
-import { Ref } from '@vue/composition-api'
+import { Ref } from 'vue'
 
 export const urlChangeDetected = <TData>(dataMeta: Ref<IDataMetaForUrlDrivenChart<TData>>) => (
   current: IUrlInfo<TData>,

@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
+import { defineComponent, ref, Ref, SetupContext } from 'vue'
 import { useSeries } from '../composables'
 import { ForceDirectedSeries } from '@amcharts/amcharts4/plugins/forceDirected'
 import { IDictionary } from 'common-types'

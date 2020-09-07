@@ -1,4 +1,4 @@
-import { Ref, ref, watch, toRefs, reactive } from '@vue/composition-api'
+import { Ref, ref, watch, toRefs, reactive } from 'vue'
 import { IDictionary } from 'common-types'
 import { api } from './api'
 import { AmchartError } from '../../errors'

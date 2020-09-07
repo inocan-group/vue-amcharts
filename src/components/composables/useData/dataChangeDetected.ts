@@ -1,7 +1,7 @@
 import { IDataMetaReady } from './use-data-types'
 
 import diff from 'hyperdiff'
-import { Ref } from '@vue/composition-api'
+import { Ref } from 'vue'
 
 function hasCurrentValue<T>(current: T[] | undefined): current is T[] {
   return current && current && Array.isArray(current) ? true : false

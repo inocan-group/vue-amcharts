@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
+import { defineComponent, ref, Ref, SetupContext } from 'vue'
 import { ClockHand } from '@amcharts/amcharts4/charts'
 import { percent, color } from '@amcharts/amcharts4/core'
 import { useRegistry, useProps } from '../composables'

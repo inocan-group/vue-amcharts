@@ -1,4 +1,4 @@
-import { defineComponent } from '@vue/composition-api'; import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue'; import { defineComponent } from 'vue';
 
 <template>
   <div class="story-wrapper outer" :style="containerStyle">
@@ -7,7 +7,7 @@ import { defineComponent } from '@vue/composition-api'; import { defineComponent
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api'
+import { defineComponent, computed } from 'vue'
 import { IDictionary } from 'common-types'
 
 export default defineComponent({

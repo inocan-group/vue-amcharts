@@ -1,4 +1,4 @@
-import { ref, Ref, SetupContext } from '@vue/composition-api'
+import { ref, Ref, SetupContext } from 'vue'
 import { Axis } from '@amcharts/amcharts4/charts'
 import { IDictionary } from 'common-types'
 

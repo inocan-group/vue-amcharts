@@ -3,14 +3,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
+// import { defineComponent, ref, Ref, SetupContext } from 'vue'
 import { ColumnSeries } from '@amcharts/amcharts4/.internal/charts/series/ColumnSeries'
 import { useSeries, seriesProps } from '../composables'
 import { IDictionary } from 'common-types'
 import { ChartType, allowUndefined } from '../index'
 import { color } from '@amcharts/amcharts4/.internal/core/utils/Color'
 
-export default defineComponent({
+export default {
   name: 'ColumnSeries',
   props: {
     ...seriesProps,
@@ -61,7 +61,7 @@ export default defineComponent({
 
     return { series, axisConfig }
   },
-})
+}
 </script>
 
 <style scoped>

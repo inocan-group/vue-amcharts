@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
+// import { defineComponent, ref, Ref, SetupContext } from 'vue'
 import { useRegistry, useProps } from '../composables'
 import { IDictionary } from 'common-types'
 import { ValueAxis } from '@amcharts/amcharts4/.internal/charts/axes/ValueAxis'
@@ -14,7 +14,7 @@ import { capitalize } from '../shared'
 
 type XYChart = import('@amcharts/amcharts4/charts').XYChart
 
-export default defineComponent({
+export default {
   name: 'ValueAxis',
   props: {
     id: {
@@ -182,7 +182,7 @@ export default defineComponent({
       instanceId,
     }
   },
-})
+}
 </script>
 
 <style scoped>

@@ -9,7 +9,7 @@
 import { Sunburst } from '@amcharts/amcharts4/plugins/sunburst'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
 import { percent, useTheme } from '@amcharts/amcharts4/core'
-import { defineComponent, SetupContext } from '@vue/composition-api'
+import { defineComponent, SetupContext } from 'vue'
 import { useChart } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'

@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from '@vue/composition-api'
+import { defineComponent, ref, Ref } from 'vue'
 
 export default defineComponent({
   name: 'AxisTooltip',

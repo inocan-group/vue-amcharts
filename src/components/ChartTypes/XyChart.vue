@@ -9,7 +9,7 @@
 import { useTheme } from '@amcharts/amcharts4/core'
 import { XYChart } from '@amcharts/amcharts4/charts'
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated'
-import { defineComponent, SetupContext } from '@vue/composition-api'
+// import { defineComponent, SetupContext } from 'vue'
 import { useChart } from '../composables'
 import { IDictionary } from 'common-types'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'
@@ -17,7 +17,7 @@ import { dataProperties } from '../composables/useData'
 
 useTheme(am4themesAnimated)
 
-export default defineComponent({
+export default {
   props: {
     ...dataProperties,
 
@@ -81,7 +81,7 @@ export default defineComponent({
       acceptChildMessage,
     }
   },
-})
+}
 </script>
 
 <style scoped>

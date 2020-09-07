@@ -10,13 +10,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import XyChart from './components/ChartTypes/XyChart.vue'
 import ColumnSeries from './components/Series/ColumnSeries.vue'
 import CategoryAxis from './components/Axis/CategoryAxis.vue'
 import ValueAxis from './components/Axis/ValueAxis.vue'
 
-export default Vue.extend({
+export default {
   name: 'App',
   data: () => ({
     countries: [
@@ -60,7 +59,7 @@ export default Vue.extend({
   }),
 
   components: { XyChart, ColumnSeries, ValueAxis, CategoryAxis },
-})
+}
 </script>
 
 <style>

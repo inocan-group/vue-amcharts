@@ -1,5 +1,5 @@
 import { IDictionary } from 'common-types'
-import { Ref, SetupContext } from '@vue/composition-api'
+import { Ref, SetupContext } from 'vue'
 import { ILooksLikeChart } from '../useData'
 
 export type ConstructorFor<T> = new () => T

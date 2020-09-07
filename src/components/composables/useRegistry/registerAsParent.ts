@@ -13,7 +13,7 @@ import {
 } from './registry-types'
 import { IDictionary, wait } from 'common-types'
 import { dictionaryToArray } from './dictionaryToArray'
-import { reactive, Ref, SetupContext } from '@vue/composition-api'
+import { reactive, Ref, SetupContext } from 'vue'
 import { unbox } from '../../shared'
 import set from 'lodash.set'
 import { AmchartError } from '../../errors'

@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext } from '@vue/composition-api'
+import { defineComponent, SetupContext } from 'vue'
 import { IDictionary } from 'common-types'
 import { WordCloud } from '@amcharts/amcharts4/plugins/wordCloud'
 import { IChildWithCardinality } from '../composables/useRegistry/registry-types'

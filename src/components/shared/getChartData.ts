@@ -1,5 +1,5 @@
 import { IDictionary } from 'common-types'
-import { Ref } from '@vue/composition-api'
+import { Ref } from 'vue'
 
 export async function getChartData(remoteData: Ref<IDictionary[]>, url: string): Promise<IDictionary[]> {
   let response: Response

@@ -1,5 +1,5 @@
 import { IDictionary } from 'common-types'
-import { SetupContext } from '@vue/composition-api'
+import { SetupContext } from 'vue'
 import { registerAsParent } from './registerAsParent'
 import { childApi } from './childApi'
 import { hasParent, hasChart, EventMessages } from './registry-types'

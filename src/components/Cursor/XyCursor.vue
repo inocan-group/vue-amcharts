@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, Ref, ref } from '@vue/composition-api'
+import { defineComponent, SetupContext, Ref, ref } from 'vue'
 import { IDictionary } from 'common-types'
-import { useRegistry, useProps } from '@/components/composables'
-import { ChartType } from '@/components'
+import { useRegistry, useProps } from '../composables'
+import { ChartType } from '../types'
 import { XYCursor } from '@amcharts/amcharts4/charts'
 import { color } from '@amcharts/amcharts4/core'
 

@@ -1,5 +1,5 @@
 import { IUrlInfo, IUrlProperty } from './use-data-types'
-import { watch, ref, reactive } from '@vue/composition-api'
+import { watch, ref, reactive } from 'vue'
 import { IDictionary } from 'common-types'
 import { unbox } from '../../shared'
 import { decomposeUrl } from '.'
