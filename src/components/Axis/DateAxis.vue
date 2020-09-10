@@ -7,8 +7,8 @@ import { defineComponent, ref, Ref, SetupContext } from '@vue/composition-api'
 import { useRegistry, useProps } from '../composables'
 import { DateAxis } from '@amcharts/amcharts4/charts'
 import { IDictionary } from 'common-types'
-import { capitalize } from '@amcharts/amcharts4/.internal/core/utils/Utils'
 import { IRegistrationInfo } from '../composables/useRegistry/registry-types'
+import { capitalize } from '../shared'
 
 export type XYChart = import('@amcharts/amcharts4/charts').XYChart
 export type XYChart3D = import('@amcharts/amcharts4/charts').XYChart3D
@@ -97,7 +97,7 @@ export default defineComponent({
     })
 
     const registeredType = response.type
-    addToRegistration('dataField', `date${capitalize(capitalize(registeredType[0]))}`)
+    addToRegistration('dataField', `date${capitalize(registeredType[0])}`)
     childReady()
 
     return {

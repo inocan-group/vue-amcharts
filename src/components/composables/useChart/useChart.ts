@@ -5,9 +5,9 @@ import { ConstructorFor } from '../useRegistry/registry-types'
 import { useData, removeEventClass, IPropertyMeta } from '../useData'
 import { useInitialize } from '../useInitialize'
 import { unbox } from '../../shared'
-import { toNumberOrPercent } from '@amcharts/amcharts4/.internal/core/utils/Type'
 import { IRegistryOptions, noRegistrationOptions } from './chart-types'
 import { create, Percent } from '@amcharts/amcharts4/core'
+import { toNumberOrPercent } from '@/components/helpers'
 
 type Chart = import('@amcharts/amcharts4/charts').Chart
 
@@ -46,8 +46,8 @@ export function useChart<TChart extends Chart, TProps extends IDictionary>(
   onMounted(async () => {
     chart.value = create(chartdiv.value as HTMLElement, chartType)
     dataReady(chart.value as TChart, propMeta)
-    chart.value.width = props.width ? toNumberOrPercent(props.width) : new Percent(100)
-    chart.value.height = props.height ? toNumberOrPercent(props.height) : new Percent(100)
+    chart.value.width = props.width ? (toNumberOrPercent(props.width) as number | Percent) : new Percent(100)
+    chart.value.height = props.height ? (toNumberOrPercent(props.height) as number | Percent) : new Percent(100)
     initializeProps()
     if (props.initialize) {
       useInitialize(props, chart)

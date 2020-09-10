@@ -1,6 +1,6 @@
 import { PieChart, PieSeries } from '@/components'
+import { color } from '@amcharts/amcharts4/core'
 import { select } from '@storybook/addon-knobs'
-import { color } from '@amcharts/amcharts4/.internal/core/utils/Color'
 
 export const pieInAPie = () => {
   const pieData = [
